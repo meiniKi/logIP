@@ -1,0 +1,5 @@
+
+# Simulation project
+sim/.*
+sim/sim.*
+sim/vivado*
