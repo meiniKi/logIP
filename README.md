@@ -15,3 +15,8 @@ Logic analyzer IP core
 └── utils           External utils like git submodules
 
 ```
+
+## Dev
+install ```sigrok-firmware-fx2lafw```
+
+https://sigrok.org/wiki/Linux
