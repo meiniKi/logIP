@@ -7,6 +7,7 @@
  */
 
  `default_nettype wire
+ timeunit 1ns;
  module tuart_rx #(parameter CMD_WIDTH = 32,
                    parameter DATA_BITS = 8,
                    parameter SYS_CLK_F = 100_000_000,
