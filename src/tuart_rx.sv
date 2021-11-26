@@ -3,90 +3,103 @@
  * usage: Tiny-UART receiver implementation.
  *
  * 1 start bit, 1 stop bit, variable data bits
- * 
+ * there is no timeout or error handling
  */
 
  `default_nettype wire
  timeunit 1ns;
- module tuart_rx #(parameter CMD_WIDTH = 32,
-                   parameter DATA_BITS = 8,
-                   parameter SYS_CLK_F = 100_000_000,
-                   parameter BAUD_RATE = 115_200) ( // General
-                                                    input  logic                  clk_i,
-                                                    input  logic                  rst_in,
-                                                    // External communication
-                                                    input  logic                  rx_sync_i,
-                                                    // Connection to LogIP core
-                                                    output logic [CMD_WIDTH-1:0]  data_o,
-                                                    output logic                  rdy_o);
+ module tuart_rx #( parameter DATA_BITS = 8,
+                    parameter CMD_WIDTH_WORDS = 5,
+                    parameter CLK_PER_SAMPLE = 10) (
+        // General
+        input  logic                                  clk_i,
+        input  logic                                  rst_in,
+        // External communication
+        input  logic                                  rx_sync_i,
+        // Connection to LogIP core
+        output logic [DATA_BITS*CMD_WIDTH_WORDS-1:0]  data_o,
+        output logic                                  rdy_o);
 
-  localparam COMPARE_MATCH      = (SYS_CLK_F / BAUD_RATE);
-  localparam COMPARE_CNT_BITS   = $clog2(COMPARE_MATCH+1);
-  localparam CMD_WORDS          = CMD_WIDTH / DATA_BITS;
-  localparam CMD_WORDS_CNT_BITS = $clog2(CMD_WORDS+1);
-  localparam DATA_BITS_CNT_BITS = $clog2(DATA_BITS+1);
+  localparam OUT_WIDTH = DATA_BITS*CMD_WIDTH_WORDS;
 
-  typedef enum {IDLE, TRIG, SAMPLE, STOP} states_t;
+  typedef enum bit [2:0] {IDLE, TRIG, SAMPLE, RDY, STOP, STOP2} states_t;
 
   states_t state;
   states_t state_next;
 
-  logic [COMPARE_CNT_BITS-1:0]    sample_cnt;
-  logic [COMPARE_CNT_BITS-1:0]    sample_cnt_next;
+  logic [$clog2(CLK_PER_SAMPLE+1)-1:0]  smpl_cnt;
+  logic [$clog2(CLK_PER_SAMPLE+1)-1:0]  smpl_cnt_next;
+  logic [$clog2(CLK_PER_SAMPLE+1)-1:0]  smpl_cnt_compare;
 
-  logic [DATA_BITS_CNT_BITS-1:0]  bit_cnt;
-  logic [DATA_BITS_CNT_BITS-1:0]  bit_cnt_next;
+  logic [$clog2(DATA_BITS)-1:0]         bit_cnt;
+  logic [$clog2(DATA_BITS)-1:0]         bit_cnt_next;
 
-  logic [CMD_WORDS_CNT_BITS-1:0]  word_cnt;
-  logic [CMD_WORDS_CNT_BITS-1:0]  word_cnt_next;
+  logic [$clog2(CMD_WIDTH_WORDS)-1:0]   word_cnt;
+  logic [$clog2(CMD_WIDTH_WORDS)-1:0]   word_cnt_next;
 
-  logic [CMD_WIDTH-1:0]           shft_data;
-  logic [CMD_WIDTH-1:0]           shft_data_next;
+  logic [OUT_WIDTH-1:0]                 shft_data;
+  logic [OUT_WIDTH-1:0]                 shft_data_next;
 
-  logic                           cmd_done;
+  logic take_smpl;
+
+  assign smpl_cnt_compare = (state == TRIG) ? (CLK_PER_SAMPLE >> 1) 
+                                            :  CLK_PER_SAMPLE;
+  assign take_smpl        = (smpl_cnt == smpl_cnt_compare - 1);
+  assign data_o           = shft_data;
 
   //
-  assign data_o   = shft_data;
-  assign cmd_done = (word_cnt == CMD_WORDS - 1);
-  assign rdy_o    = cmd_done && (state == STOP);
-  
-  always_comb begin : next_state_logic
+  always_comb begin : main_fsm
     // Default
-    state_next          = state;
-    sample_cnt_next     = sample_cnt;
-    word_cnt_next       = word_cnt;
-    bit_cnt_next        = bit_cnt;
-    shft_data_next      = shft_data;
+    smpl_cnt_next   = smpl_cnt;
+    bit_cnt_next    = bit_cnt;
+    word_cnt_next   = word_cnt;
+    shft_data_next  = shft_data;
+    rdy_o           = 'b0;
 
     case (state)
       IDLE: begin
         if (rx_sync_i == 'b0) begin
-          state_next      = TRIG;
-          sample_cnt_next =  'b0;
+          state_next    = TRIG;
+          smpl_cnt_next =  'b0;
         end
       end
-
+      
       TRIG: begin
-        sample_cnt_next = sample_cnt + 'b1;
-        if (sample_cnt == (COMPARE_MATCH>>1)) begin
-          state_next      = SAMPLE;
-          sample_cnt_next = 'b0;
+        smpl_cnt_next   = smpl_cnt + 'b1;
+        if (take_smpl) begin
+          state_next    = SAMPLE;
+          smpl_cnt_next = 'b0;
+          bit_cnt_next  = 'b0;
         end
       end
 
       SAMPLE: begin
-        sample_cnt_next = sample_cnt + 'b1;
-        if (sample_cnt == COMPARE_MATCH) begin
-          sample_cnt_next = 'b0;
-          bit_cnt_next    = bit_cnt + 'b1;
-          shft_data_next  = {rx_sync_i, shft_data[CMD_WIDTH-2:0]};
-          if (bit_cnt == DATA_BITS - 'b1) state_next = STOP;
+        smpl_cnt_next   = smpl_cnt + 'b1;
+        if (take_smpl) begin
+          smpl_cnt_next  = 'b0;
+          bit_cnt_next   = bit_cnt + 'b1;
+          shft_data_next = {rx_sync_i, shft_data[OUT_WIDTH-1:1]};
+          if (bit_cnt == (DATA_BITS - 1)) state_next = RDY;
         end
       end
 
+      RDY: begin
+        state_next      = STOP;
+        smpl_cnt_next   = smpl_cnt + 'b1;
+        if (word_cnt == (CMD_WIDTH_WORDS - 1)) begin
+          word_cnt_next = 'b0;
+          rdy_o         = 'b1;
+        end else
+          word_cnt_next = word_cnt + 1;
+      end
+
       STOP: begin
-        word_cnt_next = cmd_done ? 'b0: word_cnt + 1;
-        state_next    = IDLE;
+        smpl_cnt_next = smpl_cnt + 'b1;
+        if (take_smpl) state_next = STOP2;
+      end
+
+      STOP2: begin
+        if (rx_sync_i) state_next = IDLE;
       end
 
       default: state_next = IDLE; 
@@ -96,25 +109,20 @@
 
   always_ff @(posedge clk_i) begin : shift_reg
     if (!rst_in) begin
-      state       <= IDLE;
-      sample_cnt  <= 'b0;
-      bit_cnt     <= 'b0;
-      word_cnt    <= 'b0;
-      shft_data   <= 'b0;
+      state     <= IDLE;
+      smpl_cnt  <= 'b0;
+      bit_cnt   <= 'b0;
+      word_cnt  <= 'b0;
+      shft_data <= 'b0;
+
     end else begin
-      state       <= state_next;
-      sample_cnt  <= sample_cnt_next;
-      bit_cnt     <= bit_cnt_next;
-      word_cnt    <= word_cnt_next;
-      shft_data   <= shft_data_next;
+      state     <= state_next;
+      smpl_cnt  <= smpl_cnt_next;
+      bit_cnt   <= bit_cnt_next;
+      word_cnt  <= word_cnt_next;
+      shft_data <= shft_data_next;
     end
   end // always_ff
-
-  //assert property (@(posedge clk_i) disable iff (!rst_in)
-
-  initial begin
-    asrt_cmd_multiple_of_word: assert(CMD_WIDTH % DATA_BITS == 0);
-  end
 
  endmodule  
  

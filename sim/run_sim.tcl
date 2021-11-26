@@ -6,12 +6,13 @@ set path_tb $path_origin/tb/
 
 # Read design sources
 add_files -fileset sim_1 [ glob $path_rtl/tuart_r*.sv ]
+add_files -fileset sim_1 [ glob $path_rtl/syncro.sv ]
+add_files -fileset sim_1 [ glob $path_rtl/tuart_asyn*.sv ]
 
-# Read testbench
-add_files -fileset sim_1 {
-    ../tb/tb_pkg.sv \
-    ../tb/tuart_rx_tb.sv 
-}
+# Read testbench(es)
+add_files -fileset sim_1 [ glob $path_tb/*.sv ]
+add_files -fileset sim_1 [ glob $path_tb/tuart_rx/*.sv ]
+
 
 save_project_as sim -force
 
