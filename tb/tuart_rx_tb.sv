@@ -4,71 +4,102 @@
  * 
  */
 
-`default_nettype none
-module tuart_rx_tb;
-  timeunit 1ns;
+`default_nettype wire
 
+//
+interface dut_if ( input logic clk_i );
+  //
   import tb_pkg::*;
-
-  localparam SYS_F     = 1_000_000; // TODO
-  localparam BAUD      = 10_000; // TODO
-
-  localparam DS        = (SYS_F / BAUD);
- 
-  // DUT inputs
-  logic         clk_i     = 0;
-  logic         rst_in    = 1;
-  logic         rx_sync_i = 0;
-
-  // DUT ouputs
-  logic [7:0]   data_o;
+  
+  logic         rst_in;
+  logic         rx_sync_i;
+  logic [31:0]  data_o;
   logic         rdy_o;
 
-  // Test cmd
-  logic [31:0]  tst_cmd = 'h23ABCDEF;
+  default clocking cb @(posedge clk_i);
+    default input #1step output #(CLK_PERIOD_HALF-1);
+    output negedge rst_in;
+    output rx_sync_i;
+    input  data_o, rdy_o;
+  endclocking
+
+  modport duv (input  clk_i,
+                      rst_in,
+                      rx_sync_i,
+              output  data_o,
+                      rdy_o);
+
+  modport tb (clocking cb);
+endinterface
+
+
+ // 
+module dut_wrapper(dut_if.duv ifc);
+  tuart_rx dut(
+                .clk_i      (ifc.clk_i),
+                .rst_in     (ifc.rst_in),
+                .rx_sync_i  (ifc.rx_sync_i),
+                .data_o     (ifc.data_o),
+                .rdy_o      (ifc.rdy_o));
+endmodule
+
+//
+module tuart_rx_tb;
+  timeunit 1ns;
+  import tb_pkg::*;
+
+  logic clk_i  = 0;
+
+  initial begin
+    // Dump
+    $dumpfile("tuart_rx_tb.vcd");
+    $dumpvars(duv_wrapper);
+  end
 
   always begin : clock_gen
     #tb_pkg::CLK_PERIOD_HALF clk_i = 1;
     #tb_pkg::CLK_PERIOD_HALF clk_i = 0;
   end
 
-  program test_tuart_rx;
-    clocking cb_tuart_rx @(posedge clk_i);
-      default input #1step output #(CLK_PERIOD_HALF-1);
-      output negedge rst_in;
-      output rx_sync_i;
-      input  data_o, rdy_o;
-    endclocking
-
-    initial begin
-      $display("----- Started ------");
-      // Dump
-      $dumpfile("tuart_rx_tb.vcd");
-      $dumvars(tuart_rx_i);
-
-          cb_tuart_rx.rst_in <= 0;
-      ##5 cb_tuart_rx.rst_in <= 1;
-
-      repeat (4) begin
-        ##DS cb_tuart_rx.rx_sync_i <= 'b0;
-        repeat (8) begin
-          ##DS  cb_tuart_rx.rx_sync_i <= tst_cmd[0];
-                tst_cmd >>= 1;
-        end
-        ##DS cb_tuart_rx.rx_sync_i <= 'b0;
-      end
-      $display("----- Done ------");
-    end
-
-  endprogram
-
-  // Instance
-  tuart_rx  #(.CMD_WIDTH( 32    ),
-              .DATA_BITS( 8     ),
-              .SYS_CLK_F( SYS_F ),
-              .BAUD_RATE( BAUD  )) tuart_rx_i (.*);
-
-  // program
-  test_tuart_rx T();
+  dut_if duv_if (clk_i);
+  dut_wrapper duv_wrapper (duv_if.duv);
+  uart_rx_tester duv_tester(duv_if.tb, clk_i);
 
 endmodule
+
+
+//
+program uart_rx_tester ( dut_if.tb duv_if, input clk_i);
+
+  default clocking duv_if.cb;
+  
+  import tb_pkg::*;
+
+  localparam SYS_F     = 1_000_000; // TODO
+  localparam BAUD      = 10_000;    // TODO
+  localparam DS        = (SYS_F / BAUD);
+
+  // Test cmd
+  logic [31:0]  tst_cmd = 'h23ABCDEF;
+
+  initial begin
+    $display("----- Started ------");
+
+        duv_if.cb.rst_in <= 0;
+    ##5 duv_if.cb.rst_in <= 1;
+
+    repeat (4) begin
+      ##DS duv_if.cb.rx_sync_i <= 'b0;
+      repeat (8) begin
+        ##DS  duv_if.cb.rx_sync_i <= tst_cmd[0];
+              tst_cmd >>= 1;
+      end
+      ##DS duv_if.cb.rx_sync_i <= 'b0;
+    end
+    $display("----- Done ------");
+  end
+
+endprogram
+
+
+
