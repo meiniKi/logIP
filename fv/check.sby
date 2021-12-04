@@ -1,0 +1,12 @@
+[options]
+mode bmc
+
+[engines]
+smtbmc
+
+[script]
+read -formal tuart_rx.sv
+prep -top tuart_rx
+
+[files]
+../src/tuart_rx.sv
