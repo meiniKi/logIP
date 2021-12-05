@@ -1,5 +1,6 @@
 [options]
 mode bmc
+depth 400
 
 [engines]
 smtbmc

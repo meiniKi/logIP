@@ -160,9 +160,6 @@ module tuart_rx #(  parameter DATA_BITS = 8,
 
 
 `ifdef FORMAL
-  //assume (DATA_BITS == 8);
-  //assume (CMD_WIDTH_WORDS == 5);
-
   logic f_init = 0;
 
   always_ff @(posedge clk_i) begin : f_initial_reset
@@ -174,20 +171,35 @@ module tuart_rx #(  parameter DATA_BITS = 8,
   
   always_ff @(posedge clk_i) begin
     if (!rst_in) begin
+      //
+      // Assume valid initial conditions 
+      //
       assume (state     == IDLE);
       assume (smpl_cnt  == 'b0);
       assume (bit_cnt   == 'b0);
       assume (word_cnt  == 'b0);
       assume (shft_data == 'b0);
     end else begin
+      //
+      // Assume state properties due to long
+      // receive sequence
+      //
+      if (state == IDLE) begin
+        assume (word_cnt < CMD_WIDTH_WORDS);
+        assume (bit_cnt == 'b0);
+        assume (rx_sync_i == 1);
+      end else if (state == SAMPLE) begin
+        assume (word_cnt < CMD_WIDTH_WORDS);
+      end
       // TODO
     end
 
-    asrt_word_cnt:  assert (word_cnt <= CMD_WIDTH_WORDS);
-    asrt_bit_cnt:   assert (bit_cnt < DATA_BITS);
+    asrt_word_cnt:          assert (word_cnt <= CMD_WIDTH_WORDS);
+    asrt_bit_cnt:           assert (bit_cnt < DATA_BITS);
   end
 
-  // assume valid uart signal
+  //
+  // Assume valid uart signal
   //
   logic [$clog2((CLK_PER_SAMPLE*(DATA_BITS+2))+1)-1 : 0] f_bit_cnt;
   logic f_trans_active;
@@ -200,7 +212,11 @@ module tuart_rx #(  parameter DATA_BITS = 8,
       f_old_rx        <= rx_sync_i;
     end else begin
       if (f_trans_active) begin
-        f_bit_cnt       <= f_bit_cnt + 'b1;
+        f_bit_cnt         <= f_bit_cnt + 'b1;
+        if (f_bit_cnt >= 10*CLK_PER_SAMPLE) begin
+          f_bit_cnt       <= 'b0;
+          f_trans_active  <= 'b0;
+        end
       end else if (!f_trans_active && rx_sync_i && f_old_rx != rx_sync_i) begin
         f_old_rx        <= rx_sync_i;
         f_trans_active  <= 'b1;
@@ -211,9 +227,9 @@ module tuart_rx #(  parameter DATA_BITS = 8,
   always_comb begin : f_shape_uart_signal
     if (f_bit_cnt >= 0 && f_bit_cnt < CLK_PER_SAMPLE) assume (rx_sync_i == 'b0);
     if (f_bit_cnt >= 9*CLK_PER_SAMPLE && f_bit_cnt < 10*CLK_PER_SAMPLE) assume (rx_sync_i == 'b0);
+    if (!f_trans_active) assume (f_bit_cnt == 'b0);
   end 
 `endif
-
 
 endmodule  
  
