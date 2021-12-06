@@ -1,6 +1,16 @@
+
+[tasks]
+task_tuart_rx_bcm
+task_tuart_rx_prove
+
 [options]
-mode bmc
-depth 400
+task_tuart_rx_bcm:
+mode bcm
+depth 100
+
+task_tuart_rx_bcm:
+mode prove
+depth 50
 
 [engines]
 smtbmc
