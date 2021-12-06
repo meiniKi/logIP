@@ -18,7 +18,7 @@ module tuart_rx #(  parameter DATA_BITS = 8,
         input  logic                                  rx_sync_i,
         // Connection to LogIP core
         output logic [DATA_BITS*CMD_WIDTH_WORDS-1:0]  data_o,
-        output logic                                  rdy_o);
+        output logic                                  stb_o);
 
   localparam OUT_WIDTH = DATA_BITS*CMD_WIDTH_WORDS;
 
@@ -73,7 +73,7 @@ module tuart_rx #(  parameter DATA_BITS = 8,
     word_cnt_next   = word_cnt;
     shft_data_next  = shft_data;
     state_next      = state;
-    rdy_o           = 'b0;
+    stb_o           = 'b0;
 
     case (state)
       // Wait for a transfer to start.
@@ -127,7 +127,7 @@ module tuart_rx #(  parameter DATA_BITS = 8,
         if (take_smpl) state_next = STOP2;
         if (short_cmd_ready || long_cmd_ready) begin
           word_cnt_next = 'b0;
-          rdy_o         = 'b1;
+          stb_o         = 'b1;
         end
       end
 
