@@ -18,6 +18,17 @@ package logIP_pkg;
     CMD_L_MSK_SET_DIV         = 8'b1000_0000,
     CMD_L_MSK_SET_RD_DLY_CNT  = 8'b1000_0001,
     CMD_L_MSK_SET_FLAGS       = 8'b1000_0010 } opcode_t;
+
+  typedef enum logic {XON, XOFF} xcrtl_t;
+
+  interface FlowCtr;
+    logic xon;
+    logic xoff;
+    logic stb;
+    modport Master (output xon, output xoff, output stb);
+    modport Slave (input xon, output xoff, input stb);
+  endinterface
+
     
     
 endpackage

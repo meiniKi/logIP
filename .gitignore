@@ -1,5 +1,5 @@
 
 # Simulation project
 sim/
-fv/check
+fv/check*
 out/
