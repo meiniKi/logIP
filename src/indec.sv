@@ -32,7 +32,7 @@ module indec (
               output FlowCtr.Master xctrl_o,
               );
 
-  import logIP::*;
+  import logIP_pkg::*;
   
   logic opcode_t opc;
 
@@ -55,7 +55,7 @@ module indec (
     set_cnt_o     = 'b0;
     set_flgs_o    = 'b0;
 
-    casex (opc) begin 
+    casex (opc) 
       CMD_S_SOFT_RESET:         sft_rst_o     = 'b1;
       CMD_S_RUN:                armd_o        = 'b1;
       CMD_S_ID:                 id_o          = 'b1;
@@ -67,7 +67,7 @@ module indec (
       CMD_L_MSK_SET_DIV:        set_div_o     = 'b1;
       CMD_L_MSK_SET_RD_DLY_CNT: set_cnt_o     = 'b1;
       CMD_L_MSK_SET_FLAGS:      set_flgs_o    = 'b1;
-    end
+    endcase
   end
 
 

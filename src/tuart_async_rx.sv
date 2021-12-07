@@ -17,7 +17,7 @@
           input  logic                                    rx_async_i,
           // Connection to LogIP core
           output logic [DATA_BITS*CMD_WIDTH_WORDS-1:0]    data_o,
-          output logic                                    rdy_o);
+          output logic                                    stb_o);
 
   logic rx_sync;
 
@@ -34,7 +34,7 @@
                                                              .rst_in    (rst_in),
                                                              .rx_sync_i (rx_sync),
                                                              .data_o    (data_o),
-                                                             .rdy_o     (rdy_o));
+                                                             .stb_o     (stb_o));
                               
  endmodule  
  

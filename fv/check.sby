@@ -1,14 +1,14 @@
 
 [tasks]
-task_tuart_rx_bcm
+task_tuart_rx_bmc
 task_tuart_rx_prove
 
 [options]
-task_tuart_rx_bcm:
-mode bcm
+task_tuart_rx_bmc:
+mode bmc
 depth 100
 
-task_tuart_rx_bcm:
+task_tuart_rx_prove:
 mode prove
 depth 50
 

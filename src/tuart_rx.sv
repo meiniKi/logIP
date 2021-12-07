@@ -7,7 +7,7 @@
  */
 
 `default_nettype wire
-`timescale 1ns/1ps;
+`timescale 1ns/1ps
 module tuart_rx #(  parameter DATA_BITS = 8,
                     parameter CMD_WIDTH_WORDS = 5,
                     parameter CLK_PER_SAMPLE = 10) (
@@ -22,7 +22,7 @@ module tuart_rx #(  parameter DATA_BITS = 8,
 
   localparam OUT_WIDTH = DATA_BITS*CMD_WIDTH_WORDS;
 
-  typedef enum bit [2:0] {IDLE, TRIG, SAMPLE, STOP, STOP2} states_t;
+  typedef enum bit [2:0] {IDLE, TRIG, SAMPLE, STOP} states_t;
 
   states_t state;
   states_t state_next;
@@ -122,19 +122,12 @@ module tuart_rx #(  parameter DATA_BITS = 8,
       // the receiver notifies the system.
       //
       STOP: begin
-        state_next      = STOP;
         smpl_cnt_next   = smpl_cnt + 'b1;
-        if (take_smpl) state_next = STOP2;
+        if (take_smpl) state_next = IDLE;
         if (short_cmd_ready || long_cmd_ready) begin
           word_cnt_next = 'b0;
           stb_o         = 'b1;
         end
-      end
-
-      // Wait for rx_sync_i to return to the idle state
-      //
-      STOP2: begin
-        if (rx_sync_i) state_next = IDLE;
       end
 
       default: state_next = IDLE; 

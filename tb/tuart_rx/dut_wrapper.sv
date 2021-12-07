@@ -13,5 +13,5 @@ tuart_async_rx #( .DATA_BITS       (8),
                                               .rst_in      (ifc.rst_in),
                                               .rx_async_i  (ifc.rx_async_i),
                                               .data_o      (ifc.data_o),
-                                              .rdy_o       (ifc.rdy_o));
+                                              .stb_o       (ifc.stb_o));
 endmodule
