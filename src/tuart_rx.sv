@@ -22,7 +22,7 @@ module tuart_rx #(  parameter DATA_BITS = 8,
 
   localparam OUT_WIDTH = DATA_BITS*CMD_WIDTH_WORDS;
 
-  typedef enum bit [2:0] {IDLE, TRIG, SAMPLE, STOP} states_t;
+  typedef enum bit [1:0] {IDLE, TRIG, SAMPLE, STOP} states_t;
 
   states_t state;
   states_t state_next;
