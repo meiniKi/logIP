@@ -13,15 +13,19 @@ if { $argc != 1 } {
 }
 
 set dut_name [format "%s" $argv 0]
-set top_name [format "%s_tb" dut_name] 
+set top_name [format "%s_tb" $dut_name] 
 set path_tb $path_tb_dir/$dut_name
+
+# Read testbench framework
+add_files -fileset sim_1 [ glob $path_tb_dir/frwk/*.svh ]
+add_files -fileset sim_1 [ glob $path_tb_dir/frwk/*.sv ]
 
 # Read design sources
 add_files -fileset sim_1 [ glob $path_rtl/logIP*.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/tuart_*.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/syncro.sv ]
 
-# Read testbench(es)
+# Read testbench
 add_files -fileset sim_1 [ glob $path_tb_dir/*.sv ]
 add_files -fileset sim_1 [ glob $path_tb/*.sv ]
 
