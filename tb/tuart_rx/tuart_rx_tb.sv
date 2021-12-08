@@ -34,9 +34,10 @@ module tuart_rx_tb;
 
   dut_if duv_if (clk_i, rst_in);
   dut_wrapper duv_wrapper (duv_if.duv);
-  uart_rx_tester duv_tester(duv_if.tb, clk_i, mbox);
+  uart_rx_tester duv_tester(duv_if.tb, clk_i, mbx);
 
   initial begin
+    mbx = new();
     i_scoreboard = new (mbx);
 
     fork

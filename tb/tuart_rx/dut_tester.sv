@@ -23,8 +23,10 @@ program uart_rx_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
 
       repeat(8) #(CLK_PERIOD_HALF*DS) duv_if.cb.rx_async_i <= 1;
 
-      //mbx.put()
-
+      `SCORE_ASSERT(1)
+      `SCORE_ASSERT(0)
+      `SCORE_DONE
+      
       #(CLK_PERIOD_HALF*DS)  duv_if.cb.rx_async_i <= 0;
       #(CLK_PERIOD_HALF*DS)  duv_if.cb.rx_async_i <= 1;
     end

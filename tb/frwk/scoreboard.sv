@@ -17,12 +17,12 @@ class Scoreboard;
     this.mbx    = mbx;
   endfunction
 
-  function add_fail();
+  function void add_fail();
     this.checks++;
     this.fails++;
   endfunction
 
-  function add_pass();
+  function void add_pass();
     this.checks++;
   endfunction
   

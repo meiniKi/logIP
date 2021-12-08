@@ -31,7 +31,7 @@ add_files -fileset sim_1 [ glob $path_tb/*.sv ]
 
 save_project_as sim -force
 set_property top $top_name [get_fileset sim_1]
-update_compile_order -fileset sim_1
+#update_compile_order -fileset sim_1
 launch_simulation -simset sim_1 -mode behavioral
 run -all
 exit
