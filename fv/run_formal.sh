@@ -38,12 +38,12 @@ smtbmc
 
 [script]
 read -formal $parameterDut.v
-prep -top $parameterDut
+prep -top top_$parameterDut
 
 [files]
 ./artifacts/$parameterDut.v
 EOT
 
-rm ./artifacts/out.v 
-sv2v --define=FORMAL -v --write=./artifacts/out.v ../src/$parameterDut.sv ../src/logIP_pkg.sv ./fv_tb/tb_&parameterDut.sv
+rm ./artifacts/$parameterDut.v
+sv2v --define=FORMAL --write=./artifacts/$parameterDut.v ./fv_wrapper/wrap_$parameterDut.sv ../src/$parameterDut.sv ../src/logIP_pkg.sv ../src/logIP_ifs.sv
 sby -f ./artifacts/check.sby 
