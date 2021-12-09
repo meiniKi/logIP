@@ -23,7 +23,7 @@ then
   helpFunction
 fi
 
-rm ./artifacts/check.sby
+rm -f ./artifacts/check.sby
 cat <<EOT >> ./artifacts/check.sby
 [tasks]
 task_bmc
@@ -44,6 +44,6 @@ prep -top top_$parameterDut
 ./artifacts/$parameterDut.v
 EOT
 
-rm ./artifacts/$parameterDut.v
-sv2v --define=FORMAL --write=./artifacts/$parameterDut.v ./fv_wrapper/wrap_$parameterDut.sv ../src/$parameterDut.sv ../src/logIP_pkg.sv ../src/logIP_ifs.sv
+rm -f ./artifacts/$parameterDut.v
+sv2v --define=FORMAL --write=./artifacts/$parameterDut.v ./wrapper/wrap_$parameterDut.sv ../src/$parameterDut.sv ../src/logIP_pkg.sv ../src/logIP_ifs.sv
 sby -f ./artifacts/check.sby 
