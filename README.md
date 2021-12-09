@@ -16,6 +16,13 @@ Logic analyzer IP core
 
 ```
 
+# Simulate 
+```
+cd scripts
+./run_sim.sh -d <module_name>
+./run_again.sh
+```
+
 ## Dev
 install ```sigrok-firmware-fx2lafw```
 

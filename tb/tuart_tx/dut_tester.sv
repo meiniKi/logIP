@@ -2,10 +2,10 @@
  * file: dut_tester.sv
  * 
  */
-
+`include "declarations.svh"
 `default_nettype wire
 `timescale 1ns/1ps
-program uart_tx_tester (dut_if duv_if, input clk_i );
+program uart_tx_tester (dut_if duv_if, input clk_i,  input score_mbox_t mbx);
   import tb_pkg::*;
 
   localparam SYS_F      = 10_000_000;
@@ -29,6 +29,12 @@ program uart_tx_tester (dut_if duv_if, input clk_i );
     duv_if.data_i = data;
     duv_if.stb_i = 'b1;
     #(CLK_PERIOD_HALF*DS) duv_if.stb_i = 'b0;
+
+    // Test asserts
+    `SCORE_ASSERT(1)
+    `SCORE_ASSERT(0)
+    `SCORE_DONE
+    // TODO
 
     $display("----- Done ------");
     #100000 $finish;

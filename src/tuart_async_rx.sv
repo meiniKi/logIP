@@ -6,7 +6,7 @@
  */
 
  `default_nettype wire
- timeunit 1ns;
+ //timeunit 1ns;
  module tuart_async_rx #( parameter DATA_BITS = 8,
                           parameter CMD_WIDTH_WORDS = 5,
                           parameter CLK_PER_SAMPLE = 10) (

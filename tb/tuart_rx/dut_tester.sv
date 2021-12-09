@@ -2,10 +2,10 @@
  * file: dut_tester.sv
  * 
  */
-
+`include "declarations.svh"
 `default_nettype wire
 `timescale 1ns/1ps
-program uart_rx_tester ( dut_if.tb duv_if, input clk_i );
+program uart_rx_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
   import tb_pkg::*;
 
   localparam SYS_F      = 10_000_000;
@@ -23,8 +23,15 @@ program uart_rx_tester ( dut_if.tb duv_if, input clk_i );
 
       repeat(8) #(CLK_PERIOD_HALF*DS) duv_if.cb.rx_async_i <= 1;
 
+      // Test asserts
+      `SCORE_ASSERT(1)
+      `SCORE_ASSERT(0)
+      `SCORE_DONE
+      
       #(CLK_PERIOD_HALF*DS)  duv_if.cb.rx_async_i <= 0;
       #(CLK_PERIOD_HALF*DS)  duv_if.cb.rx_async_i <= 1;
+
+      // TODO
     end
     $display("----- Done ------");
     #100000 $finish;
