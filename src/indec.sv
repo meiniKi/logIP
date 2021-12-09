@@ -37,7 +37,7 @@ module indec (
   logic opcode_t opc;
 
   assign opc          = opcode_t'(opc_i);
-  assign stg_o        = cmd_i[3:2];
+  assign stg_o        = opc_i[3:2];
   assign stb_o        = stb_i;
   assign xctrl_o.stb  = stb_i;
 

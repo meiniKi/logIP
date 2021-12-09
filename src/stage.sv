@@ -27,7 +27,8 @@
 
 `default_nettype wire
 `timescale 1ns/1ps;
-module stage #( parameter CHLS = 32 )(
+module stage #( parameter CHLS = 32
+                parameter WSER = 32 )(
                                       // General
                                       input  logic              clk_i,
                                       input  logic              rst_in,
@@ -47,10 +48,13 @@ module stage #( parameter CHLS = 32 )(
                                       output logic              match_o,
                                       output logic              run_o);
 
+  if (CHLS > WSER)
+    $error("Serial-Mode shift register needs to be greater or equal the number of channels.");
+
   logic [3:0][7:0]  cmd_bytes;
 
-  logic [CHLS-1:0]          r_val;
-  logic [CHLS-1:0]          r_mask;
+  logic [WSER-1:0]          r_val;
+  logic [WSER-1:0]          r_mask;
   logic                     r_ser;
   logic [$clogs(CHLS)-1:0]  r_chl;
   logic                     r_act;
@@ -95,7 +99,7 @@ module stage #( parameter CHLS = 32 )(
     if (~rst_in) begin
       smpls_shft <= 'b0;
     end else if (stb_i) begin
-      smpls_shft <= {smpls_shft[CHLS-2:0], smpls_i[r_chl];
+      smpls_shft <= {smpls_shft[CHLS-2:0], smpls_i[r_chl]};
     end 
   end // always_ff
 
@@ -116,8 +120,8 @@ module stage #( parameter CHLS = 32 )(
       r_ser     <= 'b0;
       r_act     <= 'b0;
     end else begin
-      if (set_mask_i) r_mask  <= cmd_i[CHLS-1:0];
-      if (set_val_i)  r_val   <= cmd_i[CHLS-1:0];
+      if (set_mask_i) r_mask  <= cmd_i[WSER-1:0];
+      if (set_val_i)  r_val   <= cmd_i[WSER-1:0];
       if (set_cfg_i)  begin
         {r_ser, r_act}        <= {cmd_bytes[3][2], cmd_bytes[3][3]};
         r_chl                 <= {cmd_bytes[3][7:4], cmd_bytes[2][7:4]}[$clogs(CHLS)-1:0];
@@ -130,15 +134,11 @@ module stage #( parameter CHLS = 32 )(
 
 
 
-
-
-
-
   `ifdef FORMAL
 
-  always @(posedge clk_i) begin
+  always_ff @(posedge clk_i) begin
     assume ($onehot({/*TODO*/}));
-  end
+  end // always_ff
 
   `endif
 
