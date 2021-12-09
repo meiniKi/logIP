@@ -4,7 +4,6 @@
  *
  */
 
-`default_nettype wire
 `timescale 1ns/1ps;
 module indec (
               // General
@@ -26,15 +25,13 @@ module indec (
               output logic          set_flgs_o,
               output logic [ 1:0]   stg_o,
               // TODO: introduce reg if shortens critical path
-              output logic          stb_o
-
+              output logic          stb_o,
               // Flow Control
-              output FlowCtr.Master xctrl_o,
-              );
+              FlowCtr.Master        xctrl_o);
 
   import logIP_pkg::*;
   
-  logic opcode_t opc;
+  opcode_t opc;
 
   assign opc          = opcode_t'(opc_i);
   assign stg_o        = opc_i[3:2];

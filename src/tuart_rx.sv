@@ -6,6 +6,9 @@
  * there is no timeout or error handling
  */
 
+`include "logIP_ifs.sv"
+
+
 `default_nettype wire
 `timescale 1ns/1ps
 module tuart_rx #(  parameter DATA_BITS = 8,

@@ -2,4 +2,5 @@
 # Simulation project
 sim/
 fv/check*
+fv/artifacts/
 out/
