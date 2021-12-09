@@ -4,6 +4,7 @@
  * 
  */
 
+`include "declarations.svh"
 `default_nettype wire
 `timescale 1ns/1ps
 
@@ -13,6 +14,8 @@ module tuart_tx_tb;
   logic clk_i  = 0;
   logic rst_in = 0;
 
+  Scoreboard      i_scoreboard;
+  score_mbox_t    mbx;    
 
   initial begin
     // Dump
@@ -32,7 +35,16 @@ module tuart_tx_tb;
   FlowCtr xctrl_i ();
   dut_if duv_if (clk_i, rst_in, xctrl_i);
   dut_wrapper duv_wrapper (duv_if);
-  uart_tx_tester duv_tester(duv_if, clk_i);
+  uart_tx_tester duv_tester(duv_if, clk_i, mbx);
+
+  initial begin
+    mbx = new();
+    i_scoreboard = new (mbx);
+
+    fork
+      i_scoreboard.run();
+    join
+  end
 
 endmodule
 

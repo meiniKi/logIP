@@ -19,8 +19,8 @@ done
 # Print helpFunction in case parameters are empty
 if [ -z "$parameterDut" ]
 then
-   echo "Some or all of the parameters are empty";
-   helpFunction
+  echo "Some or all of the parameters are empty";
+  helpFunction
 fi
 
 
