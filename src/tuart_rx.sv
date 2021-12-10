@@ -8,8 +8,8 @@
 
 `default_nettype wire
 `timescale 1ns/1ps
-module tuart_rx #(  parameter DATA_BITS = 8,
-                    parameter CMD_WIDTH_WORDS = 5,
+module tuart_rx #(  parameter WORD_BITS = 8,
+                    parameter CMD_WORDS = 5,
                     parameter CLK_PER_SAMPLE = 10) (
         // General
         input  logic                                  clk_i,
@@ -17,10 +17,10 @@ module tuart_rx #(  parameter DATA_BITS = 8,
         // External communication
         input  logic                                  rx_sync_i,
         // Connection to LogIP core
-        output logic [DATA_BITS*CMD_WIDTH_WORDS-1:0]  data_o,
+        output logic [WORD_BITS*CMD_WORDS-1:0]  data_o,
         output logic                                  stb_o);
 
-  localparam OUT_WIDTH = DATA_BITS*CMD_WIDTH_WORDS;
+  localparam OUT_WIDTH = WORD_BITS*CMD_WORDS;
 
   typedef enum bit [1:0] {IDLE, TRIG, SAMPLE, STOP} states_t;
 
@@ -31,11 +31,11 @@ module tuart_rx #(  parameter DATA_BITS = 8,
   logic [$clog2(CLK_PER_SAMPLE+1)-1:0]  smpl_cnt_next;
   logic [$clog2(CLK_PER_SAMPLE+1)-1:0]  smpl_cnt_compare;
 
-  logic [$clog2(DATA_BITS)-1:0]         bit_cnt;
-  logic [$clog2(DATA_BITS)-1:0]         bit_cnt_next;
+  logic [$clog2(WORD_BITS)-1:0]         bit_cnt;
+  logic [$clog2(WORD_BITS)-1:0]         bit_cnt_next;
 
-  logic [$clog2(CMD_WIDTH_WORDS+1)-1:0] word_cnt;
-  logic [$clog2(CMD_WIDTH_WORDS+1)-1:0] word_cnt_next;
+  logic [$clog2(CMD_WORDS+1)-1:0] word_cnt;
+  logic [$clog2(CMD_WORDS+1)-1:0] word_cnt_next;
 
   logic [OUT_WIDTH-1:0]                 shft_data;
   logic [OUT_WIDTH-1:0]                 shft_data_next;
@@ -63,7 +63,7 @@ module tuart_rx #(  parameter DATA_BITS = 8,
   // A long-command is ready when all bits are shifted into the
   // receive-register
   //
-  assign long_cmd_ready = (word_cnt == CMD_WIDTH_WORDS);
+  assign long_cmd_ready = (word_cnt == CMD_WORDS);
 
   //
   always_comb begin : main_fsm
@@ -109,7 +109,7 @@ module tuart_rx #(  parameter DATA_BITS = 8,
           smpl_cnt_next   = 'b0;
           bit_cnt_next    = bit_cnt + 'b1;
           shft_data_next  = {rx_sync_i, shft_data[OUT_WIDTH-1:1]};
-          if (bit_cnt == (DATA_BITS - 1)) begin
+          if (bit_cnt == (WORD_BITS - 1)) begin
             state_next    = STOP;
             word_cnt_next = word_cnt + 1;
           end
@@ -178,23 +178,23 @@ module tuart_rx #(  parameter DATA_BITS = 8,
       // receive sequence
       //
       if (state == IDLE) begin
-        assume (word_cnt < CMD_WIDTH_WORDS);
+        assume (word_cnt < CMD_WORDS);
         assume (bit_cnt == 'b0);
         assume (rx_sync_i == 1);
       end else if (state == SAMPLE) begin
-        assume (word_cnt < CMD_WIDTH_WORDS);
+        assume (word_cnt < CMD_WORDS);
       end
       // TODO
     end
 
-    asrt_word_cnt:          assert (word_cnt <= CMD_WIDTH_WORDS);
-    asrt_bit_cnt:           assert (bit_cnt < DATA_BITS);
+    asrt_word_cnt:          assert (word_cnt <= CMD_WORDS);
+    asrt_bit_cnt:           assert (bit_cnt < WORD_BITS);
   end
 
   //
   // Assume valid uart signal
   //
-  logic [$clog2((CLK_PER_SAMPLE*(DATA_BITS+2))+1)-1 : 0] f_bit_cnt;
+  logic [$clog2((CLK_PER_SAMPLE*(WORD_BITS+2))+1)-1 : 0] f_bit_cnt;
   logic f_trans_active;
   logic f_old_rx;
 
