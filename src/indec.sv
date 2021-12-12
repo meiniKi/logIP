@@ -98,11 +98,43 @@ module indec (
 
 
 `ifdef FORMAL
+  logic f_init = 0;
 
-  always_comb begin
-    assert ($onehot({ sft_rst_o, armd_o, id_o, set_mask_o, set_cfg_o, 
-                      set_val_o, set_div_o, set_cnt_o, set_flgs_o }));
+  always_ff @(posedge clk_i) begin : f_initial_reset
+    if (!f_init) begin
+      assume (rst_in == 0);
+      f_init = 1;
+    end
   end
+
+  always_ff @(posedge clk_i) begin : f_inputs_ok
+    if (stb_i) begin
+      assume ($stable(cmd_i));
+      assume ($stable(opc_i));
+    end
+
+    if (xstb_o) begin
+      assume property ($onehot({xon_o, xoff_o}));
+    end
+  end
+  
+  assert property ($onehot0({  sft_rst_o,
+                              arm_o,
+                              id_o,
+                              set_mask_o,
+                              set_val_o,
+                              set_cfg_o,
+                              set_div_o,
+                              set_cnt_o,
+                              set_flgs_o,
+                              xon_o,
+                              xoff_o,
+                              rd_meta_o,
+                              fin_now_o,
+                              rd_inp_o,
+                              arm_adv_o,
+                              set_adv_cfg_o,
+                              set_adv_dat_o} ));
 
 `endif
 
