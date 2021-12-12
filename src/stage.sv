@@ -29,24 +29,23 @@
 `timescale 1ns/1ps;
 module stage #( parameter CHLS = 32
                 parameter WSER = 32 )(
-                                      // General
-                                      input  logic              clk_i,
-                                      input  logic              rst_in,
-                                      // Command and Flags
-                                      input  logic [31:0]       cmd_i,
-                                      input  logic              set_mask_i,
-                                      input  logic              set_val_i,
-                                      input  logic              set_cfg_i,
-                                      // Flow 
-                                      input  logic              arm_i,
-
-                                      // Data
-                                      input  logic              stb_i,
-                                      input  logic [CHLS-1:0]   smpls_i,
-                                      
-                                      // Output
-                                      output logic              match_o,
-                                      output logic              run_o);
+  // General
+  input  logic              clk_i,      //! system clock
+  input  logic              rst_in,     //! system reset, low active
+  // Command and Flags
+  input  logic [31:0]       cmd_i,      //! command
+  input  logic              set_mask_i, //! flag, set trigger mask
+  input  logic              set_val_i,  //! flag, set trigger value
+  input  logic              set_cfg_i,  //! flag, set trigger configuration
+  // Flow 
+  input  logic              arm_i,      //! flag, arm trigger
+  // Data
+  input  logic              stb_i,      //! flag, new data samples
+  input  logic [CHLS-1:0]   smpls_i,    //! sampled channels
+  // Output
+  output logic              match_o,    //! flag, trigger matched
+  output logic              run_o       //! flag, trigger run
+  );
 
   if (CHLS > WSER)
     $error("Serial-Mode shift register needs to be greater or equal the number of channels.");

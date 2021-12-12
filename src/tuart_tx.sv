@@ -10,20 +10,21 @@
 module tuart_tx #(  parameter WORD_BITS = 8,
                     parameter CMD_WORDS = 4,
                     parameter CLK_PER_SAMPLE = 10) ( 
-      // General
-      input  logic                                  clk_i,
-      input  logic                                  rst_in,
-      // handshake
-      input  logic                                  stb_i,
-      output logic                                  rdy_o,
-      // External communication               
-      output logic                                  tx_o,
-      // Flow control
-      input  logic                                  xstb_i,
-      input  logic                                  xoff_i,
-      input  logic                                  xon_i,
-      // Data               
-      input  logic [(WORD_BITS)*(CMD_WORDS)-1:0]    data_i);
+  // General
+  input  logic                                clk_i,  //! system clock
+  input  logic                                rst_in, //! system reset, low active
+  // handshake
+  input  logic                                stb_i,  //! flag, start tx
+  output logic                                rdy_o,  //! flag, ready for next tx
+  // External communication               
+  output logic                                tx_o,   //! uart tx output
+  // Flow control
+  input  logic                                xstb_i, //! flag, update x{on,off}
+  input  logic                                xoff_i, //! flag, xoff
+  input  logic                                xon_i,  //! flag, xon
+  // Data               
+  input  logic [(WORD_BITS)*(CMD_WORDS)-1:0]  data_i  //! data to transmit
+);
 
   import logIP_pkg::*;
 

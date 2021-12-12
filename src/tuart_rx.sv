@@ -11,14 +11,15 @@
 module tuart_rx #(  parameter WORD_BITS = 8,
                     parameter CMD_WORDS = 5,
                     parameter CLK_PER_SAMPLE = 10) (
-        // General
-        input  logic                                  clk_i,
-        input  logic                                  rst_in,
-        // External communication
-        input  logic                                  rx_sync_i,
-        // Connection to LogIP core
-        output logic [WORD_BITS*CMD_WORDS-1:0]  data_o,
-        output logic                                  stb_o);
+  // General
+  input  logic                            clk_i,      //! system clock
+  input  logic                            rst_in,     //! system reset, low active
+  // External communication
+  input  logic                            rx_sync_i,  //! synchronized uart rx input
+  // Connection to LogIP core
+  output logic [WORD_BITS*CMD_WORDS-1:0]  data_o,     //! received uart data
+  output logic                            stb_o       //! flag, receive complete
+);
 
   localparam OUT_WIDTH = WORD_BITS*CMD_WORDS;
 
