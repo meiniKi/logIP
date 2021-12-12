@@ -18,8 +18,10 @@ module tuart_tx #(  parameter WORD_BITS = 8,
       output logic                                  rdy_o,
       // External communication               
       output logic                                  tx_o,
-      // Flow control               
-      FlowCtr.Slave                                 xctrl_i,
+      // Flow control
+      input  logic                                  xstb_i,
+      input  logic                                  xoff_i,
+      input  logic                                  xon_i,
       // Data               
       input  logic [(WORD_BITS)*(CMD_WORDS)-1:0]    data_i);
 
@@ -47,7 +49,7 @@ module tuart_tx #(  parameter WORD_BITS = 8,
 
   xcrtl_t r_xctrl;  // XON/XOFF flow control
 
-  assign rdy_o = (state == IDLE);
+  assign rdy_o =  (state == IDLE);
   assign tx_o  =  (state == TX_START) ? 'b0 :
                   (state == TX_STOP)  ? 'b1 :
                   (state == TX_DATA)  ? shft_reg[0] :
@@ -130,8 +132,8 @@ module tuart_tx #(  parameter WORD_BITS = 8,
     if (!rst_in) begin
       r_xctrl <= XON;
     end else begin
-      if (xctrl_i.stb && xctrl_i.xon)       r_xctrl <= XON;
-      else if (xctrl_i.stb && xctrl_i.xoff) r_xctrl <= XOFF;
+      if      (xstb_i && xon_i)  r_xctrl <= XON;
+      else if (xstb_i && xoff_i) r_xctrl <= XOFF;
     end
   end
 

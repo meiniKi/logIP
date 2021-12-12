@@ -5,6 +5,11 @@
 
 package logIP_pkg;
 
+  // Enable / Disable the OLS instruction set extension
+  //
+  `define P_OLS_EXTENSION_ENABLED
+
+
   // The supported instruction set.
   // Please refer to for the original description.
   // http://dangerousprototypes.com/docs/Logic_Analyzer_core:_Background

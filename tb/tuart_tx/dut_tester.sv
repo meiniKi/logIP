@@ -19,16 +19,16 @@ program uart_tx_tester (dut_if duv_if, input clk_i,  input score_mbox_t mbx);
     $display("----- Started ------");
     $display("-- %d cycles per bit", DS);
 
-    duv_if.stb_i        = 'b0;
-    duv_if.data_i       = 'b0;
-    duv_if.xctrl_i.xoff = 'b0;
-    duv_if.xctrl_i.xon  = 'b0;
-    duv_if.xctrl_i.stb  = 'b0;
+    duv_if.stb_i        <= 'b0;
+    duv_if.data_i       <= 'b0;
+    duv_if.xstb_i       <= 'b0;
+    duv_if.xoff_i       <= 'b0;
+    duv_if.xon_i        <= 'b0;
 
     #(10*CLK_PERIOD_HALF*DS)
-    duv_if.data_i = data;
-    duv_if.stb_i = 'b1;
-    #(CLK_PERIOD_HALF*DS) duv_if.stb_i = 'b0;
+    duv_if.data_i       <= data;
+    duv_if.xstb_i       <= 'b1;
+    #(CLK_PERIOD_HALF*DS) duv_if.stb_i <= 'b0;
 
     // Test asserts
     `SCORE_ASSERT(1)

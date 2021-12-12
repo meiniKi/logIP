@@ -32,10 +32,9 @@ module tuart_tx_tb;
     #(CLK_PERIOD_HALF) clk_i = 0;
   end
 
-  FlowCtr xctrl_i ();
-  dut_if duv_if (clk_i, rst_in, xctrl_i);
+  dut_if duv_if (clk_i, rst_in);
   dut_wrapper duv_wrapper (duv_if);
-  uart_tx_tester duv_tester(duv_if, clk_i, mbx);
+  uart_tx_tester duv_tester (duv_if, clk_i, mbx);
 
   initial begin
     mbx = new();
@@ -43,6 +42,7 @@ module tuart_tx_tb;
 
     fork
       i_scoreboard.run();
+      // append
     join
   end
 
