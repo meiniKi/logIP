@@ -23,6 +23,7 @@ add_files -fileset sim_1 [ glob $path_tb_dir/frwk/*.sv ]
 # Read design sources
 add_files -fileset sim_1 [ glob $path_rtl/logIP*.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/tuart_*.sv ]
+add_files -fileset sim_1 [ glob $path_rtl/indec.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/syncro.sv ]
 
 # Read testbench
