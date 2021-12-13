@@ -23,8 +23,14 @@ then
   helpFunction
 fi
 
+simDirectory=../sim
+if [ ! -d $simDirectory ]
+then
+  mkdir $simDirectory
+  exit
+fi
 
 source ../scripts/source.sh
-cd ../sim
+cd $simDirectory
 vivado -mode batch -source ../scripts/sim_create.tcl -tclargs $parameterDut
 cd ../scripts
