@@ -35,14 +35,14 @@ module sampler #(parameter CHLS=32)(
 
   always_ff @(posedge clk_i) begin : take_samples
     if (~rst_in) begin
-      cnt       <= 'b0;
+      cnt       <= 'b1;
       stb_o     <= 'b0;
     end else begin
       if (cnt < r_div) begin
         cnt     <= cnt + 'b1;
         stb_o   <= 'b0;
       end else begin
-        cnt     <= 'b0;
+        cnt     <= 'b1;
         r_smpls <= data_i;
         stb_o   <= 'b1;
       end
