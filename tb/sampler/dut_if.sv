@@ -12,11 +12,11 @@ interface dut_if ( input logic clk_i,
   //
   import tb_pkg::*;
 
-  input  logic [23:0]     fdiv_i;
-  input  logic            set_div_i;
-  input  logic [31:0]     data_i;
-  output logic [31:0]     smpls_o;
-  output logic            stb_o;
+  logic [23:0]     fdiv_i;
+  logic            set_div_i;
+  logic [31:0]     data_i;
+  logic [31:0]     smpls_o;
+  logic            stb_o;
 
   modport duv ( input   clk_i,
                         rst_in,
@@ -30,6 +30,7 @@ interface dut_if ( input logic clk_i,
     default input #1step output #(CLK_PERIOD_HALF-1);
     output    fdiv_i;
     output    set_div_i;
+    output    data_i;
     input     smpls_o;
     input     stb_o;
   endclocking
