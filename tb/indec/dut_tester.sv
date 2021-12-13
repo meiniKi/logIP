@@ -5,6 +5,8 @@
 `include "declarations.svh"
 `default_nettype wire
 `timescale 1ns/1ps
+`define BUS_BIT_DELAY #(CLK_PERIOD_HALF*DS)
+
 program indec_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
   import tb_pkg::*;
 
@@ -17,9 +19,21 @@ program indec_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     $display("----- Started ------");
     $display("-- %d cycles per bit", DS);
 
-    // Test asserts
-    `SCORE_ASSERT(1)
-    `SCORE_ASSERT(0)
+    // Test run command (short)
+    `BUS_BIT_DELAY duv_if.cb.opc_i <= 'h01;
+    duv_if.cb.stb_i <= 'b1;
+    @(posedge duv_if.cb.stb_o);
+    `SCORE_ASSERT(duv_if.cb.arm_o == 'b1);    
+    duv_if.cb.stb_i <= 'b0;
+
+    // Test set trigger mask command (long)
+    `BUS_BIT_DELAY duv_if.cb.opc_i <= 'b1100??00;
+    //duf_if.cb.cmd_i <= 'h11223344;
+    duv_if.cb.stb_i <= 'b1;
+    @(posedge duv_if.cb.stb_o);
+    `SCORE_ASSERT(duv_if.cb.set_mask_o == 'b1);    
+    duv_if.cb.stb_i <= 'b0;
+
     `SCORE_DONE
       
     $display("----- Done ------");
