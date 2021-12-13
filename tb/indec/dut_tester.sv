@@ -28,7 +28,6 @@ program indec_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
 
     // Test set trigger mask command (long)
     `BUS_BIT_DELAY duv_if.cb.opc_i <= 'b1100??00;
-    //duf_if.cb.cmd_i <= 'h11223344;
     duv_if.cb.stb_i <= 'b1;
     @(posedge duv_if.cb.stb_o);
     `SCORE_ASSERT(duv_if.cb.set_mask_o == 'b1);    

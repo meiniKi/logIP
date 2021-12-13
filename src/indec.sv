@@ -13,7 +13,6 @@ module indec (
               // Input
               input  logic          stb_i,
               input  logic [ 7:0]   opc_i,
-              input  logic [31:0]   cmd_i,
               // Output
               output logic          sft_rst_o,
               output logic          arm_o,

@@ -14,7 +14,6 @@ interface dut_if ( input logic clk_i,
 
   logic           stb_i;
   logic [ 7:0]    opc_i;
-  logic [31:0]    cmd_i;
  
   logic           sft_rst_o;
   logic           arm_o;
@@ -43,7 +42,6 @@ interface dut_if ( input logic clk_i,
                         rst_in,
                         stb_i,
                         opc_i,
-                        cmd_i,
                 output  sft_rst_o,
                         arm_o,
                         id_o,
@@ -69,7 +67,6 @@ interface dut_if ( input logic clk_i,
     default input #1step output #(CLK_PERIOD_HALF-1);
     output    stb_i;
     output    opc_i;
-    output    cmd_i;
     input     sft_rst_o;
     input     arm_o;
     input     id_o;
