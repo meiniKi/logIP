@@ -12,8 +12,8 @@ module ctrl #(
   parameter TX_WIDTH=32                     //! bits the transmitter can send at once
 ) (           
   // General            
-  input  logic    clk_i,                    //! system clock 
-  input  logic    rst_in,                   //! system reset, low active
+  input  logic                  clk_i,      //! system clock 
+  input  logic                  rst_in,     //! system reset, low active
   
   input  logic                  set_cnt_i,  //! configure the amount of samples to return
   input  logic [CMD_WIDTH-1:0]  cmd_i,      //! command data
@@ -59,7 +59,9 @@ module ctrl #(
           state_next      = TRG;
           cnt_next        = 'b0;
         end
-        mem_wrt_o         = 'b1;
+        if (stb_i == 'b1) begin
+          mem_wrt_o       = 'b1;
+        end        
       end
 
       TRG: begin
@@ -67,8 +69,10 @@ module ctrl #(
           state_next      = TX;
           cnt_next        = 'b0;
         end
-        cnt_next          = cnt + 1;
-        mem_wrt_o         = 'b1;
+        if (stb_i == 'b1) begin
+          cnt_next        = cnt + 1;
+          mem_wrt_o       = 'b1;
+        end
       end
 
       TX: begin
@@ -95,18 +99,20 @@ module ctrl #(
   always_ff @(posedge clk_i ) begin : fsm
     if (~rst_in) begin
       state <= IDLE;
+      cnt   <= 'b0;      
     end else begin
       state <= state_next;
+      cnt   <= cnt_next;
     end
   end // always_ff
 
   always_ff @(posedge clk_i) begin : set_cnt
     if (~rst_in) begin
-      rd_cnt <= {CNT_WIDTH{'b1}};
-      dly_cnt <= {CNT_WIDTH{'b1}};
+      rd_cnt    <= 'b1;
+      dly_cnt   <= 'b1;
     end else if (set_cnt_i) begin
-      rd_cnt <= cmd_i[2*CNT_WIDTH-1:CNT_WIDTH];
-      dly_cnt <= cmd_i[CNT_WIDTH-1:0];
+      rd_cnt    <= cmd_i[2*CNT_WIDTH-1:CNT_WIDTH];
+      dly_cnt   <= cmd_i[CNT_WIDTH-1:0];
     end
   end // always_ff
 
