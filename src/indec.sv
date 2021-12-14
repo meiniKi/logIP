@@ -27,7 +27,7 @@ module indec (
   // TODO: introduce reg if shortens critical path
   output logic          stb_o,          //! flag took sample
   // Flow Control
-  output logic          xstb_o,         //! 
+  output logic          xstb_o,         //! flag to update x{on,off}
   output logic          xon_o,          //! put transmitter out of pause mode
   output logic          xoff_o,         //! put transmitter in pause mode
   // OLS extension
