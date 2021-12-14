@@ -45,7 +45,7 @@ module tuart_rx #(  parameter WORD_BITS = 8,
   logic short_cmd_ready;
   logic long_cmd_ready;
 
-  // Take sampled exactly at 1/2 of the bit-time
+  // Take sample exactly at 1/2 of the bit-time
   //
   assign smpl_cnt_compare = (state == TRIG) ? (CLK_PER_SAMPLE >> 1) 
                                             :  CLK_PER_SAMPLE;
@@ -85,7 +85,6 @@ module tuart_rx #(  parameter WORD_BITS = 8,
         if (rx_sync_i == 'b0) begin
           state_next      = TRIG;
           smpl_cnt_next   =  'b0;
-          shft_data_next  = 'b0;
         end
       end
       
@@ -128,6 +127,7 @@ module tuart_rx #(  parameter WORD_BITS = 8,
         if (short_cmd_ready || long_cmd_ready) begin
           word_cnt_next = 'b0;
           stb_o         = 'b1;
+          shft_data_next  = 'b0;
         end
       end
 
