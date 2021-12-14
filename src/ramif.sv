@@ -9,7 +9,7 @@
 `timescale 1ns/1ps
 
 module ramif #( parameter WIDTH = 32,
-                parameter DEPTH = 200) (
+                parameter DEPTH = 5) (
   input  logic                      clk_i,    //! system clock
   input  logic                      rst_in,   //! system reset
   input  logic                      en_i,     //! enable
@@ -34,8 +34,8 @@ import logIP_pkg::*;
 
 `elsif USE_LUT_RAM
 
-  lutram #( WIDTH = WIDTH,
-            DEPTH = DEPTH) i_lutram (
+  lutram #( .WIDTH (WIDTH),
+            .DEPTH (DEPTH)) i_lutram (
     .clk_i  (clk_i),
     .rst_in (rst_in),
     .en_i   (en_i),
