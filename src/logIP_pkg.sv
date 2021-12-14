@@ -9,6 +9,11 @@ package logIP_pkg;
   //
   `define P_OLS_EXTENSION_ENABLED
 
+  // Select the type of RAM to synthesize the RAM
+  //
+  //`define USE_B_RAM
+  `define USE_LUT_RAM
+
 
   // The supported instruction set.
   // Please refer to for the original description.
