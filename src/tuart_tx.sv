@@ -33,8 +33,8 @@ module tuart_tx #(  parameter WORD_BITS = 8,
 
   typedef enum bit [1:0] {IDLE, TX_START, TX_DATA, TX_STOP} states_t;
 
-  logic [WORD_BITS-1:0] shft_reg; 
-  logic [WORD_BITS-1:0] shft_reg_next; 
+  logic [(WORD_BITS)*(CMD_WORDS)-1:0] shft_reg; 
+  logic [(WORD_BITS)*(CMD_WORDS)-1:0] shft_reg_next; 
   
   logic [$clog2(WORD_BITS)-1:0] bit_cnt;
   logic [$clog2(WORD_BITS)-1:0] bit_cnt_next;
@@ -73,6 +73,7 @@ module tuart_tx #(  parameter WORD_BITS = 8,
           bit_cnt_next  = START_BIT_NR;
           word_cnt_next = CMD_WORDS - 'b1;
           time_cnt_next = TIME_CNT_START;
+          shft_reg_next = data_i;
         end
       end
 
@@ -83,7 +84,6 @@ module tuart_tx #(  parameter WORD_BITS = 8,
         if (time_cnt == 'b0) begin
           time_cnt_next = TIME_CNT_START;
           state_next    = TX_DATA;
-          shft_reg_next = data_i[word_cnt_next];
           bit_cnt_next  = WORD_BITS - 'b1;
         end
       end
@@ -93,7 +93,7 @@ module tuart_tx #(  parameter WORD_BITS = 8,
       TX_DATA: begin
         time_cnt_next   = time_cnt - 'b1;
         if (time_cnt == 'b0) begin
-          time_cnt_next = CLK_PER_SAMPLE;
+          time_cnt_next = TIME_CNT_START;
           bit_cnt_next  = bit_cnt - 'b1;
           shft_reg_next = shft_reg >> 1;
           if (bit_cnt == 'b0) state_next = TX_STOP;
