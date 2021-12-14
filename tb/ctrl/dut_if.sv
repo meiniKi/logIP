@@ -12,18 +12,18 @@ interface dut_if ( input logic clk_i,
   //
   import tb_pkg::*;
 
-  logic         set_cnt_i, 
-  logic [31:0]  cmd_i,     
-  logic         trg_i,     
-  logic         stb_i,     
-  logic [31:0]  smpls_i,   
-  logic [31:0]  mem_i,     
-  logic         tx_rdy_i,  
-  logic         mem_read_o,
-  logic         mem_wrt_o, 
-  logic [31:0]  mem_o,     
-  logic         tx_stb_o,  
-  logic [31:0]  tx_o       
+  logic         set_cnt_i; 
+  logic [31:0]  cmd_i;     
+  logic         trg_i;     
+  logic         stb_i;     
+  logic [31:0]  smpls_i;   
+  logic [31:0]  mem_i;     
+  logic         tx_rdy_i;  
+  logic         mem_read_o;
+  logic         mem_wrt_o; 
+  logic [31:0]  mem_o;     
+  logic         tx_stb_o;  
+  logic [31:0]  tx_o;      
   
   modport duv (input  clk_i,
                       rst_in,
@@ -42,18 +42,18 @@ interface dut_if ( input logic clk_i,
 
   default clocking cb @(posedge clk_i);
     default input #1step output #(CLK_PERIOD_HALF-1);
-    output set_cnt_i,
-    output cmd_i,
-    output trg_i,
-    output stb_i,
-    output smpls_i,
-    output mem_i,
-    output tx_rdy_i,
-    input  mem_read_o,
-    input  mem_wrt_o,
-    input  mem_o,
-    input  tx_stb_o,
-    input  tx_o 
+    output set_cnt_i;
+    output cmd_i;
+    output trg_i;
+    output stb_i;
+    output smpls_i;
+    output mem_i;
+    output tx_rdy_i;
+    input  mem_read_o;
+    input  mem_wrt_o;
+    input  mem_o;
+    input  tx_stb_o;
+    input  tx_o;
   endclocking
 
   modport tb (clocking cb);

@@ -49,7 +49,6 @@ module ctrl #(
     // Default
     cnt_next        = cnt;
     state_next      = state;
-    stb_o           = 'b0;
     mem_read_o      = 'b0; 
     mem_wrt_o       = 'b0;  
     tx_stb_o        = 'b0; 
@@ -75,7 +74,7 @@ module ctrl #(
       TX: begin
         if (cnt == rd_cnt) begin
           state_next      = IDLE;
-        else
+        end else begin
           state_next      = TX_WAIT;
           mem_read_o      = 'b1;
           tx_stb_o        = 'b1;
@@ -93,7 +92,7 @@ module ctrl #(
   end // always_comb
 
 
-  always_ff @( clock ) begin : fsm
+  always_ff @(posedge clk_i ) begin : fsm
     if (~rst_in) begin
       state <= IDLE;
     end else begin
