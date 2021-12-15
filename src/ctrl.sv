@@ -17,7 +17,7 @@ module ctrl #(
   
   input  logic                  set_cnt_i,  //! configure the amount of samples to return
   input  logic [CMD_WIDTH-1:0]  cmd_i,      //! command data
-  input  logic                  trg_i,      //! trigger sampling
+  input  logic                  run_i,      //! trigger sampling
   input  logic                  stb_i,      //! indicates that sample is ready
   input  logic [SMPL_WIDTH-1:0] smpls_i,    //! sample data
   input  logic [SMPL_WIDTH-1:0] mem_i,      //! memory input
@@ -55,7 +55,7 @@ module ctrl #(
 
     case (state)
       IDLE: begin
-        if (trg_i == 'b1) begin
+        if (run_i == 'b1) begin
           state_next      = TRG;
           cnt_next        = 'b0;
         end
