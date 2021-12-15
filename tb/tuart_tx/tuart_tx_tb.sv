@@ -23,8 +23,8 @@ module tuart_tx_tb;
     $dumpvars(5, duv_wrapper);
 
     // Reset            
-    #(10*CLK_PERIOD_HALF) rst_in = 0;
-    #(2*CLK_PERIOD_HALF)  rst_in = 1;
+    `WAIT_CYLCES(2, clk_i)  rst_in = 0;
+    `WAIT_CYLCES(2, clk_i)  rst_in = 1;
   end
 
   always begin : clock_gen
