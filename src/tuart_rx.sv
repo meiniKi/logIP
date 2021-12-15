@@ -165,8 +165,6 @@ module tuart_rx #(  parameter WORD_BITS = 8,
       else              f_init      <= 1;
     end
   end
-  
-  //asme_vld_uart: assume property ( (rx_sync_i ##[*] rx_sync_i (##[CLK_PER_SAMPLE])[1:*] )[*] )
 
   asme_init_rst:  assume property (~f_init |-> ~rst_in);
   asme_rst_rx:    assume property (disable iff (rst_in) rx_sync_i);

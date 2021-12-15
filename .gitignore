@@ -3,4 +3,5 @@
 sim/
 fv/check*
 fv/artifacts/*
+fv/verific/artifacts/*
 out/
