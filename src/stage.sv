@@ -27,7 +27,7 @@
 
 `default_nettype wire
 `timescale 1ns/1ps;
-module stage #( parameter CHLS = 32
+module stage #( parameter CHLS = 32,
                 parameter WSER = 32 )(
   // General
   input  logic              clk_i,      //! system clock
@@ -55,7 +55,7 @@ module stage #( parameter CHLS = 32
   logic [WSER-1:0]          r_val;
   logic [WSER-1:0]          r_mask;
   logic                     r_ser;
-  logic [$clogs(CHLS)-1:0]  r_chl;
+  logic [$clog2(CHLS)-1:0]  r_chl;
   logic                     r_act;
 
   logic [CHLS-1:0]          comp_vec;
@@ -81,7 +81,7 @@ module stage #( parameter CHLS = 32
   always_comb begin : next_state_logic
     // Default values
     state_next = state;
-    case(stage)
+    case(state)
       IDLE:   if (arm_i)      state_next = ARMD;
       ARMD:   if (trg_match)  state_next = MTCHD;
       MTCHD:  
@@ -123,7 +123,9 @@ module stage #( parameter CHLS = 32
       if (set_val_i)  r_val   <= cmd_i[WSER-1:0];
       if (set_cfg_i)  begin
         {r_ser, r_act}        <= {cmd_bytes[3][2], cmd_bytes[3][3]};
-        r_chl                 <= {cmd_bytes[3][7:4], cmd_bytes[2][7:4]}[$clogs(CHLS)-1:0];
+        // Error: The SystemVerilog feature "Indexed Expression" is not supported yet for simulation.
+        // r_chl                 <= {cmd_bytes[3][7:4], cmd_bytes[2][7:4]}[$clog2(CHLS)-1:0];
+        r_chl                 <= {cmd_bytes[3][0], cmd_bytes[3][7:4]};  // TODO fix for CHLS != 32
       end
     end
   end // always_ff
