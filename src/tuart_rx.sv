@@ -10,7 +10,7 @@
 `timescale 1ns/1ps
 module tuart_rx #(  parameter WORD_BITS = 8,
                     parameter CMD_WORDS = 5,
-                    parameter CLK_PER_SAMPLE = 10) (
+                    parameter CLK_PER_SAMPLE = 4) (
   // General
   input  logic                            clk_i,      //! system clock
   input  logic                            rst_in,     //! system reset, low active
@@ -35,8 +35,8 @@ module tuart_rx #(  parameter WORD_BITS = 8,
   logic [$clog2(WORD_BITS)-1:0]         bit_cnt;
   logic [$clog2(WORD_BITS)-1:0]         bit_cnt_next;
 
-  logic [$clog2(CMD_WORDS+1)-1:0] word_cnt;
-  logic [$clog2(CMD_WORDS+1)-1:0] word_cnt_next;
+  logic [$clog2(CMD_WORDS+1)-1:0]       word_cnt;
+  logic [$clog2(CMD_WORDS+1)-1:0]       word_cnt_next;
 
   logic [OUT_WIDTH-1:0]                 shft_data;
   logic [OUT_WIDTH-1:0]                 shft_data_next;
@@ -154,77 +154,53 @@ module tuart_rx #(  parameter WORD_BITS = 8,
 
 
 `ifdef FORMAL
-  logic f_init = 0;
+  default clocking @(posedge clk_i); endclocking
+	default disable iff (~rst_in);
 
+  logic f_pre_init = 0;
+  logic f_init = 0;
   always_ff @(posedge clk_i) begin : f_initial_reset
     if (!f_init) begin
-      assume (rst_in == 0);
-      f_init = 1;
+      if (!f_pre_init)  f_pre_init  <= 1;
+      else              f_init      <= 1;
     end
   end
   
-  always_ff @(posedge clk_i) begin
-    if (!rst_in) begin
-      //
-      // Assume valid initial conditions 
-      //
-      assume (state     == IDLE);
-      assume (smpl_cnt  == 'b0);
-      assume (bit_cnt   == 'b0);
-      assume (word_cnt  == 'b0);
-      assume (shft_data == 'b0);
-    end else begin
-      //
-      // Assume state properties due to long
-      // receive sequence
-      //
-      if (state == IDLE) begin
-        assume (word_cnt < CMD_WORDS);
-        assume (bit_cnt == 'b0);
-        assume (rx_sync_i == 1);
-      end else if (state == SAMPLE) begin
-        assume (word_cnt < CMD_WORDS);
-      end
-      // TODO
-    end
+  //asme_vld_uart: assume property ( (rx_sync_i ##[*] rx_sync_i (##[CLK_PER_SAMPLE])[1:*] )[*] )
 
-    asrt_word_cnt:          assert (word_cnt <= CMD_WORDS);
-    asrt_bit_cnt:           assert (bit_cnt < WORD_BITS);
-  end
+  asme_init_rst:  assume property (~f_init |-> ~rst_in);
+  asme_rst_rx:    assume property (disable iff (rst_in) rx_sync_i);
+  asme_rst_wcnt:  assume property (disable iff (rst_in) word_cnt == 'b0);
 
-  //
-  // Assume valid uart signal
-  //
-  logic [$clog2((CLK_PER_SAMPLE*(WORD_BITS+2))+1)-1 : 0] f_bit_cnt;
-  logic f_trans_active;
-  logic f_old_rx;
+  sequence ustart(s, d);
+    ##1 (~s)[*d];
+  endsequence
 
-  always @(posedge clk_i) begin
-    if (!rst_in) begin
-      f_bit_cnt       <= 'b0;
-      f_trans_active  <= 'b0;
-      f_old_rx        <= rx_sync_i;
-    end else begin
-      if (f_trans_active) begin
-        f_bit_cnt         <= f_bit_cnt + 'b1;
-        if (f_bit_cnt >= 10*CLK_PER_SAMPLE) begin
-          f_bit_cnt       <= 'b0;
-          f_trans_active  <= 'b0;
-        end
-      end else if (!f_trans_active && rx_sync_i && f_old_rx != rx_sync_i) begin
-        f_old_rx        <= rx_sync_i;
-        f_trans_active  <= 'b1;
-      end
-    end
-  end
+  sequence ub(s, d);
+    ##1 ($stable(s))[*(d-1)];
+  endsequence
 
-  always_comb begin : f_shape_uart_signal
-    if (f_bit_cnt >= 0 && f_bit_cnt < CLK_PER_SAMPLE) assume (rx_sync_i == 'b0);
-    if (f_bit_cnt >= 9*CLK_PER_SAMPLE && f_bit_cnt < 10*CLK_PER_SAMPLE) assume (rx_sync_i == 'b0);
-    if (!f_trans_active) assume (f_bit_cnt == 'b0);
-  end 
+  sequence udata(s, d);
+    (ub(s, d))[*8];
+  endsequence
+  
+  sequence ustop(s, d);
+    ##1 (s)[*d];
+  endsequence
+
+  asme_vld_uart: 
+  
+  assume property (state == IDLE && $fell(rx_sync_i)  |->     ustart(rx_sync_i, CLK_PER_SAMPLE-1) 
+                                                          ##0 udata(rx_sync_i, CLK_PER_SAMPLE)
+                                                          ##0 ustop(rx_sync_i, CLK_PER_SAMPLE));
+                                                          
+  asrt_word_cnt:    assert property (word_cnt <= CMD_WORDS);
+  asrt_bit_cnt:     assert property (bit_cnt < WORD_BITS);
+  asrt_start:       assert property ((state == IDLE) && $fell(rx_sync_i) |=> $changed(state));
+  //asrt_rx_duration: assert property (state == IDLE && $fell(rx_sync_i) |=> ##(1) state == IDLE);
+  asrt_no_stb:      assert property (~short_cmd_ready && ~long_cmd_ready |-> ~stb_o);
+  asrt_stb:         assert property (state == STOP && (short_cmd_ready || long_cmd_ready) |-> stb_o ##1 ~stb_o);
+
 `endif
 
-endmodule  
- 
- 
+endmodule
