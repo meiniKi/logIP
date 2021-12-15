@@ -80,13 +80,16 @@ module stage #( parameter CHLS = 32,
 
   always_comb begin : next_state_logic
     // Default values
-    state_next = state;
+    state_next  = state;
+    match_o     = 'b0;
+    run_o       = 'b0;
     case(state)
       IDLE:   if (arm_i)      state_next = ARMD;
       ARMD:   if (trg_match)  state_next = MTCHD;
       MTCHD:  
         if (stb_i) begin
-          state_next = IDLE;
+          state_next  = IDLE;
+          run_o       = 'b1;
           /* todo: match_o, run_o */
         end 
       default:  state_next = IDLE;
@@ -118,6 +121,7 @@ module stage #( parameter CHLS = 32,
       r_mask    <= 'b0;
       r_ser     <= 'b0;
       r_act     <= 'b0;
+      r_chl     <= 'b0;
     end else begin
       if (set_mask_i) r_mask  <= cmd_i[WSER-1:0];
       if (set_val_i)  r_val   <= cmd_i[WSER-1:0];
