@@ -12,18 +12,14 @@ interface dut_if ( input logic clk_i,
   //
   import tb_pkg::*;
 
-  logic         set_cnt_i; 
-  logic [31:0]  cmd_i;     
-  logic         run_i;     
-  logic         stb_i;     
-  logic [31:0]  smpls_i;   
-  logic [31:0]  d_i;     
-  logic         tx_rdy_i;  
-  logic         read_o;
-  logic         wrt_o; 
-  logic [31:0]  d_o;     
-  logic         tx_stb_o;  
-  logic [31:0]  tx_o;      
+  logic         set_cnt_i;
+  logic [31:0]  cmd_i;
+  logic         run_i;
+  logic         stb_i;
+  logic [31:0]  smpls_i;
+  logic         tx_rdy_i;
+  logic         tx_stb_o;
+  logic [31:0]  tx_o;
   
   modport duv (input  clk_i,
                       rst_in,
@@ -32,11 +28,7 @@ interface dut_if ( input logic clk_i,
                       run_i,
                       stb_i,
                       smpls_i,
-                      d_i,
                       tx_rdy_i,
-              output  read_o,
-                      wrt_o,
-                      d_o,
                       tx_stb_o,
                       tx_o);
 
@@ -47,11 +39,7 @@ interface dut_if ( input logic clk_i,
     output run_i;
     output stb_i;
     output smpls_i;
-    output d_i;
     output tx_rdy_i;
-    input  read_o;
-    input  wrt_o;
-    input  d_o;
     input  tx_stb_o;
     input  tx_o;
   endclocking
