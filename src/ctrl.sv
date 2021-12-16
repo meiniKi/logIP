@@ -9,7 +9,8 @@
 module ctrl #(
   parameter CMD_WIDTH=32,                   //! bits of command data
   parameter SMPL_WIDTH=32,                  //! bits of a single sample
-  parameter TX_WIDTH=32                     //! bits the transmitter can send at once
+  parameter TX_WIDTH=32,                    //! bits the transmitter can send at once
+  parameter DEPTH=5                         //! memory depth / address width
 ) (           
   // General            
   input  logic                  clk_i,      //! system clock 
@@ -22,8 +23,8 @@ module ctrl #(
   input  logic [SMPL_WIDTH-1:0] smpls_i,    //! sample data
   input  logic [SMPL_WIDTH-1:0] d_i,        //! data input
   input  logic                  tx_rdy_i,   //! transmitter ready flag
-  output logic                  read_o,     //! read from memory
-  output logic                  wrt_o,      //! write to memory
+  output logic                  we_o,       //! write enable
+  output logic [DEPTH-1:0]      addr_o,     //! memory address
   output logic [SMPL_WIDTH-1:0] q_o,        //! memory output
   output logic                  tx_stb_o,   //! starts transmitter
   output logic [TX_WIDTH-1:0]   tx_o        //! data for the transmitter to send
@@ -41,17 +42,20 @@ module ctrl #(
 
   logic [CNT_WIDTH+2:0] cnt;
   logic [CNT_WIDTH+2:0] cnt_next;
+  logic [DEPTH-1:0] ptr;
+  logic [DEPTH-1:0] ptr_next;
 
-  assign q_o = smpls_i;
-  assign tx_o  = d_i;
+  assign q_o    = smpls_i;
+  assign tx_o   = d_i;
 
   always_comb begin : main_fsm
     // Default
     cnt_next        = cnt;
     state_next      = state;
-    read_o          = 'b0; 
-    wrt_o           = 'b0;  
-    tx_stb_o        = 'b0; 
+    we_o            = 'b0;  
+    tx_stb_o        = 'b0;
+    addr_o          = ptr;
+    ptr_next        = ptr;
 
     case (state)
       IDLE: begin
@@ -60,7 +64,8 @@ module ctrl #(
           cnt_next        = 'b0;
         end
         if (stb_i == 'b1) begin
-          wrt_o           = 'b1;
+          we_o            = 'b1;
+          ptr_next        = ptr + 1;
         end        
       end
 
@@ -71,7 +76,8 @@ module ctrl #(
         end
         if (stb_i == 'b1) begin
           cnt_next        = cnt + 1;
-          wrt_o           = 'b1;
+          we_o            = 'b1;
+          ptr_next        = ptr + 1;
         end
       end
 
@@ -81,8 +87,9 @@ module ctrl #(
         end else begin
           state_next      = TX_WAIT;
           cnt_next        = cnt + 1;
-          read_o          = 'b1;
           tx_stb_o        = 'b1;
+          ptr_next        = ptr - 1;
+          addr_o          = ptr - 1;
         end
       end
 
@@ -100,10 +107,12 @@ module ctrl #(
   always_ff @(posedge clk_i ) begin : fsm
     if (~rst_in) begin
       state <= IDLE;
-      cnt   <= 'b0;      
+      cnt   <= 'b0;   
+      ptr   <= 'b0;   
     end else begin
       state <= state_next;
       cnt   <= cnt_next;
+      ptr   <= ptr_next;
     end
   end // always_ff
 

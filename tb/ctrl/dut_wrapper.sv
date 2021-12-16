@@ -10,14 +10,14 @@ module dut_wrapper(dut_if ifc);
 
   logic [31:0]    q_o;
   logic [31:0]    d_i;
-  logic           wrt_o;
-  logic           read_o;
+  logic           we_o;
+  logic [4:0]     addr_o;
 
-  mmu #(  .WIDTH (32),
-          .DEPTH (4)) i_mmu ( .clk_i  (ifc.clk_i),
+  ramif i_ramif ( .clk_i  (ifc.clk_i),
                               .rst_in (ifc.rst_in),
-                              .read_i (read_o),
-                              .wrt_i  (wrt_o),
+                              .en_i   ('b1),
+                              .we_i   (we_o),
+                              .addr_i (addr_o),
                               .d_i    (q_o),
                               .q_o    (d_i)
   );
@@ -33,8 +33,8 @@ module dut_wrapper(dut_if ifc);
                                 .smpls_i    (ifc.smpls_i),
                                 .d_i        (d_i),
                                 .tx_rdy_i   (ifc.tx_rdy_i),
-                                .read_o     (read_o),
-                                .wrt_o      (wrt_o),
+                                .we_o       (we_o),
+                                .addr_o     (addr_o),
                                 .q_o        (q_o),
                                 .tx_stb_o   (ifc.tx_stb_o),
                                 .tx_o       (ifc.tx_o)
