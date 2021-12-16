@@ -15,6 +15,7 @@ interface dut_if ( input logic clk_i,
   logic [31:0]    cmd_i;
   logic [31:0]    input_i;
   logic           tx_rdy_i;
+  logic           exec_i;
   logic [31:0]    mem_i;
   logic           we_o;
   logic [4:0]     addr_o;
@@ -28,6 +29,7 @@ interface dut_if ( input logic clk_i,
                         input_i,
                         tx_rdy_i,
                         mem_i,
+                        exec_i,
                 output  we_o,
                         addr_o,
                         mem_o,
@@ -40,6 +42,7 @@ interface dut_if ( input logic clk_i,
     input  input_i;
     input  tx_rdy_i;
     input  mem_i;
+    output exec_i;
     output we_o;
     output addr_o;
     output mem_o;
