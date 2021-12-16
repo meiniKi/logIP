@@ -20,11 +20,11 @@ module ctrl #(
   input  logic                  run_i,      //! trigger sampling
   input  logic                  stb_i,      //! indicates that sample is ready
   input  logic [SMPL_WIDTH-1:0] smpls_i,    //! sample data
-  input  logic [SMPL_WIDTH-1:0] mem_i,      //! memory input
+  input  logic [SMPL_WIDTH-1:0] d_i,        //! data input
   input  logic                  tx_rdy_i,   //! transmitter ready flag
-  output logic                  mem_read_o, //! read from memory
-  output logic                  mem_wrt_o,  //! write to memory
-  output logic [SMPL_WIDTH-1:0] mem_o,      //! memory output
+  output logic                  read_o,     //! read from memory
+  output logic                  wrt_o,      //! write to memory
+  output logic [SMPL_WIDTH-1:0] d_o,        //! memory output
   output logic                  tx_stb_o,   //! starts transmitter
   output logic [TX_WIDTH-1:0]   tx_o        //! data for the transmitter to send
 );
@@ -42,15 +42,15 @@ module ctrl #(
   logic [CNT_WIDTH+2:0] cnt;
   logic [CNT_WIDTH+2:0] cnt_next;
 
-  assign mem_o = smpls_i;
-  assign tx_o  = mem_i;
+  assign d_o = smpls_i;
+  assign tx_o  = d_i;
 
   always_comb begin : main_fsm
     // Default
     cnt_next        = cnt;
     state_next      = state;
-    mem_read_o      = 'b0; 
-    mem_wrt_o       = 'b0;  
+    read_o          = 'b0; 
+    wrt_o           = 'b0;  
     tx_stb_o        = 'b0; 
 
     case (state)
@@ -60,7 +60,7 @@ module ctrl #(
           cnt_next        = 'b0;
         end
         if (stb_i == 'b1) begin
-          mem_wrt_o       = 'b1;
+          wrt_o       = 'b1;
         end        
       end
 
@@ -71,7 +71,7 @@ module ctrl #(
         end
         if (stb_i == 'b1) begin
           cnt_next        = cnt + 1;
-          mem_wrt_o       = 'b1;
+          wrt_o       = 'b1;
         end
       end
 
@@ -80,7 +80,7 @@ module ctrl #(
           state_next      = IDLE;
         end else begin
           state_next      = TX_WAIT;
-          mem_read_o      = 'b1;
+          read_o      = 'b1;
           tx_stb_o        = 'b1;
         end
       end

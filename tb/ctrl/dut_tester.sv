@@ -13,7 +13,7 @@ program ctrl_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
 
   logic [31:0] smpls_i        = 'b0;
   logic [31:0] smpls_start;
-  logic [31:0] expected_mem_o = 'b0;
+  logic [31:0] expected_d_o = 'b0;
   logic [2:0]  read_cnt       = 'b1;
   logic [31:0] smpls_trg;
 

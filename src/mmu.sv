@@ -11,10 +11,10 @@ module mmu #( parameter WIDTH = 32,
               parameter DEPTH = 5) (
   input  logic                      clk_i,        //! system clock
   input  logic                      rst_in,       //! system reset
-  input  logic                      mem_wrt_i,    //! write
-  input  logic                      mem_read_i,   //! read
-  input  logic [WIDTH-1:0]          mem_i,        //! data in
-  output logic [WIDTH-1:0]          mem_o         //! data out
+  input  logic                      wrt_i,        //! write
+  input  logic                      read_i,       //! read
+  input  logic [WIDTH-1:0]          d_i,          //! data in
+  output logic [WIDTH-1:0]          d_o           //! data out
 );
 
 import logIP_pkg::*;
@@ -29,15 +29,15 @@ import logIP_pkg::*;
     .clk_i  (clk_i),
     .rst_in (rst_in),
     .en_i   (en),
-    .we_i   (mem_wrt_i),
+    .we_i   (wrt_i),
     .addr_i (ptr),
-    .d_i    (mem_i),
-    .q_o    (mem_o)
+    .d_i    (d_i),
+    .d_o    (d_o)
   );
 
-  assign ptr_next =   mem_wrt_i ==  'b1 ? ptr_next <= ptr + 1 :
-                      mem_read_i == 'b1 ? ptr_next <= ptr - 1 
-                                        : ptr_next <= ptr;
+  assign ptr_next =   wrt_i ==  'b1 ? ptr_next <= ptr + 1 :
+                      read_i == 'b1 ? ptr_next <= ptr - 1 
+                                    : ptr_next <= ptr;
 
   always_ff @(posedge clk_i) begin : fsm
     if (~rst_in) begin

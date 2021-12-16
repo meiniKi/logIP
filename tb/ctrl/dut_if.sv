@@ -17,11 +17,11 @@ interface dut_if ( input logic clk_i,
   logic         run_i;     
   logic         stb_i;     
   logic [31:0]  smpls_i;   
-  logic [31:0]  mem_i;     
+  logic [31:0]  d_i;     
   logic         tx_rdy_i;  
-  logic         mem_read_o;
-  logic         mem_wrt_o; 
-  logic [31:0]  mem_o;     
+  logic         read_o;
+  logic         wrt_o; 
+  logic [31:0]  d_o;     
   logic         tx_stb_o;  
   logic [31:0]  tx_o;      
   
@@ -32,11 +32,11 @@ interface dut_if ( input logic clk_i,
                       run_i,
                       stb_i,
                       smpls_i,
-                      mem_i,
+                      d_i,
                       tx_rdy_i,
-              output  mem_read_o,
-                      mem_wrt_o,
-                      mem_o,
+              output  read_o,
+                      wrt_o,
+                      d_o,
                       tx_stb_o,
                       tx_o);
 
@@ -47,11 +47,11 @@ interface dut_if ( input logic clk_i,
     output run_i;
     output stb_i;
     output smpls_i;
-    output mem_i;
+    output d_i;
     output tx_rdy_i;
-    input  mem_read_o;
-    input  mem_wrt_o;
-    input  mem_o;
+    input  read_o;
+    input  wrt_o;
+    input  d_o;
     input  tx_stb_o;
     input  tx_o;
   endclocking
