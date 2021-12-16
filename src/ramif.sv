@@ -14,7 +14,7 @@ module ramif #( parameter WIDTH = 32,
   input  logic                      rst_in,   //! system reset
   input  logic                      en_i,     //! enable
   input  logic                      we_i,     //! write enable (read / write)
-  input  logic [$clog2(DEPTH)-1:0]  addr_i,   //! address
+  input  logic [DEPTH-1:0]          addr_i,   //! address
   input  logic [WIDTH-1:0]          d_i,      //! data in
   output logic [WIDTH-1:0]          d_o       //! data out
 );
