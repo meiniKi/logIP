@@ -21,6 +21,7 @@ import logIP_pkg::*;
 
   logic             en = 'b1;
   
+  logic [DEPTH-1:0] addr;
   logic [DEPTH-1:0] ptr;
   logic [DEPTH-1:0] ptr_next;
 
@@ -30,14 +31,15 @@ import logIP_pkg::*;
     .rst_in (rst_in),
     .en_i   (en),
     .we_i   (wrt_i),
-    .addr_i (ptr),
+    .addr_i (addr),
     .d_i    (d_i),
     .d_o    (d_o)
   );
 
-  assign ptr_next =   wrt_i ==  'b1 ? ptr_next <= ptr + 1 :
-                      read_i == 'b1 ? ptr_next <= ptr - 1 
-                                    : ptr_next <= ptr;
+  assign ptr_next =   wrt_i   ? ptr + 1 :
+                      read_i  ? ptr - 1 
+                              : ptr;
+  assign addr     =   read_i  ? ptr - 1 : ptr;
 
   always_ff @(posedge clk_i) begin : fsm
     if (~rst_in) begin
