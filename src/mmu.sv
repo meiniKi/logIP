@@ -35,9 +35,9 @@ import logIP_pkg::*;
     .q_o    (mem_o)
   );
 
-  assign ptr_next =   mem_wrt_i ==  'b1 ? : ptr_next = ptr + 1 ?
-                      mem_read_i == 'b1 ? : ptr_next = ptr - 1 
-                                          : ptr_next = ptr;
+  assign ptr_next =   mem_wrt_i ==  'b1 ? ptr_next <= ptr + 1 :
+                      mem_read_i == 'b1 ? ptr_next <= ptr - 1 
+                                        : ptr_next <= ptr;
 
   always_ff @(posedge clk_i) begin : fsm
     if (~rst_in) begin
