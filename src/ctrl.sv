@@ -60,7 +60,7 @@ module ctrl #(
           cnt_next        = 'b0;
         end
         if (stb_i == 'b1) begin
-          wrt_o       = 'b1;
+          wrt_o           = 'b1;
         end        
       end
 
@@ -71,7 +71,7 @@ module ctrl #(
         end
         if (stb_i == 'b1) begin
           cnt_next        = cnt + 1;
-          wrt_o       = 'b1;
+          wrt_o           = 'b1;
         end
       end
 
@@ -80,7 +80,8 @@ module ctrl #(
           state_next      = IDLE;
         end else begin
           state_next      = TX_WAIT;
-          read_o      = 'b1;
+          cnt_next        = cnt + 1;
+          read_o          = 'b1;
           tx_stb_o        = 'b1;
         end
       end
