@@ -14,8 +14,7 @@
  *
  *
  *                       -------------------------
- *                      |   t+3             t+0   | (< time received in tuart_rx )
- * cmd_i is given as:   | MSByte | x | x | LSByte | (< byte order )
+ * cmd_i is given as:   | LSByte | x | x | MSByte | (< byte order )
  *                      |7 ...  0|  ...  |7 ...  0| (< bit  order )
  *                       -------------------------
  *
