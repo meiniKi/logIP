@@ -32,22 +32,22 @@ program mmu_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     `CLK_DELAY duv_if.cb.wrt_i    <= 'b0;
     repeat(4) `CLK_DELAY;
     `CLK_DELAY duv_if.cb.read_i   <= 'b1;
-    `CLK_DELAY `SCORE_ASSERT(duv_if.cb.d_o == 'h11111114);
+    `CLK_DELAY `SCORE_ASSERT(duv_if.cb.q_o == 'h11111114);
     $display("%t", $time);
 
-    `CLK_DELAY `SCORE_ASSERT(duv_if.cb.d_o == 'h11111113);
+    `CLK_DELAY `SCORE_ASSERT(duv_if.cb.q_o == 'h11111113);
     $display("%t", $time);
     duv_if.cb.read_i              <= 'b0;
     repeat(4) `CLK_DELAY;
     `CLK_DELAY duv_if.cb.read_i   <= 'b1;
-    `CLK_DELAY `SCORE_ASSERT(duv_if.cb.d_o == 'h11111112);
+    `CLK_DELAY `SCORE_ASSERT(duv_if.cb.q_o == 'h11111112);
     $display("%t", $time);
     duv_if.cb.read_i              <= 'b0;
     `CLK_DELAY duv_if.cb.d_i      <= 'h22222221;
     duv_if.cb.wrt_i               <= 'b1;
     `CLK_DELAY duv_if.cb.wrt_i    <= 'b0;
     duv_if.cb.read_i              <= 'b1;
-    `CLK_DELAY `SCORE_ASSERT(duv_if.cb.d_o == 'h22222221);
+    `CLK_DELAY `SCORE_ASSERT(duv_if.cb.q_o == 'h22222221);
     $display("%t", $time);
     duv_if.cb.read_i              <= 'b0;
 

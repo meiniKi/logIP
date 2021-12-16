@@ -14,7 +14,7 @@ module mmu #( parameter WIDTH = 32,
   input  logic                      wrt_i,        //! write
   input  logic                      read_i,       //! read
   input  logic [WIDTH-1:0]          d_i,          //! data in
-  output logic [WIDTH-1:0]          d_o           //! data out
+  output logic [WIDTH-1:0]          q_o           //! data out
 );
 
 import logIP_pkg::*;
@@ -33,7 +33,7 @@ import logIP_pkg::*;
     .we_i   (wrt_i),
     .addr_i (addr),
     .d_i    (d_i),
-    .d_o    (d_o)
+    .q_o    (q_o)
   );
 
   assign ptr_next =   wrt_i   ? ptr + 1 :

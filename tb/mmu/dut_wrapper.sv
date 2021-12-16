@@ -12,5 +12,5 @@ mmu dut ( .clk_i          (ifc.clk_i),
           .wrt_i          (ifc.wrt_i),  
           .read_i         (ifc.read_i), 
           .d_i            (ifc.d_i),      
-          .d_o            (ifc.d_o));
+          .q_o            (ifc.q_o));
 endmodule

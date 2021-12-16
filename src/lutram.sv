@@ -15,14 +15,14 @@ input  logic                      en_i,     //! enable
 input  logic                      we_i,     //! write enable (read / write)
 input  logic [DEPTH-1:0]          addr_i,   //! address
 input  logic [WIDTH-1:0]          d_i,      //! data in
-output logic [WIDTH-1:0]          d_o       //! data out
+output logic [WIDTH-1:0]          q_o       //! data out
 );
 
 logic [WIDTH-1:0] r_ram [(2**DEPTH)-1:0];
 
 // reset not used
 
-assign d_o = en_i ? r_ram[addr_i] : 'b0;
+assign q_o = en_i ? r_ram[addr_i] : 'b0;
 
 always_ff @(posedge clk_i) begin
   if (en_i && we_i) r_ram[addr_i] <= d_i;

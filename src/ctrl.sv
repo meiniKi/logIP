@@ -24,7 +24,7 @@ module ctrl #(
   input  logic                  tx_rdy_i,   //! transmitter ready flag
   output logic                  read_o,     //! read from memory
   output logic                  wrt_o,      //! write to memory
-  output logic [SMPL_WIDTH-1:0] d_o,        //! memory output
+  output logic [SMPL_WIDTH-1:0] q_o,        //! memory output
   output logic                  tx_stb_o,   //! starts transmitter
   output logic [TX_WIDTH-1:0]   tx_o        //! data for the transmitter to send
 );
@@ -42,7 +42,7 @@ module ctrl #(
   logic [CNT_WIDTH+2:0] cnt;
   logic [CNT_WIDTH+2:0] cnt_next;
 
-  assign d_o = smpls_i;
+  assign q_o = smpls_i;
   assign tx_o  = d_i;
 
   always_comb begin : main_fsm

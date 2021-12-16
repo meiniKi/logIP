@@ -8,7 +8,7 @@
 
 module dut_wrapper(dut_if ifc);
 
-  logic [31:0]    d_o;
+  logic [31:0]    q_o;
   logic [31:0]    d_i;
   logic           wrt_o;
   logic           read_o;
@@ -18,8 +18,8 @@ module dut_wrapper(dut_if ifc);
                               .rst_in (ifc.rst_in),
                               .read_i (read_o),
                               .wrt_i  (wrt_o),
-                              .d_i    (d_o),
-                              .d_o    (d_i)
+                              .d_i    (q_o),
+                              .q_o    (d_i)
   );
 
   ctrl #( .CMD_WIDTH (32), 
@@ -35,7 +35,7 @@ module dut_wrapper(dut_if ifc);
                                 .tx_rdy_i   (ifc.tx_rdy_i),
                                 .read_o     (read_o),
                                 .wrt_o      (wrt_o),
-                                .d_o        (d_o),
+                                .q_o        (q_o),
                                 .tx_stb_o   (ifc.tx_stb_o),
                                 .tx_o       (ifc.tx_o)
     );
