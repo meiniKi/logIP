@@ -23,8 +23,8 @@ module stage_tb;
     $dumpvars(5, duv_wrapper);
 
     // Reset            
-    `WAIT_CYLCES(2, clk_i) rst_in = 0;
-    `WAIT_CYLCES(2, clk_i) rst_in = 1;
+    `WAIT_CYCLES(2, clk_i) rst_in = 0;
+    `WAIT_CYCLES(2, clk_i) rst_in = 1;
   end
 
   always begin : clock_gen

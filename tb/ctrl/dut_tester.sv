@@ -5,8 +5,8 @@
 `include "declarations.svh"
 `default_nettype wire
 `timescale 1ns/1ps
-`define CLK_DELAY `WAIT_CYLCES(1, clk_i)
-`define SMPL_DELAY `WAIT_CYLCES(4, clk_i)
+`define CLK_DELAY `WAIT_CYCLES(1, clk_i)
+`define SMPL_DELAY `WAIT_CYCLES(4, clk_i)
 
 program ctrl_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
   import tb_pkg::*;
@@ -38,7 +38,7 @@ program ctrl_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     `CLK_DELAY
     duv_if.cb.set_cnt_i         <= 'b0;
 
-    `WAIT_CYLCES(8, clk_i);
+    `WAIT_CYCLES(8, clk_i);
     duv_if.cb.run_i             <= 'b1;
     smpl_trg                    <= smpls_i;
     `CLK_DELAY duv_if.cb.run_i  <= 'b0;
@@ -46,7 +46,7 @@ program ctrl_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     @(posedge duv_if.cb.tx_stb_o);
     duv_if.cb.tx_rdy_i          <= 'b0;
     `SCORE_ASSERT(duv_if.cb.tx_o == smpl_trg + 2);
-    `WAIT_CYLCES(4, clk_i);
+    `WAIT_CYCLES(4, clk_i);
     duv_if.cb.tx_rdy_i          <= 'b1;
     @(posedge duv_if.cb.tx_stb_o);
     `SCORE_ASSERT(duv_if.cb.tx_o == smpl_trg + 1);

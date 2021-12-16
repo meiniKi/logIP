@@ -5,7 +5,7 @@
 `include "declarations.svh"
 `default_nettype wire
 `timescale 1ns/1ps
-`define CLK_DELAY `WAIT_CYLCES(1, clk_i)
+`define CLK_DELAY `WAIT_CYCLES(1, clk_i)
 
 program mmu_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
   import tb_pkg::*;
@@ -22,7 +22,7 @@ program mmu_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     duv_if.cb.wrt_i               <= 'b0;
     duv_if.cb.read_i              <= 'b0;
 
-    `WAIT_CYLCES(10, clk_i);
+    `WAIT_CYCLES(10, clk_i);
     `CLK_DELAY duv_if.cb.d_i      <= 'h11111112;
     `CLK_DELAY duv_if.cb.wrt_i    <= 'b1;
     `CLK_DELAY duv_if.cb.wrt_i    <= 'b0;
