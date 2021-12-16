@@ -16,7 +16,6 @@ typedef mailbox #(score_t) score_mbox_t;
 `define SCORE_DONE \
   mbx.put(score_t'(2));
 
-
 // Vivado does not support the _cycle delay_ (##x).
 // This is used as a workaround.
 //

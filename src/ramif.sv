@@ -14,9 +14,9 @@ module ramif #( parameter WIDTH = 32,
   input  logic                      rst_in,   //! system reset
   input  logic                      en_i,     //! enable
   input  logic                      we_i,     //! write enable (read / write)
-  input  logic [$clog2(DEPTH)-1:0]  addr_i,   //! address
+  input  logic [DEPTH-1:0]          addr_i,   //! address
   input  logic [WIDTH-1:0]          d_i,      //! data in
-  output logic [WIDTH-1:0]          q_o       //! data out
+  output logic [WIDTH-1:0]          d_o       //! data out
 );
 
 import logIP_pkg::*;
@@ -28,8 +28,8 @@ import logIP_pkg::*;
     .ena    (en_i),
     .wea    (we_i),
     .addra  (addr_i),
-    .dina   (data_i),
-    .douta  (data_o)
+    .dina   (d_i),
+    .douta  (d_o)
   );
 
 `elsif USE_LUT_RAM
@@ -42,7 +42,7 @@ import logIP_pkg::*;
     .we_i   (we_i),
     .addr_i (addr_i),
     .d_i    (d_i),
-    .q_o    (q_o)
+    .d_o    (d_o)
   );
 
 `else

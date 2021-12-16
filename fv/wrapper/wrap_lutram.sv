@@ -9,7 +9,7 @@ module top_lutram #( parameter WIDTH = 32,
   input  logic                      we_i,     //! write enable (read / write)
   input  logic [DEPTH-1:0]          addr_i,   //! address
   input  logic [WIDTH-1:0]          d_i,      //! data in
-  output logic [WIDTH-1:0]          q_o       //! data out
+  output logic [WIDTH-1:0]          d_o       //! data out
 );
 
 lutram #( .WIDTH (WIDTH),
@@ -20,7 +20,7 @@ lutram #( .WIDTH (WIDTH),
   .we_i   (we_i),
   .addr_i (addr_i),
   .d_i    (d_i),
-  .q_o    (q_o)
+  .d_o    (d_o)
 );
 
 endmodule
