@@ -22,10 +22,10 @@ logic [WIDTH-1:0] r_ram [(2**DEPTH)-1:0];
 
 // reset not used
 
+assign d_o = en_i ? r_ram[addr_i] : 'b0;
+
 always_ff @(posedge clk_i) begin
   if (en_i && we_i) r_ram[addr_i] <= d_i;
-  if (en_i) d_o <= r_ram[addr_i];
-  else      d_o <= 'b0;
 end
 
 
