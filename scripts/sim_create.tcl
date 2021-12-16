@@ -30,6 +30,7 @@ add_files -fileset sim_1 [ glob $path_rtl/stage.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/ctrl.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/ramif.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/lutram.sv ]
+add_files -fileset sim_1 [ glob $path_rtl/trigger.sv ]
 
 # Read testbench
 add_files -fileset sim_1 [ glob $path_tb/*.sv ]
