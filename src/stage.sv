@@ -10,9 +10,6 @@
  * x ... number of synthesized channels.
  *
  * Todo:
- *    - implement serial mode channel selection
- *    - implement levels
- *    - implement delay
  *    - implement flags (todo: here or top-level?)
  *
  *
@@ -41,6 +38,7 @@ module stage (
   // Data
   input  logic              stb_i,      //! flag, new data samples
   input  logic [31:0]       smpls_i,    //! sampled channels
+  input  logic [1:0]        lvl_i,      //! currently active level
   // Output
   output logic              match_o,    //! flag, trigger matched
   output logic              run_o       //! flag, trigger run
@@ -50,11 +48,15 @@ module stage (
 
   logic [31:0]      r_val;
   logic [31:0]      r_mask;
-  logic             r_ser;
+  logic [15:0]      r_dly;
+  logic [1:0]       r_lvl;
   logic [31:0]      r_chl;
+  logic             r_ser;
   logic             r_act;
 
   logic [31:0]      comp_vec;
+  logic [15:0]      dly_cnt;
+  logic [15:0]      dly_cnt_next;
 
   typedef enum bit [1:0] {IDLE, ARMD, MTCHD} states_t;
 
@@ -76,17 +78,27 @@ module stage (
 
   always_comb begin : next_state_logic
     // Default values
-    state_next  = state;
-    match_o     = 'b0;
-    run_o       = 'b0;
+    state_next      = state;
+    match_o         = 'b0;
+    run_o           = 'b0;
+    dly_cnt_next    = dly_cnt;
     case(state)
       IDLE:   if (arm_i)      state_next = ARMD;
-      ARMD:   if (trg_match)  state_next = MTCHD;
+      ARMD: begin
+        if (trg_match) begin
+          state_next = MTCHD;
+          dly_cnt_next = 'b0; 
+        end
+      end
       MTCHD:  
-        if (stb_i) begin
-          state_next  = IDLE;
-          run_o       = 'b1;
-          /* todo: match_o, run_o */
+        if (stb_i && lvl_i >= r_lvl) begin
+          if (dly_cnt == r_dly) begin
+            state_next  = IDLE;
+            run_o       = r_act;
+            match_o     = 'b1;
+          end else begin
+            dly_cnt_next = dly_cnt + 1;
+          end
         end 
       default:  state_next = IDLE;
     endcase
@@ -104,9 +116,11 @@ module stage (
 
   always_ff @(posedge clk_i) begin : fsm
     if (~rst_in) begin
-      state <= IDLE;
+      state     <= IDLE;
+      dly_cnt   <= 'b0;
     end else begin
-      state <= state_next;
+      state     <= state_next;
+      dly_cnt   <= dly_cnt_next;
     end 
   end // always_ff
 
@@ -118,12 +132,16 @@ module stage (
       r_ser     <= 'b0;
       r_act     <= 'b0;
       r_chl     <= 'b0;
+      r_dly     <= 'b0;
+      r_lvl     <= 'b0;
     end else begin
       if (set_mask_i) r_mask  <= cmd_i[31:0];
       if (set_val_i)  r_val   <= cmd_i[31:0];
       if (set_cfg_i)  begin
-        {r_ser, r_act}        <= {cmd_bytes[3][2], cmd_bytes[3][3]};
-        r_chl                 <= {cmd_bytes[3][0], cmd_bytes[3][7:4]};
+        {r_ser, r_act}        <= {cmd_bytes[0][2],    cmd_bytes[0][3]};
+        r_chl                 <= {cmd_bytes[0][0],    cmd_bytes[1][7:4]};
+        r_dly                 <= {cmd_bytes[2][7:0],  cmd_bytes[3][7:0]};
+        r_lvl                 <= cmd_bytes[1][1:0];
       end
     end
   end // always_ff

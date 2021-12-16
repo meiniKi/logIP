@@ -19,6 +19,7 @@ interface dut_if ( input logic clk_i,
   logic             arm_i;
   logic             stb_i;
   logic [31:0]      smpls_i;
+  logic [1:0]       lvl_i;
   logic             match_o;
   logic             run_o;
 
@@ -30,7 +31,8 @@ interface dut_if ( input logic clk_i,
                         set_cfg_i, 
                         arm_i,     
                         stb_i,     
-                        smpls_i,   
+                        smpls_i,  
+                        lvl_i, 
                 output  match_o,   
                         run_o);
 
@@ -42,7 +44,8 @@ interface dut_if ( input logic clk_i,
     output set_cfg_i; 
     output arm_i;     
     output stb_i;     
-    output smpls_i;   
+    output smpls_i;  
+    output lvl_i; 
     input  match_o;   
     input  run_o;
   endclocking

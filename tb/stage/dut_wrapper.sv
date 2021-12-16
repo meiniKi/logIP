@@ -15,7 +15,8 @@ stage dut ( .clk_i          (ifc.clk_i),
             .set_cfg_i      (ifc.set_cfg_i), 
             .arm_i          (ifc.arm_i),     
             .stb_i          (ifc.stb_i),     
-            .smpls_i        (ifc.smpls_i),   
+            .smpls_i        (ifc.smpls_i),  
+            .lvl_i          (ifc.lvl_i), 
             .match_o        (ifc.match_o),   
             .run_o          (ifc.run_o));
 endmodule
