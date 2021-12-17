@@ -8,7 +8,6 @@ class Client;
 
   import logIP_pkg::*;
 
-
   function new(Uart8 i_uart8);
     this.i_uart8 = i_uart8;
   endfunction

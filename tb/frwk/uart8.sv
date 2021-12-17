@@ -13,17 +13,28 @@ class Uart8;
   mxb_uart_t  mbx_rx;
   mxb_uart_t  mbx_tx;
   time        bit_delay;
+  bit         tx_done;
   // Todo: possible to store 'ref logic tx' as class member?
 
   function new(time bit_delay);
-    this.bit_delay = bit_delay;
-    this.mbx_rx = new();
-    this.mbx_tx = new();
+    this.bit_delay  = bit_delay;
+    this.mbx_rx     = new();
+    this.mbx_tx     = new();
   endfunction
 
   task transmit(input uart_item_t b);
     this.mbx_tx.put(b);
   endtask
+
+  // More efficient than querying in the
+  // tester each system clock tick
+  task wait_transmit_done();
+    while (!this.is_transmit_done()) #this.bit_delay;
+  endtask
+
+  function is_transmit_done();
+    return this.mbx_tx.num() == 0;
+  endfunction
 
   function is_receive_empty();
     return this.mbx_rx.num() == 0;
@@ -47,23 +58,31 @@ class Uart8;
     tx = 'b1;
     #100; // give time to init dut
     forever begin
-      this.mbx_tx.get(t);
+      // Pop the element after tx is finished
+      // to use the queue count for is_transmit_done().
+      //
+      this.mbx_tx.peek(t);
       this._transmit(t, tx);
+      // ensure to have rx read in feedback loop
+      #bit_delay;
+      this.mbx_tx.get(t);
     end
   endtask
 
   task run_receiver(ref logic rx);
     logic [7:0] r = 'b0;
     #90;
-    @(negedge rx);
-    #(3 * bit_delay/2);
-    repeat(8) begin
-      r >>= 1;
-      r[7] = rx;
-      #(bit_delay);
+    forever begin
+      @(negedge rx);
+      #(3 * bit_delay/2);
+      repeat(8) begin
+        r >>= 1;
+        r[7] = rx;
+        #(bit_delay);
+      end
+      #(bit_delay/2);
+      this.mbx_rx.put(byte'(r));
     end
-    #(bit_delay); // 1/2 bit_delay buffer
-    this.mbx_rx.put(byte'(r));
   endtask
 
 
