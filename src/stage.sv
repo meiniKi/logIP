@@ -84,21 +84,19 @@ module stage (
     case(state)
       IDLE:   if (arm_i)      state_next = ARMD;
       ARMD: begin
-        if (trg_match) begin
+        if (trg_match && lvl_i >= r_lvl) begin
           state_next = MTCHD;
           dly_cnt_next = 'b0; 
         end
       end
-      MTCHD:  
-        if (stb_i && lvl_i >= r_lvl) begin
-          if (dly_cnt == r_dly) begin
-            state_next  = IDLE;
-            run_o       = r_act;
-            match_o     = 'b1;
-          end else begin
-            dly_cnt_next = dly_cnt + 1;
-          end
-        end 
+      MTCHD:
+        if (dly_cnt == r_dly) begin
+          state_next  = IDLE;
+          run_o       = r_act;
+          match_o     = 'b1;
+        end else if (stb_i) begin
+          dly_cnt_next = dly_cnt + 1;
+        end
       default:  state_next = IDLE;
     endcase
   end // always_comb
