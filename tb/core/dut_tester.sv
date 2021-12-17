@@ -6,6 +6,8 @@
 `default_nettype wire
 `timescale 1ns/1ps
 `define CLK_DELAY `WAIT_CYCLES(1, clk_i)
+`define TEST_START(name) $display("[INFO] %t | Start test case: '%s'", $time, name);
+`define TEST_END(name)   $display("[INFO] %t | End test case: '%s'", $time, name);
 
 program core_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
   import tb_pkg::*;
@@ -91,14 +93,14 @@ program core_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
   initial begin
     // Upcounting input signal
     forever begin
-      #(25) duv_if.cb.input_i <= counter;
+      #(50) duv_if.cb.input_i <= counter;
       counter <= counter + 1;
     end
   end
 
   initial begin
-    $timeformat(-9, 2, " ns", 20);
-    $display("----- Started ------");
+    $timeformat(-9, 2, " ns", 12);
+    $display("##### Start #####");    
 
     duv_if.cb.tx_rdy_i    <= 'b1;
     duv_if.cb.cmd_i       <= 'b0;
@@ -107,19 +109,30 @@ program core_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
 
     `WAIT_CYCLES(10, clk_i);
     
-    cfgStageDefault('b00, 'hFFFFFFF8, 'h00000008);
-    setReadDelayCnt('h0004, 'h0002);
-    setDivider('h4);
-    run();
-    /*expectRecv('h0000000A);
-    expectRecv('h00000009);
-    expectRecv('h00000008);
-    expectRecv('h00000007);*/
+    testCase1();
 
     `SCORE_DONE
       
-    $display("----- Done ------");
+    $display("###### End ######");
     #100000 $finish;
   end
+
+  /*  This test case configures the first stage to trigger at value 8 
+  *   in serial mode and read back 4 values, 2 after the trigger and 2 
+  *   befor the trigger. 
+  */
+  task testCase1();
+    `TEST_START("Test Case 1");
+    counter <= 'b0;
+    cfgStageDefault('b00, 'hFFFFFFFF, 'h00000008);
+    setReadDelayCnt('h0004, 'h0002);
+    setDivider('h4);
+    run();
+    expectRecv('h0000000A);
+    expectRecv('h00000009);
+    expectRecv('h00000008);
+    expectRecv('h00000007);
+    `TEST_END("Test Case 1");
+  endtask
 
 endprogram
