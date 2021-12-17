@@ -7,9 +7,6 @@
 `default_nettype wire
 `timescale 1ns/1ps;
 module ctrl #(
-  parameter CMD_WIDTH=32,                   //! bits of command data
-  parameter SMPL_WIDTH=32,                  //! bits of a single sample
-  parameter TX_WIDTH=32,                    //! bits the transmitter can send at once
   parameter DEPTH=5                         //! memory depth / address width
 ) (           
   // General            
@@ -17,28 +14,29 @@ module ctrl #(
   input  logic                  rst_in,     //! system reset, low active
   
   input  logic                  set_cnt_i,  //! configure the amount of samples to return
-  input  logic [CMD_WIDTH-1:0]  cmd_i,      //! command data
+  input  logic [WIDTH-1:0]      cmd_i,      //! command data
   input  logic                  run_i,      //! trigger sampling
   input  logic                  stb_i,      //! indicates that sample is ready
-  input  logic [SMPL_WIDTH-1:0] smpls_i,    //! sample data
-  input  logic [SMPL_WIDTH-1:0] d_i,        //! data input
+  input  logic [WIDTH-1:0]      smpls_i,    //! sample data
+  input  logic [WIDTH-1:0]      d_i,        //! data input
   input  logic                  tx_rdy_i,   //! transmitter ready flag
   output logic                  we_o,       //! write enable
   output logic [DEPTH-1:0]      addr_o,     //! memory address
-  output logic [SMPL_WIDTH-1:0] q_o,        //! memory output
+  output logic [WIDTH-1:0]      q_o,        //! memory output
   output logic                  tx_stb_o,   //! starts transmitter
-  output logic [TX_WIDTH-1:0]   tx_o        //! data for the transmitter to send
+  output logic [WIDTH-1:0]      tx_o        //! data for the transmitter to send
 );
 
-  parameter CNT_WIDTH = CMD_WIDTH / 2;
+  localparam WIDTH = 32;
+  localparam CNT_WIDTH = WIDTH / 2;
 
   typedef enum bit [1:0] { IDLE, TRG, TX, TX_WAIT } states_t;
 
   states_t state;
   states_t state_next;
 
-  logic [CNT_WIDTH:0] rd_cnt;
-  logic [CNT_WIDTH:0] dly_cnt;
+  logic [CNT_WIDTH-1:0] rd_cnt;
+  logic [CNT_WIDTH-1:0] dly_cnt;
 
   logic [CNT_WIDTH+2:0] cnt;
   logic [CNT_WIDTH+2:0] cnt_next;
@@ -121,8 +119,8 @@ module ctrl #(
       rd_cnt    <= 'b1;
       dly_cnt   <= 'b1;
     end else if (set_cnt_i) begin
-      rd_cnt    <= cmd_i[2*CNT_WIDTH-1:CNT_WIDTH];
-      dly_cnt   <= cmd_i[CNT_WIDTH-1:0];
+      rd_cnt    <= {cmd_i[23:16], cmd_i[31:24]};
+      dly_cnt   <= {cmd_i[7:0], cmd_i[15:8]};
     end
   end // always_ff
 

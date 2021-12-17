@@ -9,7 +9,15 @@
 program stage_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
   import tb_pkg::*;
 
+  task ASSERT_EQ(int expected, int actual);
+    if (expected != actual) begin
+      $display("[ERROR] %t | Expected value 0x%h but got 0x%h.", $time, expected, actual);
+    end
+    `SCORE_ASSERT(expected == actual);
+  endtask
+
   initial begin
+    $timeformat(-9, 2, " ns", 10);
     $display("----- Started ------");
 
     duv_if.cb.smpls_i     <= 'h00000000;
@@ -35,16 +43,16 @@ program stage_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     // Match when not armed and not active
                             duv_if.cb.smpls_i <= 'h00000001;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i <= 'b1;
-    `WAIT_CYCLES(1, clk_i)  `SCORE_ASSERT(duv_if.cb.run_o == 'b0);
-                            `SCORE_ASSERT(duv_if.cb.match_o == 'b0);
+    `WAIT_CYCLES(1, clk_i)  ASSERT_EQ('b0, duv_if.cb.run_o);
+                            ASSERT_EQ('b0, duv_if.cb.match_o);
                             duv_if.cb.stb_i <= 'b0;
 
     // Match when armed but not active
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i <= 'b0;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i <= 'b1;
-    `WAIT_CYCLES(1, clk_i)  `SCORE_ASSERT(duv_if.cb.run_o == 'b0);
-                            `SCORE_ASSERT(duv_if.cb.match_o == 'b1);
+    `WAIT_CYCLES(1, clk_i)  ASSERT_EQ('b0, duv_if.cb.run_o);
+                            ASSERT_EQ('b1, duv_if.cb.match_o);
                             duv_if.cb.stb_i <= 'b0;
 
     // Activate stage
@@ -56,8 +64,8 @@ program stage_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i <= 'b0;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i <= 'b1;
-    `WAIT_CYCLES(1, clk_i)  `SCORE_ASSERT(duv_if.cb.run_o == 'b1);
-                            `SCORE_ASSERT(duv_if.cb.match_o == 'b1);
+    `WAIT_CYCLES(1, clk_i)  ASSERT_EQ('b1, duv_if.cb.run_o);
+                            ASSERT_EQ('b1, duv_if.cb.match_o);
                             duv_if.cb.stb_i <= 'b0;
 
     // Configure level
@@ -69,11 +77,11 @@ program stage_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i <= 'b0;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i <= 'b1;
-    `WAIT_CYCLES(1, clk_i)  `SCORE_ASSERT(duv_if.cb.match_o == 'b0);
+    `WAIT_CYCLES(1, clk_i)  ASSERT_EQ('b0, duv_if.cb.match_o);
                             duv_if.cb.stb_i <= 'b0;
                             duv_if.cb.lvl_i <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i <= 'b1;
-    `WAIT_CYCLES(1, clk_i)  `SCORE_ASSERT(duv_if.cb.match_o == 'b1);
+    `WAIT_CYCLES(1, clk_i)  ASSERT_EQ('b1, duv_if.cb.match_o);
                             duv_if.cb.stb_i <= 'b0;
 
     // Configure delay
@@ -85,14 +93,12 @@ program stage_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i <= 'b0;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i <= 'b1;
-    `WAIT_CYCLES(1, clk_i)  `SCORE_ASSERT(duv_if.cb.match_o == 'b0);
+    `WAIT_CYCLES(1, clk_i)  ASSERT_EQ('b0, duv_if.cb.match_o);
                             duv_if.cb.stb_i <= 'b0;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i <= 'b1;
-    `WAIT_CYCLES(1, clk_i)  `SCORE_ASSERT(duv_if.cb.match_o == 'b0);
-                            duv_if.cb.stb_i <= 'b0;
-    `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i <= 'b1;
-    `WAIT_CYCLES(1, clk_i)  `SCORE_ASSERT(duv_if.cb.match_o == 'b1);
-                            duv_if.cb.stb_i <= 'b0;
+    `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i <= 'b0;
+    @(posedge duv_if.cb.match_o) ASSERT_EQ('b1, duv_if.cb.match_o);                    
+                            
 
     `SCORE_DONE
       
