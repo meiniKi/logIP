@@ -51,7 +51,7 @@ module core #(
   logic [WIDTH-1:0]       mem_w;
   logic [WIDTH-1:0]       mem_r;
 
-  assign rst   = sft_rst || rst_in;
+  assign rst   = ~sft_rst && rst_in;
   assign rst_o = rst;
 
   indec i_indec (
@@ -81,7 +81,10 @@ module core #(
     //.set_adv_dat_o()        // Not yet used    
   );
 
-  syncro i_syncro (
+  syncro #(
+    .WIDTH(32),
+    .INIT_VAL('b0)
+  ) i_syncro (
     .clk_i(clk_i),
     .rst_in(rst),
     .async_i(input_i),
@@ -101,7 +104,7 @@ module core #(
   trigger i_trigger (
     .clk_i(clk_i),     
     .rst_in(rst),    
-    .cmd_i(cmd_i),     
+    .cmd_i(cmd_i[31:0]),     
     .stg_i(stg),     
     .set_mask_i(set_mask),
     .set_val_i(set_val), 
@@ -116,7 +119,7 @@ module core #(
     .clk_i(clk_i),     
     .rst_in(rst),    
     .set_cnt_i(set_cnt), 
-    .cmd_i(cmd_i),     
+    .cmd_i(cmd_i[31:0]),     
     .run_i(run),     
     .stb_i(smpls_stb),     
     .smpls_i(smpls),   
