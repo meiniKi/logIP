@@ -223,7 +223,14 @@ package logIP_pkg;
     CMD_L_MSK_SET_TRG_CONF    = 8'b1100_??10 } opcode_t;
 
   typedef enum logic {XON, XOFF} xcrtl_t;
-    
+
+  //
+  // Helpers to parse the command to the right values
+  // and make it more readable.
+  //
+  `define PARSE_RD_CNT(CMD)   {cmd_i[23:16], cmd_i[31:24]}
+  `define PARSE_DLY_CNT(CMD)  {cmd_i[7:0], cmd_i[15:8]}
+
 endpackage
 
 
