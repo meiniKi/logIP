@@ -16,10 +16,6 @@ set dut_name [format "%s" $argv 0]
 set top_name [format "%s_tb" $dut_name] 
 set path_tb $path_tb_dir/$dut_name
 
-# Read testbench framework
-add_files -fileset sim_1 [ glob $path_tb_dir/frwk/*.svh ]
-add_files -fileset sim_1 [ glob $path_tb_dir/frwk/*.sv ]
-
 # Read design sources
 add_files -fileset sim_1 [ glob $path_rtl/logIP*.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/tuart_*.sv ]
@@ -33,11 +29,20 @@ add_files -fileset sim_1 [ glob $path_rtl/lutram.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/trigger.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/core.sv ]
 
+# Read testbench framework
+add_files -fileset sim_1 [ glob $path_tb_dir/frwk/*.svh ]
+add_files -fileset sim_1 [ glob $path_tb_dir/frwk/*.sv ]
+add_files -fileset sim_1 [ glob $path_tb_dir/frwk/client/*.sv ]
+
 # Read testbench
 add_files -fileset sim_1 [ glob $path_tb/*.sv ]
 
 save_project_as sim -force
 set_property top $top_name [get_fileset sim_1]
+
+#
+# Todo: auto update compile order seems to not work correctly.
+#
 #update_compile_order -fileset sim_1
 launch_simulation -simset sim_1 -mode behavioral
 run -all
