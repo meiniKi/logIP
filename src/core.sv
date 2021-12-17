@@ -42,7 +42,6 @@ module core #(
   logic                   xstb;
   logic                   xon;
   logic                   xoff;
-  logic [WIDTH-1:0]       sync_input;
   logic [WIDTH-1:0]       smpls;
   logic                   smpls_stb;
   logic                   run;
@@ -81,22 +80,12 @@ module core #(
     //.set_adv_dat_o()        // Not yet used    
   );
 
-  syncro #(
-    .WIDTH(32),
-    .INIT_VAL('b0)
-  ) i_syncro (
-    .clk_i(clk_i),
-    .rst_in(rst),
-    .async_i(input_i),
-    .sync_o(sync_input)
-  );
-
   sampler i_sampler (
     .clk_i(clk_i),
     .rst_in(rst),
     .fdiv_i(cmd_i[31:8]),
     .set_div_i(set_div),
-    .data_i(sync_input),
+    .data_i(input_i),
     .smpls_o(smpls),
     .stb_o(smpls_stb)
   );
