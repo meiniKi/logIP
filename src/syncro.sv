@@ -16,13 +16,13 @@ module syncro #(
 
   logic [WIDTH-1:0] inter;
 
-  assign sync_o = inter;
-
   always_ff @(posedge clk_i) begin
     if (rst_in == 'b0) begin
       inter   <= INIT_VAL;
+      sync_o  <= INIT_VAL;
     end else begin
       inter   <= async_i;
+      sync_o  <= inter;
     end
   end
 
