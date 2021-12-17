@@ -45,10 +45,10 @@ end
   asme_rst:   assume property (f_init == 'b0 |-> rst_in == 'b0);
   asme_we:    assume property (f_init == 'b0 |-> we_i == 'b0);
 
-  asrt_n_en:  assert property ( (~en_i) |=> (q_o == 'b0) );
+  asrt_n_en:  assert property ( (~en_i) |-> (q_o == 'b0) );
   asrt_n_we:  assert property ( ~we_i   |=> (r_ram == $past(r_ram)) );
   asrt_we:    assert property ( we_i && en_i |=> (r_ram[$past(addr_i)] == $past(d_i)) );
-  asrt_rd:    assert property ( en_i |=> (q_o == $past(r_ram[addr_i])));
+  asrt_rd:    assert property ( en_i |-> (q_o == r_ram[addr_i]));
 
 `endif
 
