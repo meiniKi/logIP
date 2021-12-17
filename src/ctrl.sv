@@ -17,14 +17,13 @@ module ctrl #(
   input  logic [WIDTH-1:0]      cmd_i,      //! command data
   input  logic                  run_i,      //! trigger sampling
   input  logic                  stb_i,      //! indicates that sample is ready
-  input  logic [WIDTH-1:0]      smpls_i,    //! sample data
-  input  logic [WIDTH-1:0]      d_i,        //! data input
-  input  logic                  tx_rdy_i,   //! transmitter ready flag
+  // Memory
   output logic                  we_o,       //! write enable
   output logic [DEPTH-1:0]      addr_o,     //! memory address
-  output logic [WIDTH-1:0]      q_o,        //! memory output
+  // Transmitter
+  input  logic                  tx_rdy_i,   //! transmitter ready flag
   output logic                  tx_stb_o,   //! starts transmitter
-  output logic [WIDTH-1:0]      tx_o        //! data for the transmitter to send
+  output logic                  tx_sel_o    //! select ram data to write back
 );
 
   localparam WIDTH = 32;
@@ -44,8 +43,6 @@ module ctrl #(
   logic [DEPTH-1:0] ptr;
   logic [DEPTH-1:0] ptr_next;
 
-  assign q_o    = smpls_i;
-  assign tx_o   = d_i;
   assign addr_o = ptr;
 
   always_comb begin : main_fsm

@@ -12,10 +12,10 @@ interface dut_if ( input logic clk_i,
   //
   import tb_pkg::*;
 
-  logic [39:0]    cmd_i;
   logic [31:0]    input_i;
-  logic           tx_rdy_i;
+  logic [39:0]    cmd_i;
   logic           exec_i;
+  logic           tx_rdy_i;
   logic           tx_stb_o;
   logic [31:0]    tx_o;
 

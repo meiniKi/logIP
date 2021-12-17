@@ -17,9 +17,8 @@ program ctrl_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
   initial begin
     // Upcounting input signal
     forever begin
-      `SMPL_DELAY duv_if.cb.smpls_i <= smpls_i;
-      duv_if.cb.stb_i               <= 'b1;
-      `CLK_DELAY duv_if.cb.stb_i    <= 'b0;
+      `SMPL_DELAY duv_if.cb.stb_i  <= 'b1;
+      `CLK_DELAY  duv_if.cb.stb_i  <= 'b0;
       smpls_i <= smpls_i + 1;
     end
   end
@@ -43,6 +42,8 @@ program ctrl_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     smpl_trg                    <= smpls_i;
     `CLK_DELAY duv_if.cb.run_i  <= 'b0;
 
+    /* TODO: first discuss architecture
+     *
     @(posedge duv_if.cb.tx_stb_o);
     duv_if.cb.tx_rdy_i          <= 'b0;
     `SCORE_ASSERT(duv_if.cb.tx_o == smpl_trg + 2);
@@ -54,8 +55,7 @@ program ctrl_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     `SCORE_ASSERT(duv_if.cb.tx_o == smpl_trg + 0);
     @(posedge duv_if.cb.tx_stb_o);
     `SCORE_ASSERT(duv_if.cb.tx_o == smpl_trg - 1);
-
-
+    */
 
     // TODO
     `SCORE_DONE

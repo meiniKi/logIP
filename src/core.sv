@@ -8,129 +8,170 @@
 `timescale 1ns/1ps
 
 module core #(
-  parameter DEPTH=5                         //! memory depth / address width
+  parameter  DEPTH =  5,                    //! memory depth / address width
+  localparam WIDTH = 32                     // here, to be used in portlist
 ) (           
   // General            
   input  logic                  clk_i,      //! system clock 
   input  logic                  rst_in,     //! system reset, low active
-  
-  input  logic [39:0]           cmd_i,      //! command data
   input  logic [WIDTH-1:0]      input_i,    //! input to sample
-  input  logic                  tx_rdy_i,   //! transmitter ready flag
-  input  logic [WIDTH-1:0]      mem_i,      //! input from memory
+  // Receive
+  input  logic [39:0]           cmd_i,      //! command data
   input  logic                  exec_i,     //! execute command
-  output logic                  rst_o,      //! reset flag
+  // Memory interface
   output logic                  we_o,       //! write enable
   output logic [DEPTH-1:0]      addr_o,     //! memory address
+  input  logic [WIDTH-1:0]      mem_i,      //! input from memory
   output logic [WIDTH-1:0]      mem_o,      //! output to memory
+  // Transmit
+  input  logic                  tx_rdy_i,   //! transmitter ready flag
   output logic                  tx_stb_o,   //! starts transmitter
-  output logic [WIDTH-1:0]      tx_o        //! data for the transmitter to send
+  output logic [WIDTH-1:0]      tx_o,       //! data for the transmitter to send
+  // TODO: Do we need to soft reset uart/ram/..?
+  output logic                  rst_o       //! reset flag
 );
 
-  localparam WIDTH = 32;
 
-  logic                   rst;
-  logic                   sft_rst;
-  logic                   arm;
-  logic                   set_mask;
-  logic                   set_val;
-  logic                   set_cfg;
-  logic                   set_div;
-  logic                   set_cnt;
-  logic                   set_flgs;
-  logic [1:0]             stg;
-  logic                   xstb;
-  logic                   xon;
-  logic                   xoff;
-  logic [WIDTH-1:0]       smpls;
-  logic                   smpls_stb;
-  logic                   run;
-  logic                   we;
-  logic [DEPTH-1:0]       addr;
-  logic [WIDTH-1:0]       mem_w;
-  logic [WIDTH-1:0]       mem_r;
+  logic               rst;
+  logic               sft_rst;
+
+  logic               arm;
+  logic               id;
+  logic               set_mask;
+  logic               set_val;
+  logic               set_cfg;
+  logic               set_div;
+  logic               set_cnt;
+  logic               set_flgs;
+  logic [1:0]         stg;
+  logic               xstb;
+  logic               xon;
+  logic               xoff;
+  logic [WIDTH-1:0]   smpls;
+  logic               smpls_stb;
+  logic               run;
+
+  logic               we;
+  logic [DEPTH-1:0]   addr;
+  logic [WIDTH-1:0]   mem_w;
+  logic [WIDTH-1:0]   mem_r;
+
+  logic               tx_stb_from_rdback;
+  logic               tx_stb_from_ctrl;
+  logic               tx_sel_ram;
+  logic [WIDTH-1:0]   tx_from_ram;
+  logic [WIDTH-1:0]   tx_from_rdback;
+
+
+  // Connect data from the ram to the output when the
+  // controller wants to report samples back to the client
+  // otherwise, data from rdback can write back
+  //
+  assign tx_o = tx_sel_ram ? tx_from_ram : tx_from_rdback;
+
+  // Theoretically, the strobe signals can be or'ed together,
+  // as reading back configuration data and transmission of
+  // samples to the client don't overlap. However, priority
+  // is given to writing back samples if a client requests 
+  // data while writing back samples.
+  //
+  assign tx_stb_o = tx_sel_ram ? tx_stb_from_ctrl : tx_stb_from_rdback;
+
+  // Assignments kept to consider 'fake-RLE' here: Load/Store like
+  // RLE, but sent to the client as without RLE
+  //
+  assign mem_w        = smpls;
+  assign tx_from_ram  = mem_r;
 
   assign rst   = ~sft_rst && rst_in;
   assign rst_o = rst;
 
   indec i_indec (
-    .clk_i(clk_i),          
-    .rst_in(rst),         
-    .stb_i(exec_i),          
-    .opc_i(cmd_i[39:32]),          
-    .sft_rst_o(sft_rst),      
-    .arm_o(arm),          
-    //.id_o(),                // Not yet used   
-    .set_mask_o(set_mask),     
-    .set_val_o(set_val),      
-    .set_cfg_o(set_cfg),      
-    .set_div_o(set_div),      
-    .set_cnt_o(set_cnt),      
-    .set_flgs_o(set_flgs),     
-    .stg_o(stg), 
-    //.stb_o(),               // Not yet used    
-    .xstb_o(xstb),         
-    .xon_o(xon),          
-    .xoff_o(xoff)        
-    //.rd_meta_o(),           // Not yet used    
-    //.fin_now_o(),           // Not yet used    
-    //.rd_inp_o(),            // Not yet used    
-    //.arm_adv_o(),           // Not yet used    
-    //.set_adv_cfg_o(),       // Not yet used    
-    //.set_adv_dat_o()        // Not yet used    
+    .clk_i            (clk_i),          
+    .rst_in           (rst),         
+    .stb_i            (exec_i),          
+    .opc_i            (cmd_i[39:32]),          
+    .sft_rst_o        (sft_rst),      
+    .arm_o            (arm),          
+    .id_o             (id),
+    .set_mask_o       (set_mask),     
+    .set_val_o        (set_val),      
+    .set_cfg_o        (set_cfg),      
+    .set_div_o        (set_div),      
+    .set_cnt_o        (set_cnt),      
+    .set_flgs_o       (set_flgs),     
+    .stg_o            (stg), 
+    //.stb_o            (),         // Not yet used    
+    .xstb_o           (xstb),         
+    .xon_o            (xon),          
+    .xoff_o           (xoff)        
+    //.rd_meta_o        (),         // Not yet used    
+    //.fin_now_o        (),         // Not yet used    
+    //.rd_inp_o         (),         // Not yet used    
+    //.arm_adv_o        (),         // Not yet used    
+    //.set_adv_cfg_o    (),         // Not yet used    
+    //.set_adv_dat_o    ()          // Not yet used    
   );
 
   sampler i_sampler (
-    .clk_i(clk_i),
-    .rst_in(rst),
-    .fdiv_i(cmd_i[31:8]),
-    .set_div_i(set_div),
-    .data_i(input_i),
-    .smpls_o(smpls),
-    .stb_o(smpls_stb)
+    .clk_i      (clk_i),
+    .rst_in     (rst),
+    .fdiv_i     (cmd_i[31:8]),
+    .set_div_i  (set_div),
+    .data_i     (input_i),
+    .smpls_o    (smpls),
+    .stb_o      (smpls_stb)
   );
 
   trigger i_trigger (
-    .clk_i(clk_i),     
-    .rst_in(rst),    
-    .cmd_i(cmd_i[31:0]),     
-    .stg_i(stg),     
-    .set_mask_i(set_mask),
-    .set_val_i(set_val), 
-    .set_cfg_i(set_cfg), 
-    .arm_i(arm),     
-    .stb_i(smpls_stb),     
-    .smpls_i(smpls),   
-    .run_o(run)  
+    .clk_i      (clk_i),     
+    .rst_in     (rst),    
+    .cmd_i      (cmd_i[31:0]),     
+    .stg_i      (stg),     
+    .set_mask_i (set_mask),
+    .set_val_i  (set_val), 
+    .set_cfg_i  (set_cfg), 
+    .arm_i      (arm),     
+    .stb_i      (smpls_stb),     
+    .smpls_i    (smpls),   
+    .run_o      (run)  
   );
 
   ctrl i_ctrl (
-    .clk_i(clk_i),     
-    .rst_in(rst),    
-    .set_cnt_i(set_cnt), 
-    .cmd_i(cmd_i[31:0]),     
-    .run_i(run),     
-    .stb_i(smpls_stb),     
-    .smpls_i(smpls),   
-    .d_i(mem_r),       
-    .tx_rdy_i(tx_rdy_i),  
-    .we_o(we),      
-    .addr_o(addr),    
-    .q_o(mem_w),       
-    .tx_stb_o(tx_stb_o),  
-    .tx_o(tx_o)
+    .clk_i      (clk_i),     
+    .rst_in     (rst),    
+    .set_cnt_i  (set_cnt), 
+    .cmd_i      (cmd_i[31:0]),
+    .run_i      (run),     
+    .stb_i      (smpls_stb),            
+    .we_o       (we),      
+    .addr_o     (addr),       
+    .tx_rdy_i   (tx_rdy_i),   
+    .tx_stb_o   (tx_stb_from_ctrl),
+    .tx_sel_o   (tx_sel_ram)
+  );
+
+  rdback i_rdback (           
+    .clk_i      (clk_i),       
+    .rst_in     (rst_in),
+    .exec_i     (exec_i),
+    .tx_rdy_i   (tx_rdy_i),
+    .id_i       (id),
+    //.rd_meta_i  (),               // Not yet used 
+    .tx_o       (tx_from_rdback),       
+    .stb_o      (tx_stb_from_rdback)
   );
 
   ramif #(
     .DEPTH(DEPTH)
   ) i_ramif (
-    .clk_i(clk_i),    
-    .rst_in(rst),   
-    .en_i('b1),     
-    .we_i(we),     
-    .addr_i(addr),   
-    .d_i(mem_w),      
-    .q_o(mem_r)     
+    .clk_i      (clk_i),    
+    .rst_in     (rst),   
+    .en_i       ('b1),     
+    .we_i       (we),     
+    .addr_i     (addr),   
+    .d_i        (mem_w),      
+    .q_o        (mem_r)     
   );
 
 endmodule
