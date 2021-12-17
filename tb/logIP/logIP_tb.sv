@@ -46,7 +46,7 @@ module logIP_tb;
     fork
       i_scoreboard.run();
       i_uart8.run_transmitter(duv_if.rx_i);
-      //i_uart8.run_receiver(duv_if.cb.tx_o);
+      i_uart8.run_receiver(duv_if.tx_o);
       // append
     join
   end

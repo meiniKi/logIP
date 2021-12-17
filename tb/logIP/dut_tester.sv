@@ -16,7 +16,7 @@ program logIP_tester ( dut_if.tb duv_if,
     $display("----- Started ------");
 
     // Test run command (short)
-    uart.queue('h55);
+    uart.queue('h84);
 
 
     // Test set trigger mask command (long)

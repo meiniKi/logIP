@@ -25,8 +25,7 @@ interface dut_if ( input logic clk_i,
   default clocking cb @(posedge clk_i);
     default input #1step output #(CLK_PERIOD_HALF-1);
     output    chls_i;
-    input     tx_o;
   endclocking
 
-  modport tb (clocking cb, output rx_i);
+  modport tb (clocking cb, output rx_i, input tx_o);
 endinterface

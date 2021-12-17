@@ -16,7 +16,7 @@ module logIP #( parameter WIDTH = 32,
   output logic              tx_o      //! uart transmit
 );
 
-assign tx_o = 'b0;
+assign tx_o = rx_i;
 // TODO
 
 endmodule

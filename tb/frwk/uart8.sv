@@ -43,20 +43,19 @@ class Uart8;
     end
   endtask
 
-  /* TODO continue
   task run_receiver(ref logic rx);
-    logic [7:0] r;
-    while (rx);
+    logic [7:0] r = 'b0;
+    #90;
+    @(negedge rx);
     #(3 * bit_delay/2);
     repeat(8) begin
-      r[-1] = rx;
       r >>= 1;
+      r[7] = rx;
       #(bit_delay);
     end
-    #(bit_delay); // 1/2 bit_delay buffer to not re-trigger
-    this.mbx_rx.put(byte'(t));
+    #(bit_delay); // 1/2 bit_delay buffer
+    this.mbx_rx.put(byte'(r));
   endtask
-  */
 
 
 endclass
