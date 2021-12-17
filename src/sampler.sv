@@ -5,7 +5,7 @@
  */
 
 `default_nettype wire
-`timescale 1ns/1ps;
+`timescale 1ns/1ps
 module sampler #(parameter CHLS=32)(
   // General
   input  logic            clk_i,      //! system clock
@@ -54,7 +54,7 @@ module sampler #(parameter CHLS=32)(
     if (~rst_in) begin
       r_div <='b0;
     end else if (set_div_i) begin
-      r_div <= fdiv_i;
+      r_div <= {fdiv_i[7:0], fdiv_i[15:8], fdiv_i[23:16]};
     end
   end // always_ff
 
