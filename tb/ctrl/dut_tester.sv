@@ -33,7 +33,7 @@ program ctrl_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
 
     // Configure controller
     `CLK_DELAY  
-    duv_if.cb.cmd_i             <= 'h00040002;
+    duv_if.cb.cmd_i             <= 'h04000200;
     duv_if.cb.set_cnt_i         <= 'b1;
     `CLK_DELAY
     duv_if.cb.set_cnt_i         <= 'b0;
