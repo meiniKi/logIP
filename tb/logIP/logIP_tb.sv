@@ -16,6 +16,7 @@ module logIP_tb;
   logic rst_in = 0;
 
   Scoreboard      i_scoreboard;
+  Client          i_client;
   Uart8           i_uart8;
   score_mbox_t    mbx;       
 
@@ -36,12 +37,13 @@ module logIP_tb;
 
   dut_if duv_if (clk_i, rst_in);
   dut_wrapper duv_wrapper (duv_if.duv);
-  logIP_tester duv_tester(duv_if.tb, clk_i, mbx, i_uart8);
+  logIP_tester duv_tester(duv_if.tb, clk_i, mbx, i_client);
 
   initial begin
     mbx = new();
     i_scoreboard  = new (mbx);
     i_uart8       = new (20); 
+    i_client      = new (i_uart8);
 
     fork
       i_scoreboard.run();

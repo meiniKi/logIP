@@ -13,6 +13,7 @@ class Uart8;
   mxb_uart_t  mbx_rx;
   mxb_uart_t  mbx_tx;
   time        bit_delay;
+  // Todo: possible to store 'ref logic tx' as class member?
 
   function new(time bit_delay);
     this.bit_delay = bit_delay;
@@ -20,8 +21,16 @@ class Uart8;
     this.mbx_tx = new();
   endfunction
 
-  task queue(input uart_item_t b);
+  task transmit(input uart_item_t b);
     this.mbx_tx.put(b);
+  endtask
+
+  function is_receive_empty();
+    return this.mbx_rx.num() == 0;
+  endfunction
+
+  task receive(output uart_item_t r);
+    this.mbx_rx.get(r);
   endtask
 
   task _transmit(input logic [7:0] b, ref logic tx);

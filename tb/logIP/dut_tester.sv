@@ -9,14 +9,14 @@
 program logIP_tester ( dut_if.tb duv_if, 
                       input clk_i, 
                       input score_mbox_t mbx,
-                      input Uart8 uart);
+                      input Client i_client);
   import tb_pkg::*;
 
   initial begin
     $display("----- Started ------");
 
     // Test run command (short)
-    uart.queue('h84);
+    i_client.query_id();
 
 
     // Test set trigger mask command (long)
