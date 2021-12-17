@@ -5,9 +5,9 @@ set path_ip_rtl $path_origin/src
 set path_output ../out
 
 
-create_project -in_memory -part xc7a35tcpg236-1 -force $path_output/logIPDemo
+create_project -in_memory -part xc7a35tcpg236-1 -force $path_output/logIPDemo ../out/
 
-read_ip ../ip/gen_main_clk_1/gen_main_clk_1.xci
+read_ip ../ip/sys_clk_gen/sys_clk_gen.xci
 
 #
 # Generate all the output products
@@ -17,8 +17,10 @@ synth_ip [get_files *.xci]
 # Read sources
 #
 read_verilog [ glob ../src/*.sv ]
-read_verilog [ glob $path_ip_rtl/.*sv ]
+read_verilog [ glob $path_ip_rtl/*.sv ]
 read_xdc ../constr/main.xdc
+
+update_compile_order -verbose
 
 # Synthesis and Implementation
 #

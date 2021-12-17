@@ -19,20 +19,22 @@ set path_tb $path_tb_dir/$dut_name
 # Read design sources
 add_files -fileset sim_1 [ glob $path_rtl/logIP*.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/tuart_*.sv ]
-add_files -fileset sim_1 [ glob $path_rtl/indec.sv ]
-add_files -fileset sim_1 [ glob $path_rtl/syncro.sv ]
-add_files -fileset sim_1 [ glob $path_rtl/sampler.sv ]
-add_files -fileset sim_1 [ glob $path_rtl/stage.sv ]
-add_files -fileset sim_1 [ glob $path_rtl/ctrl.sv ]
-add_files -fileset sim_1 [ glob $path_rtl/ramif.sv ]
-add_files -fileset sim_1 [ glob $path_rtl/lutram.sv ]
-add_files -fileset sim_1 [ glob $path_rtl/trigger.sv ]
-add_files -fileset sim_1 [ glob $path_rtl/core.sv ]
+add_files -fileset sim_1        $path_rtl/indec.sv
+add_files -fileset sim_1        $path_rtl/syncro.sv
+add_files -fileset sim_1        $path_rtl/sampler.sv
+add_files -fileset sim_1        $path_rtl/stage.sv
+add_files -fileset sim_1        $path_rtl/ctrl.sv
+add_files -fileset sim_1        $path_rtl/ramif.sv
+add_files -fileset sim_1        $path_rtl/lutram.sv
+add_files -fileset sim_1        $path_rtl/trigger.sv
+add_files -fileset sim_1        $path_rtl/core.sv
 
 # Read testbench framework
 add_files -fileset sim_1 [ glob $path_tb_dir/frwk/*.svh ]
 add_files -fileset sim_1 [ glob $path_tb_dir/frwk/*.sv ]
-add_files -fileset sim_1 [ glob $path_tb_dir/frwk/client/*.sv ]
+add_files -fileset sim_1 $path_tb_dir/frwk/client/uart8.svh
+add_files -fileset sim_1 $path_tb_dir/frwk/client/uart8.sv
+add_files -fileset sim_1 $path_tb_dir/frwk/client/client.sv
 
 # Read testbench
 add_files -fileset sim_1 [ glob $path_tb/*.sv ]

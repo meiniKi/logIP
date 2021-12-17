@@ -5,7 +5,7 @@
  */
 
 `default_nettype wire
-`timescale 1ns/1ps;
+`timescale 1ns/1ps
 module ctrl #(
   parameter DEPTH=5                         //! memory depth / address width
 ) (           

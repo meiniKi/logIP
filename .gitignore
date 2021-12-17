@@ -5,4 +5,8 @@ fv/check*
 fv/artifacts/*
 fv/verific/artifacts/*
 fv/verific/source.me
-out/
+out/*
+
+# Demos
+demo/basys3/scripts/.*
+demo.gen/

@@ -1,0 +1,628 @@
+#-----------------------------------------------------------
+# Vivado v2021.2 (64-bit)
+# SW Build 3367213 on Tue Oct 19 02:47:39 MDT 2021
+# IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
+# Start of session at: Fri Dec 17 18:25:02 2021
+# Process ID: 21044
+# Current directory: /home/user/Documents/repos/logIP/demo/basys3/scripts
+# Command line: vivado -mode batch -source impl.tcl
+# Log file: /home/user/Documents/repos/logIP/demo/basys3/scripts/vivado.log
+# Journal file: /home/user/Documents/repos/logIP/demo/basys3/scripts/vivado.jou
+# Running On: user-ThinkPad-T480, OS: Linux, CPU Frequency: 1900.000 MHz, CPU Physical cores: 4, Host memory: 8208 MB
+#-----------------------------------------------------------
+source impl.tcl
+# set path_origin ../../..
+# set path_ip_rtl $path_origin/src
+# set path_output ../out
+# create_project -in_memory -part xc7a35tcpg236-1 -force $path_output/logIPDemo ../out/
+# read_ip ../ip/sys_clk_gen/sys_clk_gen.xci
+WARNING: [IP_Flow 19-8049] The IP file '/home/user/Documents/repos/logIP/demo/basys3/ip/sys_clk_gen/sys_clk_gen.xci' has been moved from its original location, as a result the outputs for this IP will now be generated in '/home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen'. Alternatively a copy of the IP can be imported into the project using the import_ip command.
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/tools/Xilinx/Vivado/2021.2/data/ip'.
+# generate_target all [get_files *.xci]
+# synth_ip [get_files *.xci]
+INFO: [Vivado 12-3435] The given sub-design is up-to-date, no action was taken.  If a regeneration is desired, use the '-force' option: /home/user/Documents/repos/logIP/demo/basys3/ip/sys_clk_gen/sys_clk_gen.xci
+INFO: [Vivado 12-3441] generate_netlist_ip - operation complete
+# read_verilog [ glob ../src/*.sv ]
+# read_verilog [ glob $path_ip_rtl/*.sv ]
+# read_xdc ../constr/main.xdc
+# update_compile_order -verbose
+# synth_design -top top
+Command: synth_design -top top
+Starting synth_design
+Using part: xc7a35tcpg236-1
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Device 21-403] Loading part xc7a35tcpg236-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 21189
+WARNING: [Synth 8-6901] identifier 'WIDTH' is used before its declaration [/home/user/Documents/repos/logIP/src/core.sv:18]
+WARNING: [Synth 8-6901] identifier 'WIDTH' is used before its declaration [/home/user/Documents/repos/logIP/src/core.sv:20]
+WARNING: [Synth 8-6901] identifier 'WIDTH' is used before its declaration [/home/user/Documents/repos/logIP/src/core.sv:25]
+WARNING: [Synth 8-6901] identifier 'WIDTH' is used before its declaration [/home/user/Documents/repos/logIP/src/core.sv:27]
+WARNING: [Synth 8-6901] identifier 'WIDTH' is used before its declaration [/home/user/Documents/repos/logIP/src/ctrl.sv:17]
+WARNING: [Synth 8-6901] identifier 'WIDTH' is used before its declaration [/home/user/Documents/repos/logIP/src/ctrl.sv:20]
+WARNING: [Synth 8-6901] identifier 'WIDTH' is used before its declaration [/home/user/Documents/repos/logIP/src/ctrl.sv:21]
+WARNING: [Synth 8-6901] identifier 'WIDTH' is used before its declaration [/home/user/Documents/repos/logIP/src/ctrl.sv:25]
+WARNING: [Synth 8-6901] identifier 'WIDTH' is used before its declaration [/home/user/Documents/repos/logIP/src/ctrl.sv:27]
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 2694.629 ; gain = 0.000 ; free physical = 284 ; free virtual = 4956
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'top' [/home/user/Documents/repos/logIP/demo/basys3/src/top.sv:7]
+INFO: [Synth 8-6157] synthesizing module 'sys_clk_gen' [/home/user/Documents/repos/logIP/demo/basys3/scripts/.Xil/Vivado-21044-user-ThinkPad-T480/realtime/sys_clk_gen_stub.v:5]
+INFO: [Synth 8-6155] done synthesizing module 'sys_clk_gen' (1#1) [/home/user/Documents/repos/logIP/demo/basys3/scripts/.Xil/Vivado-21044-user-ThinkPad-T480/realtime/sys_clk_gen_stub.v:5]
+INFO: [Synth 8-6157] synthesizing module 'logIP' [/home/user/Documents/repos/logIP/src/logIP.sv:10]
+	Parameter WIDTH bound to: 32 - type: integer 
+	Parameter UART_CLK_PER_BIT bound to: 868 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'logIP' (2#1) [/home/user/Documents/repos/logIP/src/logIP.sv:10]
+WARNING: [Synth 8-3848] Net rst in module/entity top does not have driver. [/home/user/Documents/repos/logIP/demo/basys3/src/top.sv:21]
+WARNING: [Synth 8-3848] Net chls in module/entity top does not have driver. [/home/user/Documents/repos/logIP/demo/basys3/src/top.sv:23]
+INFO: [Synth 8-6155] done synthesizing module 'top' (3#1) [/home/user/Documents/repos/logIP/demo/basys3/src/top.sv:7]
+WARNING: [Synth 8-7129] Port clk_i in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rst_in in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[31] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[30] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[29] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[28] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[27] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[26] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[25] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[24] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[23] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[22] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[21] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[20] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[19] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[18] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[17] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[16] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[15] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[14] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[13] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[12] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[11] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[10] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[9] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[8] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[7] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[6] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[5] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[4] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[3] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[2] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[1] in module logIP is either unconnected or has no load
+WARNING: [Synth 8-7129] Port chls_i[0] in module logIP is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2694.629 ; gain = 0.000 ; free physical = 252 ; free virtual = 4871
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 2694.629 ; gain = 0.000 ; free physical = 1175 ; free virtual = 5793
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 2694.629 ; gain = 0.000 ; free physical = 1175 ; free virtual = 5793
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2694.629 ; gain = 0.000 ; free physical = 1173 ; free virtual = 5792
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen/sys_clk_gen_in_context.xdc] for cell 'i_sys_clk_gen'
+Finished Parsing XDC File [/home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen/sys_clk_gen_in_context.xdc] for cell 'i_sys_clk_gen'
+Parsing XDC File [/home/user/Documents/repos/logIP/demo/basys3/constr/main.xdc]
+Finished Parsing XDC File [/home/user/Documents/repos/logIP/demo/basys3/constr/main.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/home/user/Documents/repos/logIP/demo/basys3/constr/main.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/top_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/top_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2750.590 ; gain = 0.000 ; free physical = 1094 ; free virtual = 5704
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2750.590 ; gain = 0.000 ; free physical = 1094 ; free virtual = 5704
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1156 ; free virtual = 5766
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a35tcpg236-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1154 ; free virtual = 5764
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property IO_BUFFER_TYPE = NONE for clk. (constraint file  /home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen/sys_clk_gen_in_context.xdc, line 3).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for clk. (constraint file  /home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen/sys_clk_gen_in_context.xdc, line 4).
+Applied set_property KEEP_HIERARCHY = SOFT for i_sys_clk_gen. (constraint file  auto generated constraint).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1157 ; free virtual = 5767
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1162 ; free virtual = 5773
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 90 (col length:60)
+BRAMs: 100 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1150 ; free virtual = 5764
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1034 ; free virtual = 5648
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1034 ; free virtual = 5647
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1031 ; free virtual = 5644
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1043 ; free virtual = 5656
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1042 ; free virtual = 5656
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1041 ; free virtual = 5655
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1041 ; free virtual = 5655
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1041 ; free virtual = 5655
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1041 ; free virtual = 5655
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+--------------+----------+
+|      |BlackBox name |Instances |
++------+--------------+----------+
+|1     |sys_clk_gen   |         1|
++------+--------------+----------+
+
+Report Cell Usage: 
++------+------------+------+
+|      |Cell        |Count |
++------+------------+------+
+|1     |sys_clk_gen |     1|
+|2     |IBUF        |     1|
+|3     |OBUF        |     1|
++------+------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1041 ; free virtual = 5655
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 1 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:19 ; elapsed = 00:00:19 . Memory (MB): peak = 2750.590 ; gain = 0.000 ; free physical = 1095 ; free virtual = 5708
+Synthesis Optimization Complete : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 2750.590 ; gain = 55.961 ; free physical = 1095 ; free virtual = 5708
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Project 1-454] Reading design checkpoint '/home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen.dcp' for cell 'i_sys_clk_gen'
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2750.590 ; gain = 0.000 ; free physical = 1088 ; free virtual = 5701
+INFO: [Netlist 29-17] Analyzing 1 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2021.2
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Parsing XDC File [/home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen_board.xdc] for cell 'i_sys_clk_gen/inst'
+Finished Parsing XDC File [/home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen_board.xdc] for cell 'i_sys_clk_gen/inst'
+Parsing XDC File [/home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen.xdc] for cell 'i_sys_clk_gen/inst'
+INFO: [Timing 38-35] Done setting XDC timing constraints. [/home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen.xdc:57]
+INFO: [Timing 38-2] Deriving generated clocks [/home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen.xdc:57]
+Finished Parsing XDC File [/home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen.xdc] for cell 'i_sys_clk_gen/inst'
+Parsing XDC File [/home/user/Documents/repos/logIP/demo/basys3/constr/main.xdc]
+Finished Parsing XDC File [/home/user/Documents/repos/logIP/demo/basys3/constr/main.xdc]
+INFO: [Project 1-538] Using original IP XDC constraints instead of the XDC constraints in dcp '/home/user/Documents/repos/logIP/demo.gen/sources_1/ip/sys_clk_gen/sys_clk_gen.dcp'
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2969.586 ; gain = 0.000 ; free physical = 794 ; free virtual = 5411
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete, checksum: 2a339a50
+INFO: [Common 17-83] Releasing license: Synthesis
+26 Infos, 46 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:31 ; elapsed = 00:00:27 . Memory (MB): peak = 2969.586 ; gain = 275.023 ; free physical = 989 ; free virtual = 5607
+# opt_design
+Command: opt_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7a35t'
+Running DRC as a precondition to command opt_design
+
+Starting DRC Task
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Project 1-461] DRC finished with 0 Errors
+INFO: [Project 1-462] Please refer to the DRC report (report_drc) for more information.
+
+Time (s): cpu = 00:00:00.65 ; elapsed = 00:00:00.56 . Memory (MB): peak = 3033.617 ; gain = 64.031 ; free physical = 961 ; free virtual = 5602
+
+Starting Cache Timing Information Task
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Timing 38-2] Deriving generated clocks
+Ending Cache Timing Information Task | Checksum: dc0a5a64
+
+Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 958 ; free virtual = 5600
+
+Starting Logic Optimization Task
+
+Phase 1 Retarget
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Opt 31-49] Retargeted 0 cell(s).
+Phase 1 Retarget | Checksum: dc0a5a64
+
+Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 732 ; free virtual = 5401
+INFO: [Opt 31-389] Phase Retarget created 0 cells and removed 0 cells
+INFO: [Opt 31-1021] In phase Retarget, 1 netlist objects are constrained preventing optimization. Please run opt_design with -debug_log to get more detail. 
+
+Phase 2 Constant propagation
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Phase 2 Constant propagation | Checksum: dc0a5a64
+
+Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.02 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 732 ; free virtual = 5401
+INFO: [Opt 31-389] Phase Constant propagation created 0 cells and removed 0 cells
+
+Phase 3 Sweep
+Phase 3 Sweep | Checksum: 149c0f734
+
+Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.02 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 732 ; free virtual = 5401
+INFO: [Opt 31-389] Phase Sweep created 0 cells and removed 6 cells
+
+Phase 4 BUFG optimization
+Phase 4 BUFG optimization | Checksum: 149c0f734
+
+Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.02 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 732 ; free virtual = 5401
+INFO: [Opt 31-662] Phase BUFG optimization created 0 cells of which 0 are BUFGs and removed 0 cells.
+
+Phase 5 Shift Register Optimization
+INFO: [Opt 31-1064] SRL Remap converted 0 SRLs to 0 registers and converted 0 registers of register chains to 0 SRLs
+Phase 5 Shift Register Optimization | Checksum: 149c0f734
+
+Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.02 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 732 ; free virtual = 5401
+INFO: [Opt 31-389] Phase Shift Register Optimization created 0 cells and removed 0 cells
+
+Phase 6 Post Processing Netlist
+Phase 6 Post Processing Netlist | Checksum: 149c0f734
+
+Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.02 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 732 ; free virtual = 5401
+INFO: [Opt 31-389] Phase Post Processing Netlist created 0 cells and removed 0 cells
+Opt_design Change Summary
+=========================
+
+
+-------------------------------------------------------------------------------------------------------------------------
+|  Phase                        |  #Cells created  |  #Cells Removed  |  #Constrained objects preventing optimizations  |
+-------------------------------------------------------------------------------------------------------------------------
+|  Retarget                     |               0  |               0  |                                              1  |
+|  Constant propagation         |               0  |               0  |                                              0  |
+|  Sweep                        |               0  |               6  |                                              0  |
+|  BUFG optimization            |               0  |               0  |                                              0  |
+|  Shift Register Optimization  |               0  |               0  |                                              0  |
+|  Post Processing Netlist      |               0  |               0  |                                              0  |
+-------------------------------------------------------------------------------------------------------------------------
+
+
+
+Starting Connectivity Check Task
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 732 ; free virtual = 5401
+Ending Logic Optimization Task | Checksum: 1a13c5d57
+
+Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.03 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 733 ; free virtual = 5401
+
+Starting Power Optimization Task
+INFO: [Pwropt 34-132] Skipping clock gating for clocks with a period < 2.00 ns.
+Ending Power Optimization Task | Checksum: 1a13c5d57
+
+Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 935 ; free virtual = 5592
+
+Starting Final Cleanup Task
+Ending Final Cleanup Task | Checksum: 1a13c5d57
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 935 ; free virtual = 5592
+
+Starting Netlist Obfuscation Task
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 935 ; free virtual = 5592
+Ending Netlist Obfuscation Task | Checksum: 1a13c5d57
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3033.617 ; gain = 0.000 ; free physical = 935 ; free virtual = 5592
+INFO: [Common 17-83] Releasing license: Implementation
+19 Infos, 0 Warnings, 0 Critical Warnings and 0 Errors encountered.
+opt_design completed successfully
+# place_design
+Command: place_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7a35t'
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+Running DRC as a precondition to command place_design
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+
+Starting Placer Task
+INFO: [Place 30-611] Multithreading enabled for place_design using a maximum of 8 CPUs
+
+Phase 1 Placer Initialization
+
+Phase 1.1 Placer Initialization Netlist Sorting
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3056.727 ; gain = 0.000 ; free physical = 963 ; free virtual = 5580
+Phase 1.1 Placer Initialization Netlist Sorting | Checksum: 190e5338e
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.05 . Memory (MB): peak = 3056.727 ; gain = 0.000 ; free physical = 963 ; free virtual = 5580
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3056.727 ; gain = 0.000 ; free physical = 963 ; free virtual = 5580
+
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device | Checksum: 190e5338e
+
+Time (s): cpu = 00:00:00.47 ; elapsed = 00:00:00.17 . Memory (MB): peak = 3080.738 ; gain = 24.012 ; free physical = 968 ; free virtual = 5586
+
+Phase 1.3 Build Placer Netlist Model
+Phase 1.3 Build Placer Netlist Model | Checksum: 24dcb23cc
+
+Time (s): cpu = 00:00:00.97 ; elapsed = 00:00:00.26 . Memory (MB): peak = 3112.754 ; gain = 56.027 ; free physical = 969 ; free virtual = 5586
+
+Phase 1.4 Constrain Clocks/Macros
+Phase 1.4 Constrain Clocks/Macros | Checksum: 24dcb23cc
+
+Time (s): cpu = 00:00:00.97 ; elapsed = 00:00:00.26 . Memory (MB): peak = 3112.754 ; gain = 56.027 ; free physical = 969 ; free virtual = 5586
+Phase 1 Placer Initialization | Checksum: 24dcb23cc
+
+Time (s): cpu = 00:00:00.97 ; elapsed = 00:00:00.26 . Memory (MB): peak = 3112.754 ; gain = 56.027 ; free physical = 969 ; free virtual = 5586
+
+Phase 2 Final Placement Cleanup
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 969 ; free virtual = 5586
+
+Time (s): cpu = 00:00:00.98 ; elapsed = 00:00:00.27 . Memory (MB): peak = 3112.754 ; gain = 56.027 ; free physical = 969 ; free virtual = 5586
+INFO: [Place 30-281] No place-able instance is found; design doesn't contain any instance or all instances are placed
+Ending Placer Task | Checksum: 190e5338e
+
+Time (s): cpu = 00:00:00.98 ; elapsed = 00:00:00.27 . Memory (MB): peak = 3112.754 ; gain = 56.027 ; free physical = 969 ; free virtual = 5586
+INFO: [Common 17-83] Releasing license: Implementation
+11 Infos, 0 Warnings, 0 Critical Warnings and 0 Errors encountered.
+place_design completed successfully
+# route_design
+Command: route_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7a35t'
+Running DRC as a precondition to command route_design
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+
+
+Starting Routing Task
+INFO: [Route 35-254] Multithreading enabled for route_design using a maximum of 8 CPUs
+
+Phase 1 Build RT Design
+Checksum: PlaceDB: a7ea9bb0 ConstDB: 0 ShapeSum: e8fa97de RouteDB: 0
+Post Restoration Checksum: NetGraph: 746ec8d7 NumContArr: ef9a04bb Constraints: 0 Timing: 0
+Phase 1 Build RT Design | Checksum: 16408cd92
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:13 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 823 ; free virtual = 5475
+
+Phase 2 Router Initialization
+
+Phase 2.1 Create Timer
+Phase 2.1 Create Timer | Checksum: 16408cd92
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:13 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 822 ; free virtual = 5474
+
+Phase 2.2 Fix Topology Constraints
+Phase 2.2 Fix Topology Constraints | Checksum: 16408cd92
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:13 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 790 ; free virtual = 5443
+
+Phase 2.3 Pre Route Cleanup
+Phase 2.3 Pre Route Cleanup | Checksum: 16408cd92
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:13 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 790 ; free virtual = 5443
+
+Phase 2.4 Update Timing
+Phase 2.4 Update Timing | Checksum: 16408cd92
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:13 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 789 ; free virtual = 5440
+
+Router Utilization Summary
+  Global Vertical Routing Utilization    = 0 %
+  Global Horizontal Routing Utilization  = 0 %
+  Routable Net Status*
+  *Does not include unroutable nets such as driverless and loadless.
+  Run report_route_status for detailed report.
+  Number of Failed Nets               = 1
+    (Failed Nets is the sum of unrouted and partially routed nets)
+  Number of Unrouted Nets             = 1
+  Number of Partially Routed Nets     = 0
+  Number of Node Overlaps             = 0
+
+Phase 2 Router Initialization | Checksum: 16408cd92
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 788 ; free virtual = 5439
+
+Phase 3 Initial Routing
+
+Phase 3.1 Global Routing
+Phase 3.1 Global Routing | Checksum: 16408cd92
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 788 ; free virtual = 5439
+ Number of Nodes with overlaps = 0
+Phase 3 Initial Routing | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 789 ; free virtual = 5440
+
+Phase 4 Rip-up And Reroute
+
+Phase 4.1 Global Iteration 0
+Phase 4.1 Global Iteration 0 | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 789 ; free virtual = 5440
+Phase 4 Rip-up And Reroute | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 789 ; free virtual = 5440
+
+Phase 5 Delay and Skew Optimization
+
+Phase 5.1 Delay CleanUp
+Phase 5.1 Delay CleanUp | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 790 ; free virtual = 5441
+
+Phase 5.2 Clock Skew Optimization
+Phase 5.2 Clock Skew Optimization | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 790 ; free virtual = 5441
+Phase 5 Delay and Skew Optimization | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 790 ; free virtual = 5441
+
+Phase 6 Post Hold Fix
+
+Phase 6.1 Hold Fix Iter
+
+Phase 6.1.1 Update Timing
+Phase 6.1.1 Update Timing | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 790 ; free virtual = 5441
+Phase 6.1 Hold Fix Iter | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 790 ; free virtual = 5441
+Phase 6 Post Hold Fix | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 790 ; free virtual = 5441
+
+Phase 7 Route finalize
+
+Router Utilization Summary
+  Global Vertical Routing Utilization    = 7.97257e-05 %
+  Global Horizontal Routing Utilization  = 0.000130141 %
+  Routable Net Status*
+  *Does not include unroutable nets such as driverless and loadless.
+  Run report_route_status for detailed report.
+  Number of Failed Nets               = 0
+    (Failed Nets is the sum of unrouted and partially routed nets)
+  Number of Unrouted Nets             = 0
+  Number of Partially Routed Nets     = 0
+  Number of Node Overlaps             = 0
+
+Phase 7 Route finalize | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 789 ; free virtual = 5440
+
+Phase 8 Verifying routed nets
+
+ Verification completed successfully
+Phase 8 Verifying routed nets | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3112.754 ; gain = 0.000 ; free physical = 787 ; free virtual = 5439
+
+Phase 9 Depositing Routes
+Phase 9 Depositing Routes | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3120.785 ; gain = 8.031 ; free physical = 788 ; free virtual = 5439
+
+Phase 10 Post Router Timing
+Phase 10 Post Router Timing | Checksum: be10146a
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3120.785 ; gain = 8.031 ; free physical = 788 ; free virtual = 5439
+INFO: [Route 35-16] Router Completed Successfully
+
+Time (s): cpu = 00:00:16 ; elapsed = 00:00:14 . Memory (MB): peak = 3120.785 ; gain = 8.031 ; free physical = 819 ; free virtual = 5471
+
+Routing Is Done.
+INFO: [Common 17-83] Releasing license: Implementation
+8 Infos, 0 Warnings, 0 Critical Warnings and 0 Errors encountered.
+route_design completed successfully
+route_design: Time (s): cpu = 00:00:17 ; elapsed = 00:00:14 . Memory (MB): peak = 3120.785 ; gain = 8.031 ; free physical = 819 ; free virtual = 5471
+# report_timing_summary -file $path_output/post_route_timing_summary.rpt
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -1, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 8 CPUs
+# report_utilization -file $path_output/post_route_util.rpt
+# write_bitstream $path_output/design.bit
+Command: write_bitstream ../out/design.bit
+Attempting to get a license for feature 'Implementation' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7a35t'
+Running DRC as a precondition to command write_bitstream
+INFO: [IP_Flow 19-1839] IP Catalog is up to date.
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Vivado 12-3199] DRC finished with 0 Errors
+INFO: [Vivado 12-3200] Please refer to the DRC report (report_drc) for more information.
+INFO: [Designutils 20-2272] Running write_bitstream with 8 threads.
+Loading data files...
+Loading site data...
+Loading route data...
+Processing options...
+Creating bitmap...
+Creating bitstream...
+Writing bitstream ../out/design.bit...
+INFO: [Vivado 12-1842] Bitgen Completed Successfully.
+INFO: [Project 1-1876] WebTalk data collection is mandatory when using a ULT device. To see the specific WebTalk data collected for your design, open the usage_statistics_webtalk.html or usage_statistics_webtalk.xml file in the implementation directory.
+INFO: [Common 17-83] Releasing license: Implementation
+9 Infos, 0 Warnings, 0 Critical Warnings and 0 Errors encountered.
+write_bitstream completed successfully
+write_bitstream: Time (s): cpu = 00:00:07 ; elapsed = 00:00:10 . Memory (MB): peak = 3324.145 ; gain = 203.359 ; free physical = 761 ; free virtual = 5421
+INFO: [Common 17-206] Exiting Vivado at Fri Dec 17 18:26:12 2021...
