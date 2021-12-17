@@ -9,4 +9,6 @@ out/*
 
 # Demos
 demo/basys3/scripts/.*
+# Push reports for comparison, exlude bitfile due to size
+demo/basys3/out/design.bit
 demo.gen/
