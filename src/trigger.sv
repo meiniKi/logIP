@@ -44,18 +44,18 @@ import logIP_pkg::*;
     assign set_cfg[i]   = stg_i == i ? set_cfg_i : 'b0;
 
     stage i_stage (
-      .clk_i(clk_i),
-      .rst_in(rst_in),
-      .cmd_i(cmd_i),
-      .set_mask_i(set_mask[i]),
-      .set_val_i(set_val[i]),
-      .set_cfg_i(set_cfg[i]),
-      .arm_i(arm_i),
-      .stb_i(stb_i),
-      .smpls_i(smpls_i),
-      .lvl_i(r_lvl),
-      .match_o(match[i]),
-      .run_o(run[i])
+      .clk_i      (clk_i),
+      .rst_in     (rst_in),
+      .cmd_i      (cmd_i),
+      .set_mask_i (set_mask[i]),
+      .set_val_i  (set_val[i]),
+      .set_cfg_i  (set_cfg[i]),
+      .arm_i      (arm_i),
+      .stb_i      (stb_i),
+      .smpls_i    (smpls_i),
+      .lvl_i      (r_lvl),
+      .match_o    (match[i]),
+      .run_o      (run[i])
     );  
   end
     

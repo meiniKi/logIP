@@ -66,12 +66,15 @@ module stage (
   logic             trg_match;
 
   // Vector to compare the trg_vals to
+  //
   assign comp_vec = r_ser ? smpls_shft : smpls_i;
 
   // For convenience to ease the access of flag bits
+  //
   assign cmd_bytes = cmd_i;
 
   // High, when trigger (+mask) is matched
+  //
   assign trg_match = ~(|((comp_vec ^ r_val) & r_mask));
 
 
@@ -82,13 +85,22 @@ module stage (
     run_o           = 'b0;
     dly_cnt_next    = dly_cnt;
     case(state)
-      IDLE:   if (arm_i)      state_next = ARMD;
+
+      // Idle, waiting to be armed.
+      //
+      IDLE: if (arm_i) state_next = ARMD;
+
+      // Armed, continuously checking trigger condition.
+      //
       ARMD: begin
         if (trg_match && lvl_i >= r_lvl) begin
           state_next = MTCHD;
           dly_cnt_next = 'b0; 
         end
       end
+
+      // Trigger condition matches.
+      //
       MTCHD:
         if (dly_cnt == r_dly) begin
           state_next  = IDLE;
@@ -97,8 +109,10 @@ module stage (
         end else if (stb_i) begin
           dly_cnt_next = dly_cnt + 1;
         end
+
       default:  state_next = IDLE;
     endcase
+
   end // always_comb
 
 
@@ -135,9 +149,9 @@ module stage (
       if (set_mask_i) r_mask  <= cmd_i[31:0];
       if (set_val_i)  r_val   <= cmd_i[31:0];
       if (set_cfg_i)  begin
-        {r_ser, r_act}        <= {cmd_bytes[0][2],    cmd_bytes[0][3]};
-        r_chl                 <= {cmd_bytes[0][0],    cmd_bytes[1][7:4]};
-        r_dly                 <= {cmd_bytes[2][7:0],  cmd_bytes[3][7:0]};
+        {r_ser, r_act}        <= {cmd_bytes[0][2],   cmd_bytes[0][3]};
+        r_chl                 <= {cmd_bytes[0][0],   cmd_bytes[1][7:4]};
+        r_dly                 <= {cmd_bytes[2][7:0], cmd_bytes[3][7:0]};
         r_lvl                 <= cmd_bytes[1][1:0];
       end
     end
