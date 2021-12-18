@@ -132,10 +132,9 @@ module ctrl #(
       rd_cnt    <= 'b1;
       dly_cnt   <= 'b1;
     end else if (set_cnt_i) begin
-      rd_cnt    <= `PARSE_RD_CNT(cmd_i);
-      dly_cnt   <= `PARSE_DLY_CNT(cmd_i);
+      rd_cnt    <= {cmd_i[23:16], cmd_i[31:24]};
+      dly_cnt   <= {cmd_i[7:0], cmd_i[15:8]};
     end
   end // always_ff
-
 
 endmodule

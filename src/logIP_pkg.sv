@@ -224,15 +224,6 @@ package logIP_pkg;
 
   typedef enum logic {XON, XOFF} xcrtl_t;
 
-  //
-  // Helpers to parse the command to the right values
-  // and make it more readable.
-  //
-  // TODO: discuss: makes it things better or even less readable?
-  //
-  `define PARSE_RD_CNT(CMD)   {cmd_i[23:16], cmd_i[31:24]}
-  `define PARSE_DLY_CNT(CMD)  {cmd_i[7:0], cmd_i[15:8]}
-
 endpackage
 
 

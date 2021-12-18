@@ -8,7 +8,8 @@ fv/verific/source.me
 out/*
 
 # Demos
-demo/basys3/scripts/.*
+demo/basys3/scripts/viv*
+demo/basys3/scripts/.Xil
 # Push reports for comparison, exlude bitfile due to size
 demo/basys3/out/design.bit
 demo.gen/

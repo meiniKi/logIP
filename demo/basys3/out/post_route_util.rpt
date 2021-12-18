@@ -1,7 +1,7 @@
 Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2021.2 (lin64) Build 3367213 Tue Oct 19 02:47:39 MDT 2021
-| Date         : Fri Dec 17 18:26:03 2021
+| Date         : Sat Dec 18 18:59:58 2021
 | Host         : user-ThinkPad-T480 running 64-bit Ubuntu 20.04.3 LTS
 | Command      : report_utilization -file ../out/post_route_util.rpt
 | Design       : top
@@ -112,8 +112,8 @@ Table of Contents
 +-----------------------------+------+-------+------------+-----------+-------+
 |          Site Type          | Used | Fixed | Prohibited | Available | Util% |
 +-----------------------------+------+-------+------------+-----------+-------+
-| Bonded IOB                  |    2 |     2 |          0 |       106 |  1.89 |
-|   IOB Master Pads           |    1 |       |            |           |       |
+| Bonded IOB                  |    1 |     1 |          0 |       106 |  0.94 |
+|   IOB Master Pads           |    0 |       |            |           |       |
 |   IOB Slave Pads            |    1 |       |            |           |       |
 | Bonded IPADs                |    0 |     0 |          0 |        10 |  0.00 |
 | Bonded OPADs                |    0 |     0 |          0 |         4 |  0.00 |
@@ -174,7 +174,6 @@ Table of Contents
 | Ref Name | Used | Functional Category |
 +----------+------+---------------------+
 | OBUF     |    1 |                  IO |
-| IBUF     |    1 |                  IO |
 +----------+------+---------------------+
 
 

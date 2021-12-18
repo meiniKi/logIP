@@ -16,7 +16,7 @@ synth_ip [get_files *.xci]
 
 # Read sources
 #
-read_verilog [ glob ../src/*.sv ]
+read_verilog        ../src/top.sv
 read_verilog [ glob $path_ip_rtl/*.sv ]
 read_xdc ../constr/main.xdc
 
@@ -36,7 +36,7 @@ report_utilization -file $path_output/post_route_util.rpt
 
 # Write Bitfile
 #
-write_bitstream $path_output/design.bit
+write_bitstream -force $path_output/design.bit
 
 # Append here configuration memory
 #
