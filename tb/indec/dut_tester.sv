@@ -22,14 +22,14 @@ program indec_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     // Test run command (short)
     `BUS_BIT_DELAY duv_if.cb.opc_i <= 'h01;
     duv_if.cb.stb_i <= 'b1;
-    @(posedge duv_if.cb.stb_o);
+    @(posedge clk_i);
     `SCORE_ASSERT(duv_if.cb.arm_o == 'b1);    
     duv_if.cb.stb_i <= 'b0;
 
     // Test set trigger mask command (long)
     `BUS_BIT_DELAY duv_if.cb.opc_i <= 'b1100??00;
     duv_if.cb.stb_i <= 'b1;
-    @(posedge duv_if.cb.stb_o);
+    @(posedge clk_i);
     `SCORE_ASSERT(duv_if.cb.set_mask_o == 'b1);    
     duv_if.cb.stb_i <= 'b0;
 

@@ -42,7 +42,7 @@ module logIP_tb;
   initial begin
     mbx = new();
     i_scoreboard  = new (mbx);
-    i_uart8       = new (20); 
+    i_uart8       = new (30); 
     i_client      = new (i_uart8);
 
     fork

@@ -25,9 +25,7 @@ interface dut_if ( input logic clk_i,
   logic           set_cnt_o;
   logic           set_flgs_o;
   logic [ 1:0]    stg_o;
-  logic           stb_o;
 
-  logic           xstb_o;
   logic           xon_o;
   logic           xoff_o;
  
@@ -52,14 +50,12 @@ interface dut_if ( input logic clk_i,
                         set_cnt_o,
                         set_flgs_o,
                         stg_o,
-                        stb_o,
                         rd_meta_o,
                         fin_now_o,
                         rd_inp_o,
                         arm_adv_o,
                         set_adv_cfg_o,
                         set_adv_dat_o,
-                        xstb_o,
                         xon_o,
                         xoff_o);
 
@@ -77,14 +73,12 @@ interface dut_if ( input logic clk_i,
     input     set_cnt_o;
     input     set_flgs_o;
     input     stg_o;
-    input     stb_o;
     input     rd_meta_o;
     input     fin_now_o;
     input     rd_inp_o;
     input     arm_adv_o;
     input     set_adv_cfg_o;
     input     set_adv_dat_o;
-    input     xstb_o;
     input     xon_o;
     input     xoff_o;
   endclocking

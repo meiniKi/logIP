@@ -14,6 +14,9 @@ program core_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
 
   logic [31:0] counter      = 'b0;
 
+  // TODO
+
+  /*
   task setStageMask(
     input [1:0] stage, 
     input [31:0] mask
@@ -97,7 +100,7 @@ program core_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
       counter <= counter + 1;
     end
   end
-
+  */ 
   initial begin
     $timeformat(-9, 2, " ns", 12);
     $display("##### Start #####");    
@@ -108,8 +111,8 @@ program core_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     duv_if.cb.exec_i      <= 'b0;
 
     `WAIT_CYCLES(10, clk_i);
-    
-    testCase1();
+ 
+    //testCase1();
 
     `SCORE_DONE
       
@@ -117,10 +120,12 @@ program core_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     #100000 $finish;
   end
 
+
   /*  This test case configures the first stage to trigger at value 8 
   *   in serial mode and read back 4 values, 2 after the trigger and 2 
   *   befor the trigger. 
   */
+  /*
   task testCase1();
     `TEST_START("Test Case 1");
     counter <= 'b0;
@@ -134,5 +139,6 @@ program core_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     expectRecv('h00000007);
     `TEST_END("Test Case 1");
   endtask
+  */
 
 endprogram

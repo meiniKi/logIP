@@ -20,26 +20,23 @@ program logIP_tester ( dut_if.tb duv_if,
   initial begin
     $display("----- Started ------");
 
-    // Basic tests for client uart
+    // Reset and query ID
+    //
     `SCORE_ASSERT(i_client.i_uart8.is_receive_empty());
-    i_client.i_uart8.transmit('h44);
+    repeat(5) i_client.i_uart8.transmit('h44);
     i_client.i_uart8.wait_transmit_done();
-    `SCORE_ASSERT(!i_client.i_uart8.is_receive_empty());
-    i_client.i_uart8.receive(rx_byte);
-    `SCORE_ASSERT(rx_byte == 'h44);
+
     `SCORE_ASSERT(i_client.i_uart8.is_receive_empty());
     i_client.query_id();
     i_client.i_uart8.wait_transmit_done();
+    #500;    
+
     `SCORE_ASSERT(!i_client.i_uart8.is_receive_empty());
-    i_client.i_uart8.transmit('h44);
-    i_client.i_uart8.wait_transmit_done();
-    `SCORE_ASSERT(!i_client.i_uart8.is_receive_empty());
-    i_client.i_uart8.receive(rx_byte);
-    `SCORE_ASSERT(rx_byte == byte'(CMD_S_ID));
-    `SCORE_ASSERT(!i_client.i_uart8.is_receive_empty());
-    i_client.i_uart8.receive(rx_byte);
-    `SCORE_ASSERT(rx_byte == 'h44);
-    `SCORE_ASSERT(i_client.i_uart8.is_receive_empty());
+    while (!i_client.i_uart8.is_receive_empty()) begin
+      #500;
+      i_client.i_uart8.receive(rx_byte);
+      $display("test received: %c", rx_byte);
+    end
 
 
     //

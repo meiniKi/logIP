@@ -25,11 +25,18 @@ module logIP #( parameter WIDTH = 32,
   localparam CORE_WIDTH     = 32;
 
   localparam RX_WIDTH   = UART_WORD_BITS * UART_RX_WORDS;
+  localparam TX_WIDTH   = UART_WORD_BITS * UART_TX_WORDS;
 
   logic [CORE_WIDTH-1:0] chls_padded;
 
-  logic [RX_WIDTH-1:0]    rx_cmd;
+  logic [RX_WIDTH-1:0]    rx_data;
   logic                   exec_cmd;
+
+  logic [TX_WIDTH-1:0]    tx_data;
+  logic                   tx_stb;
+  logic                   tx_rdy;
+  logic                   tx_xon;
+  logic                   tx_xoff;
 
   logic                   mem_we;
   logic [MEM_DEPTH-1:0]   mem_addr;
@@ -37,11 +44,6 @@ module logIP #( parameter WIDTH = 32,
   logic [CORE_WIDTH-1:0]  mem_din_padded;
   logic [MEM_DEPTH-1:0]   mem_dout;
   logic [CORE_WIDTH-1:0]  mem_dout_padded;
-
-
-
-  assign tx_o = rx_i;
-  // TODO
 
   // The core always takes a fixed-length vector of the input channels 
   // (currently 32 channels according to the sump protocol). This is a
@@ -58,15 +60,14 @@ module logIP #( parameter WIDTH = 32,
   tuart_tx #( .WORD_BITS      (UART_WORD_BITS),
               .CMD_WORDS      (UART_TX_WORDS),
               .CLK_PER_SAMPLE (UART_CLK_PER_BIT)) i_tuart_tx ( 
-  .clk_i        (clk_i),
-  .rst_in       (rst_in),
-  .stb_i        (),
-  .rdy_o        (),
-  .tx_o         (tx_o),
-  .xstb_i       (),
-  .xoff_i       (),
-  .xon_i        (),
-  .data_i       ()
+    .clk_i      (clk_i),
+    .rst_in     (rst_in),
+    .stb_i      (tx_stb),
+    .rdy_o      (tx_rdy),
+    .tx_o       (tx_o),
+    .xoff_i     (tx_xoff),
+    .xon_i      (tx_xon),
+    .data_i     (tx_data)
   );
 
   tuart_rx #( .WORD_BITS      (UART_WORD_BITS),
@@ -74,35 +75,37 @@ module logIP #( parameter WIDTH = 32,
               .CLK_PER_SAMPLE (UART_CLK_PER_BIT)) i_tuart_rx (
     .clk_i      (clk_i),
     .rst_in     (rst_in),
-    .rx_i       (rx_i)
-    .data_o,    (rx_cmd),
+    .rx_i       (rx_i),
+    .data_o     (rx_data),
     .stb_o      (exec_cmd)
   );
 
   core #( .DEPTH(MEM_DEPTH)) i_core (
     .clk_i      (clk_i), 
-    .rst_in,    (rst_in),
-    .input_i,   (chls_i),
-    .cmd_i,     (rx_cmd),
-    .exec_i,    (exec_cmd),
-    .we_o,      (mem_we),
-    .addr_o,    (mem_addr),
-    .mem_i,     (mem_din_padded),
-    .mem_o,     (mem_dout_padded),
-    .tx_rdy_i,  (),
-    .tx_stb_o,  (),
-    .tx_o,      (),  
+    .rst_in     (rst_in),
+    .input_i    (chls_i),
+    .cmd_i      (rx_data),
+    .exec_i     (exec_cmd),
+    .we_o       (mem_we),
+    .addr_o     (mem_addr),
+    .mem_i      (mem_din_padded),
+    .mem_o      (mem_dout_padded),
+    .tx_rdy_i   (tx_rdy),
+    .tx_stb_o   (tx_stb),
+    .tx_o       (tx_data),
+    .tx_xon_o   (tx_xon),
+    .tx_xoff_o  (tx_xoff)
   );
 
-  ramif #(  .WIDTH(WIDTH)
+  ramif #(  .WIDTH(WIDTH),
             .DEPTH(MEM_DEPTH)) i_ramif (
     .clk_i      (clk_i),    
     .rst_in     (rst_in),   
     .en_i       ('b1),     
     .we_i       (mem_we),     
     .addr_i     (mem_addr),   
-    .d_i        (),      
-    .q_o        ()     
+    .d_i        (mem_din),      
+    .q_o        (mem_dout)     
   );
 
 

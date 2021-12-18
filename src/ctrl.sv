@@ -8,6 +8,7 @@
 `timescale 1ns/1ps
 
 module ctrl #(
+  localparam WIDTH = 32,
   parameter DEPTH=5                         //! memory depth / address width
 ) (           
   // General            
@@ -26,7 +27,6 @@ module ctrl #(
   output logic                  tx_sel_o    //! select ram data to write back
 );
 
-  localparam WIDTH = 32;
   localparam CNT_WIDTH = WIDTH / 2;
 
   typedef enum bit [1:0] { IDLE, TRG, TX, TX_WAIT } states_t;
@@ -43,7 +43,8 @@ module ctrl #(
   logic [DEPTH-1:0] ptr;
   logic [DEPTH-1:0] ptr_next;
 
-  assign addr_o = ptr;
+  assign addr_o   = ptr;
+  assign tx_sel_o = (state != IDLE);
 
   always_comb begin : main_fsm
     // Default

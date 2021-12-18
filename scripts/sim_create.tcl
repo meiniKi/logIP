@@ -19,6 +19,7 @@ set path_tb $path_tb_dir/$dut_name
 # Read design sources
 add_files -fileset sim_1 [ glob $path_rtl/logIP*.sv ]
 add_files -fileset sim_1 [ glob $path_rtl/tuart_*.sv ]
+add_files -fileset sim_1        $path_rtl/rdback.sv
 add_files -fileset sim_1        $path_rtl/indec.sv
 add_files -fileset sim_1        $path_rtl/syncro.sv
 add_files -fileset sim_1        $path_rtl/sampler.sv

@@ -24,10 +24,7 @@ module indec (
   output logic          set_cnt_o,      //! set the amount of samples to return
   output logic          set_flgs_o,     //! configure flags
   output logic [ 1:0]   stg_o,          //! stage
-  // TODO: introduce reg if shortens critical path
-  output logic          stb_o,          //! flag took sample
   // Flow Control
-  output logic          xstb_o,         //! flag to update x{on,off}
   output logic          xon_o,          //! put transmitter out of pause mode
   output logic          xoff_o,         //! put transmitter in pause mode
   // OLS extension
@@ -45,8 +42,6 @@ module indec (
 
   assign opc          = opcode_t'(opc_i);
   assign stg_o        = opc_i[3:2];
-  assign stb_o        = stb_i;
-  assign xstb_o       = stb_i;
 
   always_comb begin : opcode_decoding
     // Default values
@@ -113,9 +108,6 @@ module indec (
       assume ($stable(opc_i));
     end
 
-    if (xstb_o) begin
-      assume property ($onehot({xon_o, xoff_o}));
-    end
   end
   
   assert property ($onehot0({  sft_rst_o,

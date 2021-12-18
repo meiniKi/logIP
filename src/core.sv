@@ -27,6 +27,8 @@ module core #(
   input  logic                  tx_rdy_i,   //! transmitter ready flag
   output logic                  tx_stb_o,   //! starts transmitter
   output logic [WIDTH-1:0]      tx_o,       //! data for the transmitter to send
+  output logic                  tx_xon_o,   //! transmitter flow control on
+  output logic                  tx_xoff_o   //! transmitter flow control on
   // TODO: Do we need to soft reset uart/ram/..?
   //output logic                  rst_o       //! reset flag
 );
@@ -43,9 +45,6 @@ module core #(
   logic               set_cnt;
   logic               set_flgs;
   logic [1:0]         stg;
-  logic               xstb;
-  logic               xon;
-  logic               xoff;
   logic [WIDTH-1:0]   smpls;
   logic               smpls_stb;
   logic               run;
@@ -94,11 +93,9 @@ module core #(
     .set_div_o        (set_div),      
     .set_cnt_o        (set_cnt),      
     .set_flgs_o       (set_flgs),     
-    .stg_o            (stg), 
-    //.stb_o            (),         // Not yet used    
-    .xstb_o           (xstb),         
-    .xon_o            (xon),          
-    .xoff_o           (xoff)        
+    .stg_o            (stg),       
+    .xon_o            (tx_xon_o),          
+    .xoff_o           (tx_xoff_o)        
     //.rd_meta_o        (),         // Not yet used    
     //.fin_now_o        (),         // Not yet used    
     //.rd_inp_o         (),         // Not yet used    
