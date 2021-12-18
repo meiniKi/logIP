@@ -62,6 +62,7 @@ module tuart_tx #(  parameter WORD_BITS = 8,
     bit_cnt_next  = bit_cnt;
     time_cnt_next = time_cnt;
     word_cnt_next = word_cnt;
+    state_next    = state;
 
     case (state)
       // Wait for strobe to start a transfer. XOFF will
@@ -120,7 +121,7 @@ module tuart_tx #(  parameter WORD_BITS = 8,
 
   always_ff @(posedge clk_i) begin : fsm
     if (!rst_in) begin
-      state_next  <= IDLE;
+      state    <= IDLE;
     end else begin
       state    <= state_next;
       shft_reg <= shft_reg_next;

@@ -7,13 +7,13 @@
 `default_nettype wire
 `timescale 1ns/1ps
 
-module logIP #( parameter WIDTH = 32,
+module logIP #( parameter CHLS = 32,
                 parameter UART_CLK_PER_BIT = 10,
                 parameter MEM_DEPTH = 5
 ) (
   input  logic              clk_i,    //! system clock
   input  logic              rst_in,   //! system reset
-  input  logic [WIDTH-1:0]  chls_i,   //! input channels
+  input  logic [CHLS-1:0]   chls_i,   //! input channels
   input  logic              rx_i,     //! uart receive
   output logic              tx_o      //! uart transmit
 );
@@ -40,9 +40,9 @@ module logIP #( parameter WIDTH = 32,
 
   logic                   mem_we;
   logic [MEM_DEPTH-1:0]   mem_addr;
-  logic [MEM_DEPTH-1:0]   mem_din;
+  logic [CHLS-1:0]        mem_din;
   logic [CORE_WIDTH-1:0]  mem_din_padded;
-  logic [MEM_DEPTH-1:0]   mem_dout;
+  logic [CHLS-1:0]        mem_dout;
   logic [CORE_WIDTH-1:0]  mem_dout_padded;
 
   // The core always takes a fixed-length vector of the input channels 
@@ -65,6 +65,7 @@ module logIP #( parameter WIDTH = 32,
     .stb_i      (tx_stb),
     .rdy_o      (tx_rdy),
     .tx_o       (tx_o),
+    .xstb_i     (exec_cmd),
     .xoff_i     (tx_xoff),
     .xon_i      (tx_xon),
     .data_i     (tx_data)
@@ -88,8 +89,8 @@ module logIP #( parameter WIDTH = 32,
     .exec_i     (exec_cmd),
     .we_o       (mem_we),
     .addr_o     (mem_addr),
-    .mem_i      (mem_din_padded),
-    .mem_o      (mem_dout_padded),
+    .mem_i      (mem_dout_padded),
+    .mem_o      (mem_din_padded),
     .tx_rdy_i   (tx_rdy),
     .tx_stb_o   (tx_stb),
     .tx_o       (tx_data),
@@ -97,7 +98,8 @@ module logIP #( parameter WIDTH = 32,
     .tx_xoff_o  (tx_xoff)
   );
 
-  ramif #(  .WIDTH(WIDTH),
+  ramif #(  .WIDTH
+  (CHLS),
             .DEPTH(MEM_DEPTH)) i_ramif (
     .clk_i      (clk_i),    
     .rst_in     (rst_in),   

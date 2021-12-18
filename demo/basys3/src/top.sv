@@ -5,14 +5,12 @@
  */
 
 module top (
-  input  logic clk,
-  //
-  // external Test-Channels here
-  //
-
+  input  logic        clk,
+  input  logic [15:0] sw,
+  input  logic        btnC,
   // Uart Communication
-  input  logic uart_rx_i,
-  output logic uart_tx_o
+  input  logic        uart_rx_i,
+  output logic        uart_tx_o
 );
 
   localparam CLK_PER_BIT = 100_000_000 / 115_200;
@@ -22,6 +20,9 @@ module top (
   logic         lckd;
   logic [31:0]  chls;
 
+  assign chls = {16'b0, sw};
+  assign rst = ~btnC; // acive low? todo
+
   sys_clk_gen i_sys_clk_gen
   (
     .sys_clk  (sys_clk),
@@ -30,7 +31,7 @@ module top (
     .clk_in1  (clk)
   );
 
-  logIP #(.WIDTH(32),
+  logIP #(.CHLS(32),
           .UART_CLK_PER_BIT(CLK_PER_BIT)) i_logIP (
     .clk_i    (sys_clk), 
     .rst_in   (rst),

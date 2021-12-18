@@ -7,7 +7,7 @@
 `timescale 1ns/1ps
 
 module dut_wrapper(dut_if.duv ifc);
-logIP #(.WIDTH(32),
+logIP #(.CHLS(32),
         .UART_CLK_PER_BIT(3)) dut ( 
             .clk_i    (ifc.clk_i),
             .rst_in   (ifc.rst_in),
