@@ -6,7 +6,7 @@
 
 `default_nettype wire
 `timescale 1ns/1ps
-module sampler #(parameter CHLS=32)(
+module sampler #(localparam CHLS=32)(
   // General
   input  logic            clk_i,      //! system clock
   input  logic            rst_in,     //! system reset, low active

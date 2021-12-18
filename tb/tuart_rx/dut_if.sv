@@ -12,19 +12,19 @@ interface dut_if ( input logic clk_i,
   //
   import tb_pkg::*;
 
-  logic         rx_async_i = '1;
+  logic         rx_i = '1;
   logic [39:0]  data_o;
   logic         stb_o;
 
   modport duv (input  clk_i,
                       rst_in,
-                      rx_async_i,
+                      rx_i,
               output  data_o,
                       stb_o);
 
   default clocking cb @(posedge clk_i);
     default input #1step output #(CLK_PERIOD_HALF-1);
-    output rx_async_i;
+    output rx_i;
     input  data_o;
     input  stb_o;
   endclocking

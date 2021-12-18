@@ -42,13 +42,14 @@ module tuart_tx #(  parameter WORD_BITS = 8,
   logic [$clog2(CMD_WORDS)-1:0] word_cnt;
   logic [$clog2(CMD_WORDS)-1:0] word_cnt_next;
 
-  logic [$clog2(CLK_PER_SAMPLE)-1:0] time_cnt;
-  logic [$clog2(CLK_PER_SAMPLE)-1:0] time_cnt_next;
+  logic [$clog2(CLK_PER_SAMPLE)-1:0]  time_cnt;
+  logic [$clog2(CLK_PER_SAMPLE)-1:0]  time_cnt_next;
 
   states_t state;
   states_t state_next;
 
   xcrtl_t r_xctrl;  // XON/XOFF flow control
+  
 
   assign rdy_o =  (state == IDLE);
   assign tx_o  =  (state == TX_START) ? 'b0 :

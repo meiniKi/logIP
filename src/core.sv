@@ -28,9 +28,8 @@ module core #(
   output logic                  tx_stb_o,   //! starts transmitter
   output logic [WIDTH-1:0]      tx_o,       //! data for the transmitter to send
   // TODO: Do we need to soft reset uart/ram/..?
-  output logic                  rst_o       //! reset flag
+  //output logic                  rst_o       //! reset flag
 );
-
 
   logic               rst;
   logic               sft_rst;
@@ -50,11 +49,6 @@ module core #(
   logic [WIDTH-1:0]   smpls;
   logic               smpls_stb;
   logic               run;
-
-  logic               we;
-  logic [DEPTH-1:0]   addr;
-  logic [WIDTH-1:0]   mem_w;
-  logic [WIDTH-1:0]   mem_r;
 
   logic               tx_stb_from_rdback;
   logic               tx_stb_from_ctrl;
@@ -80,11 +74,11 @@ module core #(
   // Assignments kept to consider 'fake-RLE' here: Load/Store like
   // RLE, but sent to the client as without RLE
   //
-  assign mem_w        = smpls;
-  assign tx_from_ram  = mem_r;
+  assign mem_o        = smpls;
+  assign tx_from_ram  = mem_i;
 
   assign rst   = ~sft_rst && rst_in;
-  assign rst_o = rst;
+  //assign rst_o = rst;         needed?
 
   indec i_indec (
     .clk_i            (clk_i),          
@@ -144,8 +138,8 @@ module core #(
     .cmd_i      (cmd_i[31:0]),
     .run_i      (run),     
     .stb_i      (smpls_stb),            
-    .we_o       (we),      
-    .addr_o     (addr),       
+    .we_o       (we_o),      
+    .addr_o     (addr_o),       
     .tx_rdy_i   (tx_rdy_i),   
     .tx_stb_o   (tx_stb_from_ctrl),
     .tx_sel_o   (tx_sel_ram)
@@ -160,18 +154,6 @@ module core #(
     //.rd_meta_i  (),               // Not yet used 
     .tx_o       (tx_from_rdback),       
     .stb_o      (tx_stb_from_rdback)
-  );
-
-  ramif #(
-    .DEPTH(DEPTH)
-  ) i_ramif (
-    .clk_i      (clk_i),    
-    .rst_in     (rst),   
-    .en_i       ('b1),     
-    .we_i       (we),     
-    .addr_i     (addr),   
-    .d_i        (mem_w),      
-    .q_o        (mem_r)     
   );
 
 endmodule

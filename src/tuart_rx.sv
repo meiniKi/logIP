@@ -15,7 +15,7 @@ module tuart_rx #(  parameter WORD_BITS = 8,
   input  logic                            clk_i,      //! system clock
   input  logic                            rst_in,     //! system reset, low active
   // External communication
-  input  logic                            rx_sync_i,  //! synchronized uart rx input
+  input  logic                            rx_i,       //! uart rx input
   // Connection to LogIP core
   output logic [WORD_BITS*CMD_WORDS-1:0]  data_o,     //! received uart data
   output logic                            stb_o       //! flag, receive complete
@@ -78,11 +78,11 @@ module tuart_rx #(  parameter WORD_BITS = 8,
 
     case (state)
       // Wait for a transfer to start.
-      // rx_sync_i is high when idle. Thus, a falling
+      // rx_i is high when idle. Thus, a falling
       // edge indicates the start bit of uart.
       //
       IDLE: begin
-        if (rx_sync_i == 'b0) begin
+        if (rx_i == 'b0) begin
           state_next      = TRIG;
           smpl_cnt_next   =  'b0;
         end
@@ -108,7 +108,7 @@ module tuart_rx #(  parameter WORD_BITS = 8,
         if (take_smpl) begin
           smpl_cnt_next   = 'b0;
           bit_cnt_next    = bit_cnt + 'b1;
-          shft_data_next  = {rx_sync_i, shft_data[OUT_WIDTH-1:1]};
+          shft_data_next  = {rx_i, shft_data[OUT_WIDTH-1:1]};
           if (bit_cnt == (WORD_BITS - 1)) begin
             state_next    = STOP;
             word_cnt_next = word_cnt + 1;
@@ -167,7 +167,7 @@ module tuart_rx #(  parameter WORD_BITS = 8,
   end
 
   asme_init_rst:  assume property (~f_init |-> ~rst_in);
-  asme_rst_rx:    assume property (disable iff (rst_in) rx_sync_i);
+  asme_rst_rx:    assume property (disable iff (rst_in) rx_i);
   asme_rst_wcnt:  assume property (disable iff (rst_in) word_cnt == 'b0);
 
   sequence ustart(s, d);
@@ -188,14 +188,14 @@ module tuart_rx #(  parameter WORD_BITS = 8,
 
   asme_vld_uart: 
   
-  assume property (state == IDLE && $fell(rx_sync_i)  |->     ustart(rx_sync_i, CLK_PER_SAMPLE-1) 
-                                                          ##0 udata(rx_sync_i, CLK_PER_SAMPLE)
-                                                          ##0 ustop(rx_sync_i, CLK_PER_SAMPLE));
+  assume property (state == IDLE && $fell(rx_i)  |->  ustart(rx_i, CLK_PER_SAMPLE-1) 
+                                                      ##0 udata(rx_i, CLK_PER_SAMPLE)
+                                                      ##0 ustop(rx_i, CLK_PER_SAMPLE));
                                                           
   asrt_word_cnt:    assert property (word_cnt <= CMD_WORDS);
   asrt_bit_cnt:     assert property (bit_cnt < WORD_BITS);
-  asrt_start:       assert property ((state == IDLE) && $fell(rx_sync_i) |=> $changed(state));
-  //asrt_rx_duration: assert property (state == IDLE && $fell(rx_sync_i) |=> ##(1) state == IDLE);
+  asrt_start:       assert property ((state == IDLE) && $fell(rx_i) |=> $changed(state));
+  //asrt_rx_duration: assert property (state == IDLE && $fell(rx_i) |=> ##(1) state == IDLE);
   asrt_no_stb:      assert property (~short_cmd_ready && ~long_cmd_ready |-> ~stb_o);
   asrt_stb:         assert property (state == STOP && (short_cmd_ready || long_cmd_ready) |-> stb_o ##1 ~stb_o);
 
