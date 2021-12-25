@@ -40,7 +40,7 @@ program logIP_tester ( dut_if.tb duv_if,
 
     // Trigger mask channel 0 and fire.
     //
-    `SCORE_ASSERT_LBL(i_client.i_uart8.is_receive_empty(), "trg_ch0, rx empty");
+    `SCORE_ASSERT_STR(i_client.i_uart8.is_receive_empty(), "trg_ch0, rx empty");
     i_client.set_trigger_mask(0, 'h12);
     i_client.i_uart8.wait_transmit_done();
     `WAIT_CYCLES(10, clk_i);

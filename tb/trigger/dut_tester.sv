@@ -48,15 +48,15 @@ program trigger_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     `CLK_DELAY  duv_if.cb.arm_i       <= 'b1;
     `CLK_DELAY  duv_if.cb.arm_i       <= 'b0;
                 duv_if.cb.stb_i       <= 'b1;
-                `SCORE_ASSERT_LBL(duv_if.cb.run_o == 'b0, "test, 0, run_o == 0");
-    `CLK_DELAY  `SCORE_ASSERT_LBL(duv_if.cb.run_o == 'b0, "test, 1, run_o == 0");
-    `CLK_DELAY  `SCORE_ASSERT_LBL(duv_if.cb.run_o == 'b0, "test, 2, run_o == 0");
+                `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "test ch0, armed, no trigger");
+    `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "test ch0, armed, no trigger");
+    `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "test ch0, armed, no trigger");
+    `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "test ch0, armed, no trigger");
                 duv_if.cb.stb_i       <= 'b0;
-    `CLK_DELAY  `SCORE_ASSERT_LBL(duv_if.cb.run_o == 'b0, "test, 3, run_o == 0");
+    `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "test ch0, armed, no trigger");
     `CLK_DELAY  duv_if.cb.stb_i       <= 'b1;
-    `CLK_DELAY  `SCORE_ASSERT_LBL(duv_if.cb.run_o == 'b1, "test, run_o == 1");
-    // TODO: FIX ME 
-                
+    `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b1, "test, run_o == 1");
+
     `SCORE_DONE
       
     $display("----- Done ------");

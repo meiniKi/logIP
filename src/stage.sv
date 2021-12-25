@@ -105,7 +105,7 @@ module stage (
         if (dly_cnt == r_dly) begin
           state_next  = IDLE;
           run_o       = r_act;
-          match_o     = 'b1;
+          match_o     = ~r_act; // only contribute to level when not started according to sump.com reference
         end else if (stb_i) begin
           dly_cnt_next = dly_cnt + 1;
         end
