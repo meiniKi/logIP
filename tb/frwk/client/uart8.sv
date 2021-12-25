@@ -22,6 +22,14 @@ class Uart8;
     this.mbx_tx     = new();
   endfunction
 
+  task transmit_cmd(input logic [39:0] c);
+    this.transmit(uart_item_t'(c[39:32]));
+    this.transmit(uart_item_t'(c[31:24]));
+    this.transmit(uart_item_t'(c[23:16]));
+    this.transmit(uart_item_t'(c[15:8]));
+    this.transmit(uart_item_t'(c[7:0]));
+  endtask
+
   task transmit(input uart_item_t b);
     this.mbx_tx.put(b);
   endtask

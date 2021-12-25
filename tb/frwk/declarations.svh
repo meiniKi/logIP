@@ -13,6 +13,10 @@ typedef mailbox #(score_t) score_mbox_t;
 `define SCORE_ASSERT(ARG) \
   #0 assert(ARG) mbx.put(score_t'(0)); else mbx.put(score_t'(1));
 
+`define SCORE_ASSERT_LBL(ARG, LBL) \
+  #0 assert(ARG) mbx.put(score_t'(0)); else begin mbx.put(score_t'(1)); $display(LBL); end
+  
+
 `define SCORE_DONE \
   mbx.put(score_t'(2));
 
