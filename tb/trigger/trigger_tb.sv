@@ -22,9 +22,6 @@ module trigger_tb;
     $dumpfile("trigger_tb.vcd");
     $dumpvars(10, trigger_tb);
 
-    // Reset            
-    `WAIT_CYCLES(2, clk_i) rst_in = 0;
-    `WAIT_CYCLES(2, clk_i) rst_in = 1;
   end
 
   always begin : clock_gen
@@ -32,9 +29,9 @@ module trigger_tb;
     #(CLK_PERIOD_HALF) clk_i = 0;
   end
 
-  dut_if duv_if (clk_i, rst_in);
+  dut_if duv_if (clk_i);
   dut_wrapper duv_wrapper (duv_if.duv);
-  trigger_tester duv_tester(duv_if, clk_i, mbx);
+  trigger_tester duv_tester(duv_if.tb, clk_i, mbx);
 
   initial begin
     mbx = new();

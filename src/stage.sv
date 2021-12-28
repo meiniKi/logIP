@@ -108,9 +108,10 @@ module stage (
           // Match is set to one also when the stage is avtive to
           // increase the level according to the description (sump.org).
           // However, the VHDL implementation from sump.org only sets
-          // match_o when the stage is *in*active.
+          // match_o when the stage is *in*active. But only match when
+          // the trigger is not *any* (mask == 'b0).
           //
-          match_o     = 'b1;
+          match_o     = |r_mask;
         end else if (stb_i) begin
           dly_cnt_next = dly_cnt + 1;
         end

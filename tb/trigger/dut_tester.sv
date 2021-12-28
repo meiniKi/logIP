@@ -9,20 +9,22 @@
 
 
 
-program trigger_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
+program trigger_tester (dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
   import tb_pkg::*;
 
   initial begin
     $display("----- Started ------");
 
-    duv_if.tb.cb.smpls_i     <= 'h00000000;
-    duv_if.tb.cb.arm_i       <= 'b0;
-    duv_if.tb.cb.set_mask_i  <= 'b0;
-    duv_if.tb.cb.set_val_i   <= 'b0;
-    duv_if.tb.cb.set_cfg_i   <= 'b0;
-    duv_if.tb.cb.stb_i       <= 'b0;
+    duv_if.cb.smpls_i     <= 'h00000000;
+    duv_if.cb.arm_i       <= 'b0;
+    duv_if.cb.set_mask_i  <= 'b0;
+    duv_if.cb.set_val_i   <= 'b0;
+    duv_if.cb.set_cfg_i   <= 'b0;
+    duv_if.cb.stb_i       <= 'b0;
+    duv_if.cb.rst_in      <= 'b0;
 
     `WAIT_CYCLES(10, clk_i)
+    duv_if.cb.rst_in      <= 'b1;
 
     ////////////// TEST 1 //////////////
     // simple positive trigger on one channel, one stage
@@ -39,34 +41,35 @@ program trigger_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     `SET_STAGE_CONFIG(2'd2, 8'h0, 8'h0, 4'd0, 1'd0, 2'd0, 1'd0, 1'd0);
     `SET_STAGE_CONFIG(2'd3, 8'h0, 8'h0, 4'd0, 1'd0, 2'd0, 1'd0, 1'd0);
 
-    `SCORE_ASSERT_STR(duv_if.duv.run_o == 'b0, "t0, after-config, no trigger");
+    `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "t0, after-config, no trigger");
 
     repeat (10)
-      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.duv.run_o == 'b0, "t0, after-config, no trigger loop");
+      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "t0, after-config, no trigger loop");
 
     repeat (10) begin
-      duv_if.tb.cb.stb_i <= 'b1;
-      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.duv.run_o == 'b0, "t0, after-config, strobe, not armed");
-      duv_if.tb.cb.stb_i <= 'b0;
-      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.duv.run_o == 'b0, "t0, after-config, strobe, not armed 2");
+      duv_if.cb.stb_i <= 'b1;
+      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "t0, after-config, strobe, not armed");
+      duv_if.cb.stb_i <= 'b0;
+      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "t0, after-config, strobe, not armed 2");
     end
 
-    duv_if.tb.cb.arm_i <= 'b1;
+    duv_if.cb.arm_i <= 'b1;
     `CLK_DELAY
-    duv_if.tb.cb.arm_i <= 'b0;
+    duv_if.cb.arm_i <= 'b0;
 
     repeat (10) begin
-      duv_if.tb.cb.stb_i <= 'b1;
-      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.duv.run_o == 'b0, "t0, after-config, strobe, no match");
-      duv_if.tb.cb.stb_i <= 'b0;
-      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.duv.run_o == 'b0, "t0, after-config, strobe, no match 2");
+      duv_if.cb.stb_i <= 'b1;
+      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "t0, after-config, strobe, no match");
+      duv_if.cb.stb_i <= 'b0;
+      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "t0, after-config, strobe, no match 2");
     end
     
-    duv_if.tb.cb.smpls_i <= 'h1; 
-    duv_if.tb.cb.stb_i   <= 'b1;
+    duv_if.cb.smpls_i <= 'h1; 
+    duv_if.cb.stb_i   <= 'b1;
     `CLK_DELAY 
     `CLK_DELAY
-    `SCORE_ASSERT_STR(duv_if.duv.run_o == 'b1, "t0 triggered");
+    `CLK_DELAY
+    `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b1, "t0 triggered");
 
     `SET_RESET;
     ////////////// TEST 2 //////////////
@@ -85,39 +88,74 @@ program trigger_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     `SET_STAGE_CONFIG(2'd2, 8'h0, 8'h0, 4'd0, 1'd0, 2'd0, 1'd0, 1'd0);
     `SET_STAGE_CONFIG(2'd3, 8'h0, 8'h0, 4'd0, 1'd0, 2'd0, 1'd0, 1'd0);
 
-    `SCORE_ASSERT_STR(duv_if.duv.run_o == 'b0, "t1, initial");
+    `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "t1, initial");
     `SET_ARMED;
 
-    duv_if.tb.cb.smpls_i <= 'h2;
+    duv_if.cb.smpls_i <= 'h2;
     repeat (10) begin
-      duv_if.tb.cb.stb_i <= 'b1;
-      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.duv.run_o  == 'b0, "t1, trigger with too low level");
-      duv_if.tb.cb.stb_i <= 'b0;
-      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.duv.run_o  == 'b0, "t1, trigger with too low level 2");
+      duv_if.cb.stb_i <= 'b1;
+      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o  == 'b0, "t2, trigger with too low level");
+      duv_if.cb.stb_i <= 'b0;
+      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o  == 'b0, "t2, trigger with too low level 2");
     end
 
     // increase level, let stage0 match
-    duv_if.tb.cb.smpls_i <= 'h1;
-    duv_if.tb.cb.stb_i <= 'b1;
+    duv_if.cb.smpls_i <= 'h1;
+    duv_if.cb.stb_i   <= 'b1;
     `CLK_DELAY
-    duv_if.tb.cb.smpls_i <= 'h1;
-    duv_if.tb.cb.stb_i <= 'b0;
+    duv_if.cb.smpls_i <= 'h1;
+    duv_if.cb.stb_i   <= 'b0;
 
     repeat (10) begin
-      duv_if.tb.cb.stb_i <= 'b1;
-      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.duv.run_o  == 'b0, "t1, level ok, no trigger");
-      duv_if.tb.cb.stb_i <= 'b0;
-      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.duv.run_o  == 'b0, "t1, level ok, no trigger");
+      duv_if.cb.stb_i <= 'b1;
+      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o  == 'b0, "t2, level ok, no trigger");
+      duv_if.cb.stb_i <= 'b0;
+      `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o  == 'b0, "t2, level ok, no trigger");
     end
 
     // match trigger condition
-    duv_if.tb.cb.smpls_i <= 'h1;
-    duv_if.tb.cb.stb_i <= 'b1;
+    duv_if.cb.smpls_i <= 'h2;
+    duv_if.cb.stb_i   <= 'b1;
     `CLK_DELAY
-    `SCORE_ASSERT_STR(duv_if.duv.run_o == 'b1, "t1 triggered");
+    `CLK_DELAY
+    `CLK_DELAY
+    duv_if.cb.stb_i   <= 'b0;
+    `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b1, "t2 triggered");
 
     `SET_RESET;
 
+    ////////////// TEST 3 //////////////
+    // One stage, low level, delay
+    //
+    //               st       mask         value
+    `SET_STAGE_VAL(2'd0, 32'h80000000, 32'h7FFFFFFF);
+    `SET_STAGE_VAL(2'd1, 32'h00000000, 32'hFFFFFFFF);
+    `SET_STAGE_VAL(2'd2, 32'h00000000, 32'hFFFFFFFF);
+    `SET_STAGE_VAL(2'd3, 32'h00000000, 32'hFFFFFFFF);
+
+    //                stg  dly_l dly_h ch[3:0] ch[4] lvl  start  ser
+    `SET_STAGE_CONFIG(2'd0, 8'h4, 8'h0, 4'd0, 1'd0, 2'd0, 1'd1, 1'd0);
+    `SET_STAGE_CONFIG(2'd1, 8'h0, 8'h0, 4'd0, 1'd0, 2'd1, 1'd0, 1'd0);
+    `SET_STAGE_CONFIG(2'd2, 8'h0, 8'h0, 4'd0, 1'd0, 2'd0, 1'd0, 1'd0);
+    `SET_STAGE_CONFIG(2'd3, 8'h0, 8'h0, 4'd0, 1'd0, 2'd0, 1'd0, 1'd0);
+
+    `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "t3, initial");
+    `SET_ARMED;
+
+    duv_if.cb.smpls_i <= 'b0;
+    duv_if.cb.stb_i   <= 'b1;
+    `CLK_DELAY
+    duv_if.cb.stb_i   <= 'b0;
+    `CLK_DELAY
+    `CLK_DELAY
+    `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "t3 triggered waiting for delay");
+    repeat(8) `CLK_DELAY `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "t3 triggered waiting for delay loop");
+    duv_if.cb.stb_i   <= 'b1;
+    repeat(5) `CLK_DELAY;
+    `CLK_DELAY `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b1, "t3 triggered");
+
+    duv_if.cb.stb_i   <= 'b0;
+    `SET_RESET;
 
 
 
