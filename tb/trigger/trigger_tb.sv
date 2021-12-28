@@ -20,7 +20,7 @@ module trigger_tb;
   initial begin
     // Dump
     $dumpfile("trigger_tb.vcd");
-    $dumpvars(5, duv_wrapper);
+    $dumpvars(10, trigger_tb);
 
     // Reset            
     `WAIT_CYCLES(2, clk_i) rst_in = 0;
@@ -34,7 +34,7 @@ module trigger_tb;
 
   dut_if duv_if (clk_i, rst_in);
   dut_wrapper duv_wrapper (duv_if.duv);
-  trigger_tester duv_tester(duv_if.tb, clk_i, mbx);
+  trigger_tester duv_tester(duv_if, clk_i, mbx);
 
   initial begin
     mbx = new();

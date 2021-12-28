@@ -29,8 +29,6 @@ module core #(
   output logic [WIDTH-1:0]      tx_o,       //! data for the transmitter to send
   output logic                  tx_xon_o,   //! transmitter flow control on
   output logic                  tx_xoff_o   //! transmitter flow control on
-  // TODO: Do we need to soft reset uart/ram/..?
-  //output logic                  rst_o       //! reset flag
 );
 
   logic               rst;
@@ -76,8 +74,7 @@ module core #(
   assign mem_o        = smpls;
   assign tx_from_ram  = mem_i;
 
-  assign rst   = ~sft_rst && rst_in;
-  //assign rst_o = rst;         needed?
+  assign rst          = ~sft_rst && rst_in;
 
   indec i_indec (
     .clk_i            (clk_i),          
@@ -144,7 +141,7 @@ module core #(
 
   rdback i_rdback (           
     .clk_i      (clk_i),       
-    .rst_in     (rst_in),
+    .rst_in     (rst),
     .exec_i     (exec_i),
     .tx_rdy_i   (tx_rdy_i),
     .id_i       (id),
