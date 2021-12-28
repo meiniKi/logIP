@@ -7,8 +7,7 @@
 `timescale 1ns/1ps
 
 //
-interface dut_if ( input logic clk_i,
-                   input logic rst_in);
+interface dut_if ( input logic clk_i );
   //
   import tb_pkg::*;
  
@@ -21,6 +20,7 @@ interface dut_if ( input logic clk_i,
   logic             stb_i;
   logic [31:0]      smpls_i;
   logic             run_o;
+  logic             rst_in;
 
   modport duv ( input   clk_i,
                         rst_in,
@@ -43,7 +43,8 @@ interface dut_if ( input logic clk_i,
     output stg_i;
     output arm_i;     
     output stb_i;     
-    output smpls_i;  
+    output smpls_i; 
+    output rst_in; 
     input  run_o;
   endclocking
 

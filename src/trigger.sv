@@ -40,8 +40,8 @@ import logIP_pkg::*;
 
   for (genvar i = 0; i < STAGES; i++) begin
     assign set_mask[i]  = stg_i == i ? set_mask_i : 'b0;
-    assign set_val[i]   = stg_i == i ? set_val_i : 'b0;
-    assign set_cfg[i]   = stg_i == i ? set_cfg_i : 'b0;
+    assign set_val[i]   = stg_i == i ? set_val_i  : 'b0;
+    assign set_cfg[i]   = stg_i == i ? set_cfg_i  : 'b0;
 
     stage i_stage (
       .clk_i      (clk_i),
