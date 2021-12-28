@@ -110,7 +110,7 @@ module indec (
 
   end
   
-  assert property ($onehot0({  sft_rst_o,
+  assert property ($onehot0({ sft_rst_o,
                               arm_o,
                               id_o,
                               set_mask_o,

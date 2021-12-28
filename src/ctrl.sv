@@ -73,8 +73,7 @@ module ctrl #(
       // the caputured values to the client.
       //
       TRG: begin
-        // TODO: (dly_cnt<<2) ?
-        if (cnt == dly_cnt) begin
+        if (cnt == (dly_cnt<<2)) begin
           state_next      = TX;
           cnt_next        = 'b0;
           ptr_next        = ptr - 1;
@@ -90,8 +89,7 @@ module ctrl #(
       // those to the client.
       //
       TX: begin
-        // TODO: (rd_cnt<<2) ?
-        if (cnt == rd_cnt) begin
+        if (cnt == (rd_cnt<<2)) begin
           state_next      = IDLE;
         end else begin
           state_next      = TX_WAIT;
