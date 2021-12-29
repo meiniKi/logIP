@@ -129,7 +129,7 @@ module core #(
     .run_o      (run)  
   );
 
-  ctrl i_ctrl (
+  ctrl #(.DEPTH(DEPTH)) i_ctrl (
     .clk_i      (clk_i),     
     .rst_in     (rst_n),    
     .set_cnt_i  (set_cnt), 
