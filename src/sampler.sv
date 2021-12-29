@@ -13,6 +13,7 @@ module sampler #(localparam CHLS=32)(
   // Config
   input  logic [23:0]     fdiv_i,     //! new division factor, part of cmd
   input  logic            set_div_i,  //! flag to update division factor
+  input  logic            exec_i,
   // Data IO
   input  logic [CHLS-1:0] data_i,     //! input channels
   output logic [CHLS-1:0] smpls_o,    //! sampled input channels
@@ -53,7 +54,7 @@ module sampler #(localparam CHLS=32)(
   always_ff @(posedge clk_i) begin : set_fdiv
     if (~rst_in) begin
       r_div <= 'b0;
-    end else if (set_div_i) begin
+    end else if (set_div_i & exec_i) begin
       r_div <= fdiv_i;
     end
   end // always_ff

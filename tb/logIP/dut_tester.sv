@@ -23,6 +23,8 @@ program logIP_tester ( dut_if.tb duv_if,
   initial begin
     $display("----- Started ------");
 
+    duv_if.cb.chls_i <= 'h0;
+
     // Reset and query ID
     //
     `SCORE_ASSERT(i_client.i_uart8.is_receive_empty());
@@ -47,8 +49,14 @@ program logIP_tester ( dut_if.tb duv_if,
     i_client.set_trigger_mask(0, 'h01);
     i_client.set_trigger_value(0, 'h01);
     i_client.set_sampling_rate(SYS_F, SYS_F/3);
+    i_client.set_count_samples(32, 16); // 16 samples before, 16 after trigger
+    i_client.set_stage_config(0, 'b1);
     i_client.i_uart8.wait_transmit_done();
-    `WAIT_CYCLES(10, clk_i);
+    i_client.run();
+    `WAIT_CYCLES(20, clk_i);
+
+    duv_if.cb.chls_i <= 'hFFFFFFFF;
+
     // todo
 
     //

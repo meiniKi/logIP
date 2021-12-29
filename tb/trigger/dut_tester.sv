@@ -22,6 +22,7 @@ program trigger_tester (dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     duv_if.cb.set_cfg_i   <= 'b0;
     duv_if.cb.stb_i       <= 'b0;
     duv_if.cb.rst_in      <= 'b0;
+    duv_if.cb.exec_i      <= 'b0;
 
     `WAIT_CYCLES(10, clk_i)
     duv_if.cb.rst_in      <= 'b1;
@@ -53,9 +54,7 @@ program trigger_tester (dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
       `CLK_DELAY  `SCORE_ASSERT_STR(duv_if.cb.run_o == 'b0, "t0, after-config, strobe, not armed 2");
     end
 
-    duv_if.cb.arm_i <= 'b1;
-    `CLK_DELAY
-    duv_if.cb.arm_i <= 'b0;
+    `SET_ARMED;
 
     repeat (10) begin
       duv_if.cb.stb_i <= 'b1;

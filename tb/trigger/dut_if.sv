@@ -21,13 +21,15 @@ interface dut_if ( input logic clk_i );
   logic [31:0]      smpls_i;
   logic             run_o;
   logic             rst_in;
+  logic             exec_i;
 
   modport duv ( input   clk_i,
                         rst_in,
                         cmd_i,     
                         set_mask_i,
                         set_val_i, 
-                        set_cfg_i, 
+                        set_cfg_i,
+                        exec_i,
                         stg_i,
                         arm_i,     
                         stb_i,     
@@ -44,7 +46,8 @@ interface dut_if ( input logic clk_i );
     output arm_i;     
     output stb_i;     
     output smpls_i; 
-    output rst_in; 
+    output rst_in;
+    output exec_i;
     input  run_o;
   endclocking
 

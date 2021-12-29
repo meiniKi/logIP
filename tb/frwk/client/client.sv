@@ -35,6 +35,26 @@ class Client;
     i_uart8.transmit_cmd(CMD_L_MSK_SET_DIV, {8'h0, div});
   endtask
 
+  task set_count_samples(int read_count_nr, int delay_count_nr);
+    logic [15:0]  r_cnt = read_count_nr >> 2;
+    logic [15:0]  d_cnt = delay_count_nr >> 2;
+    if ((read_count_nr % 4) || (delay_count_nr % 4))
+      $warning("Read-Count and Delay-Count must be a multiple of 4.\n");
+      
+    i_uart8.transmit_cmd(CMD_L_MSK_SET_RD_DLY_CNT, {d_cnt, r_cnt});
+  endtask
+
+  task set_stage_config(logic stage, logic start);
+    // TODO: include other flags
+    logic [7:0]   opc = CMD_L_MSK_SET_TRG_CONF;
+                  opc[3:2] = stage;
+    i_uart8.transmit_cmd(opc, {4'b0, start, 27'b0});
+  endtask
+
+  task run();
+    i_uart8.transmit(byte'(CMD_S_RUN));
+  endtask
+
 
   // TODO append
 

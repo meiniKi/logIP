@@ -108,6 +108,7 @@ module core #(
     .rst_in     (rst_n),
     .fdiv_i     (cmd_i[23:0]),
     .set_div_i  (set_div),
+    .exec_i     (exec_i),
     .data_i     (input_i),
     .smpls_o    (smpls),
     .stb_o      (smpls_stb)
@@ -121,6 +122,7 @@ module core #(
     .set_mask_i (set_mask),
     .set_val_i  (set_val), 
     .set_cfg_i  (set_cfg), 
+    .exec_i     (exec_i),
     .arm_i      (arm),     
     .stb_i      (smpls_stb),     
     .smpls_i    (smpls),   

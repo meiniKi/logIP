@@ -85,7 +85,7 @@ module logIP #( parameter CHLS = 32,
   core #( .DEPTH(MEM_DEPTH)) i_core (
     .clk_i      (clk_i), 
     .rst_in     (rst_in),
-    .input_i    (chls_i),
+    .input_i    (chls_padded),
     .opc_i      (rx_opc),
     .cmd_i      (rx_cmd),
     .exec_i     (exec_cmd),

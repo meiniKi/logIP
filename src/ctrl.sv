@@ -131,7 +131,7 @@ module ctrl #(
       dly_cnt   <= 'b1;
     end else if (set_cnt_i) begin
       rd_cnt    <= cmd_i[15:0];
-      dly_cnt   <= cmd_i[31:26];
+      dly_cnt   <= cmd_i[31:16];
     end
   end // always_ff
 
