@@ -14,7 +14,7 @@
  *
  *
  *                       -------------------------
- * cmd_i is given as:   | LSByte | x | x | MSByte | (< byte order )
+ * cmd_i is given as:   | MSByte | x | x | LSByte | (< byte order )
  *                      |7 ...  0|  ...  |7 ...  0| (< bit  order )
  *                       -------------------------
  *
@@ -155,10 +155,10 @@ module stage (
       if (set_mask_i) r_mask  <= cmd_i[31:0];
       if (set_val_i)  r_val   <= cmd_i[31:0];
       if (set_cfg_i)  begin
-        {r_ser, r_act}        <= {cmd_bytes[0][2],   cmd_bytes[0][3]};
-        r_chl                 <= {cmd_bytes[0][0],   cmd_bytes[1][7:4]};
-        r_dly                 <= {cmd_bytes[2][7:0], cmd_bytes[3][7:0]};
-        r_lvl                 <= cmd_bytes[1][1:0];
+        {r_ser, r_act}        <= {cmd_bytes[3][2],   cmd_bytes[3][3]};
+        r_chl                 <= {cmd_bytes[3][0],   cmd_bytes[2][7:4]};
+        r_dly                 <= {cmd_bytes[1][7:0], cmd_bytes[0][7:0]};
+        r_lvl                 <= cmd_bytes[2][1:0];
       end
     end
   end // always_ff

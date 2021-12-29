@@ -34,7 +34,7 @@ program sampler_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     $display("-- %d cycles per bit", DS);
 
     // Test asserts
-    `BUS_BIT_DELAY duv_if.cb.fdiv_i <= 'h070000;
+    `BUS_BIT_DELAY duv_if.cb.fdiv_i <= 'h000007;
     duv_if.cb.set_div_i <= 'b1;
     `BUS_BIT_DELAY duv_if.cb.set_div_i <= 'b0;
 

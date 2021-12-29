@@ -130,8 +130,8 @@ module ctrl #(
       rd_cnt    <= 'b1;
       dly_cnt   <= 'b1;
     end else if (set_cnt_i) begin
-      rd_cnt    <= {cmd_i[23:16], cmd_i[31:24]};
-      dly_cnt   <= {cmd_i[7:0], cmd_i[15:8]};
+      rd_cnt    <= cmd_i[15:0];
+      dly_cnt   <= cmd_i[31:26];
     end
   end // always_ff
 

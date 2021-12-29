@@ -52,9 +52,9 @@ module sampler #(localparam CHLS=32)(
 
   always_ff @(posedge clk_i) begin : set_fdiv
     if (~rst_in) begin
-      r_div <='b0;
+      r_div <= 'b0;
     end else if (set_div_i) begin
-      r_div <= {fdiv_i[7:0], fdiv_i[15:8], fdiv_i[23:16]};
+      r_div <= fdiv_i;
     end
   end // always_ff
 

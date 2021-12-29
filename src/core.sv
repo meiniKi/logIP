@@ -34,7 +34,6 @@ module core #(
 
   logic               rst_n;
   logic               sft_rst;
-  logic               r_sft_rst;
 
   logic               arm;
   logic               id;
@@ -54,7 +53,6 @@ module core #(
   logic               tx_sel_ram;
   logic [WIDTH-1:0]   tx_from_ram;
   logic [WIDTH-1:0]   tx_from_rdback;
-
 
   // Connect data from the ram to the output when the
   // controller wants to report samples back to the client
@@ -76,7 +74,9 @@ module core #(
   assign mem_o        = smpls;
   assign tx_from_ram  = mem_i;
 
-  assign rst_n        = ~r_sft_rst && rst_in;
+  // Be careful of glitches here
+  //
+  assign rst_n        = rst_in & (~(sft_rst & exec_i));
 
   indec i_indec (
     .clk_i            (clk_i),          
@@ -106,7 +106,7 @@ module core #(
   sampler i_sampler (
     .clk_i      (clk_i),
     .rst_in     (rst_n),
-    .fdiv_i     (cmd_i),
+    .fdiv_i     (cmd_i[23:0]),
     .set_div_i  (set_div),
     .data_i     (input_i),
     .smpls_o    (smpls),
@@ -151,11 +151,5 @@ module core #(
     .tx_o       (tx_from_rdback),       
     .stb_o      (tx_stb_from_rdback)
   );
-
-  always_ff @(posedge exec_i) begin
-    // De-glitch soft reset as indec is just combinatorial logic
-    //
-    r_sft_rst <= sft_rst;
-  end
 
 endmodule
