@@ -23,7 +23,7 @@ program logIP_tester ( dut_if.tb duv_if,
     // Reset and query ID
     //
     `SCORE_ASSERT(i_client.i_uart8.is_receive_empty());
-    repeat(5) i_client.i_uart8.transmit('h44);
+    repeat(5) i_client.i_uart8.transmit('h00);
     i_client.i_uart8.wait_transmit_done();
 
     `SCORE_ASSERT(i_client.i_uart8.is_receive_empty());
@@ -41,7 +41,8 @@ program logIP_tester ( dut_if.tb duv_if,
     // Trigger mask channel 0 and fire.
     //
     `SCORE_ASSERT_STR(i_client.i_uart8.is_receive_empty(), "trg_ch0, rx empty");
-    i_client.set_trigger_mask(0, 'h12);
+    i_client.set_trigger_mask(0, 'h01);
+    i_client.set_trigger_value(0, 'h01);
     i_client.i_uart8.wait_transmit_done();
     `WAIT_CYCLES(10, clk_i);
     // todo

@@ -19,20 +19,20 @@ module logIP #( parameter CHLS = 32,
 );
 
   localparam UART_WORD_BITS = 8;
-  localparam OPCODE_WORDS   = 1;
-  localparam UART_RX_WORDS  = 5;
-  localparam UART_TX_WORDS  = 4;
+  localparam OPC_WORDS      = 1;
+  localparam CMD_WORDS      = 4;
   localparam CORE_WIDTH     = 32;
 
-  localparam RX_WIDTH   = UART_WORD_BITS * UART_RX_WORDS;
-  localparam TX_WIDTH   = UART_WORD_BITS * UART_TX_WORDS;
+  localparam CMD_WIDTH      = UART_WORD_BITS * CMD_WORDS;
+  localparam OPC_WIDTH      = UART_WORD_BITS * OPC_WORDS;
 
   logic [CORE_WIDTH-1:0] chls_padded;
 
-  logic [RX_WIDTH-1:0]    rx_data;
+  logic [CMD_WIDTH-1:0]   rx_cmd;
+  logic [OPC_WIDTH-1:0]   rx_opc;
   logic                   exec_cmd;
 
-  logic [TX_WIDTH-1:0]    tx_data;
+  logic [CMD_WIDTH-1:0]   tx_data;
   logic                   tx_stb;
   logic                   tx_rdy;
   logic                   tx_xon;
@@ -58,7 +58,7 @@ module logIP #( parameter CHLS = 32,
   assign mem_dout_padded  = CORE_WIDTH'(mem_dout);
 
   tuart_tx #( .WORD_BITS      (UART_WORD_BITS),
-              .CMD_WORDS      (UART_TX_WORDS),
+              .CMD_WORDS      (CMD_WORDS),
               .CLK_PER_SAMPLE (UART_CLK_PER_BIT)) i_tuart_tx ( 
     .clk_i      (clk_i),
     .rst_in     (rst_in),
@@ -72,12 +72,13 @@ module logIP #( parameter CHLS = 32,
   );
 
   tuart_rx #( .WORD_BITS      (UART_WORD_BITS),
-              .CMD_WORDS      (UART_RX_WORDS),
+              .CMD_WORDS      (CMD_WORDS),
               .CLK_PER_SAMPLE (UART_CLK_PER_BIT)) i_tuart_rx (
     .clk_i      (clk_i),
     .rst_in     (rst_in),
     .rx_i       (rx_i),
-    .data_o     (rx_data),
+    .opc_o      (rx_opc),
+    .cmd_o      (rx_cmd),
     .stb_o      (exec_cmd)
   );
 
@@ -85,7 +86,8 @@ module logIP #( parameter CHLS = 32,
     .clk_i      (clk_i), 
     .rst_in     (rst_in),
     .input_i    (chls_i),
-    .cmd_i      (rx_data),
+    .opc_i      (rx_opc),
+    .cmd_i      (rx_cmd),
     .exec_i     (exec_cmd),
     .we_o       (mem_we),
     .addr_o     (mem_addr),
@@ -98,8 +100,7 @@ module logIP #( parameter CHLS = 32,
     .tx_xoff_o  (tx_xoff)
   );
 
-  ramif #(  .WIDTH
-  (CHLS),
+  ramif #(  .WIDTH(CHLS),
             .DEPTH(MEM_DEPTH)) i_ramif (
     .clk_i      (clk_i),    
     .rst_in     (rst_in),   

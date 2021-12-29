@@ -13,7 +13,8 @@ interface dut_if ( input logic clk_i,
   import tb_pkg::*;
 
   logic [31:0]    input_i;
-  logic [39:0]    cmd_i;
+  logic [31:0]    cmd_i;
+  logic [ 7:0]    opc_i;
   logic           exec_i;
   logic           we_o;
   logic           addr_o;
@@ -28,6 +29,7 @@ interface dut_if ( input logic clk_i,
   modport duv ( input   clk_i,
                         rst_in,
                         cmd_i,
+                        opc_i,
                         input_i,
                         tx_rdy_i,
                         exec_i,
@@ -43,6 +45,7 @@ interface dut_if ( input logic clk_i,
   default clocking cb @(posedge clk_i);
     default input #1step output #(CLK_PERIOD_HALF-1);
     output cmd_i;
+    output opc_i;
     output input_i;
     output tx_rdy_i;
     output exec_i;

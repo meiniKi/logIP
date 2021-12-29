@@ -9,7 +9,8 @@
 `default_nettype wire
 `timescale 1ns/1ps
 module tuart_rx #(  parameter WORD_BITS = 8,
-                    parameter CMD_WORDS = 5,
+                    parameter OPC_WORDS = 1,
+                    parameter CMD_WORDS = 4,
                     parameter CLK_PER_SAMPLE = 4) (
   // General
   input  logic                            clk_i,      //! system clock
@@ -17,11 +18,12 @@ module tuart_rx #(  parameter WORD_BITS = 8,
   // External communication
   input  logic                            rx_i,       //! uart rx input
   // Connection to LogIP core
-  output logic [WORD_BITS*CMD_WORDS-1:0]  data_o,     //! received uart data
+  output logic [WORD_BITS*OPC_WORDS-1:0]  opc_o,      //! received opcode
+  output logic [WORD_BITS*CMD_WORDS-1:0]  cmd_o,      //! received command
   output logic                            stb_o       //! flag, receive complete
 );
 
-  localparam OUT_WIDTH = WORD_BITS*CMD_WORDS;
+  localparam OUT_WIDTH = WORD_BITS*(CMD_WORDS+OPC_WORDS);
 
   typedef enum bit [1:0] {IDLE, TRIG, SAMPLE, STOP} states_t;
 
@@ -51,11 +53,6 @@ module tuart_rx #(  parameter WORD_BITS = 8,
                                             :  CLK_PER_SAMPLE;
   assign take_smpl        = (smpl_cnt == smpl_cnt_compare - 1);
 
-  // The shift register is connected to the output.
-  // Todo: reversing the byte-order might be needed.
-  //
-  assign data_o           = shft_data;
-
   // A short command is indicated by the MSB being zero once
   // the first byte is received
   //
@@ -64,7 +61,15 @@ module tuart_rx #(  parameter WORD_BITS = 8,
   // A long-command is ready when all bits are shifted into the
   // receive-register
   //
-  assign long_cmd_ready = (word_cnt == CMD_WORDS);
+  assign long_cmd_ready   = (word_cnt == (CMD_WORDS+OPC_WORDS));
+
+  // Split received data into command and opcode. In case of a
+  // short command, cmd_o may be invalid.
+  //
+  assign opc_o = short_cmd_ready ?  shft_data[OUT_WIDTH-1 -: (OPC_WORDS*WORD_BITS)] : 
+                                    shft_data[0 +: OPC_WORDS*WORD_BITS];
+
+  assign cmd_o = shft_data[OPC_WORDS*WORD_BITS +: CMD_WORDS*WORD_BITS];
 
   //
   always_comb begin : main_fsm
@@ -122,11 +127,11 @@ module tuart_rx #(  parameter WORD_BITS = 8,
       // the receiver notifies the system.
       //
       STOP: begin
-        smpl_cnt_next   = smpl_cnt + 'b1;
+        smpl_cnt_next     = smpl_cnt + 'b1;
         if (take_smpl) state_next = IDLE;
         if (short_cmd_ready || long_cmd_ready) begin
-          word_cnt_next = 'b0;
-          stb_o         = 'b1;
+          word_cnt_next   = 'b0;
+          stb_o           = 'b1;
           shft_data_next  = 'b0;
         end
       end

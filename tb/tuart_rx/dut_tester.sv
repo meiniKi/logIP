@@ -6,6 +6,7 @@
 `default_nettype wire
 `timescale 1ns/1ps
 `define BUS_BIT_DELAY       #(CLK_PERIOD_HALF*DS)
+`define BUS_HALF_BIT_DELAY  #(CLK_PERIOD_HALF*DS/2)
 
 program uart_rx_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
   import tb_pkg::*;
@@ -29,29 +30,30 @@ program uart_rx_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     repeat(7) `BUS_BIT_DELAY duv_if.cb.rx_i <= 1;
     `BUS_BIT_DELAY duv_if.cb.rx_i <= 0;
 
-    // Stop bit
-    `BUS_BIT_DELAY duv_if.cb.rx_i <= 1;
-
     $write("[INFO] Waiting for posedge on strobe... ");
-    @(posedge duv_if.cb.stb_o);
+    `BUS_HALF_BIT_DELAY @(posedge duv_if.cb.stb_o);
+    `SCORE_ASSERT_STR(duv_if.cb.opc_o == 'h7F, "t0, cmd");
     $display("DONE");
-    `SCORE_ASSERT(duv_if.cb.data_o == 'h7F000000_00);
+
+    // Stop bit
+    `BUS_HALF_BIT_DELAY duv_if.cb.rx_i <= 1;
 
 
     // ##### Test a long command #####
-    repeat (5) begin
+    repeat (4) begin
       `BUS_BIT_DELAY duv_if.cb.rx_i <= 0;
     
-      repeat(8) `BUS_BIT_DELAY duv_if.cb.rx_i <= 1;
-      
-      `BUS_BIT_DELAY duv_if.cb.rx_i <= 1;
+      repeat(9) `BUS_BIT_DELAY duv_if.cb.rx_i <= 1;
     end
-    
-    $write("[INFO] Waiting for posedge on strobe... ");
-    @(posedge duv_if.cb.stb_o);
-    $display("DONE");
-    `SCORE_ASSERT(duv_if.cb.data_o == 'hFFFFFFFF_FF);
 
+    `BUS_BIT_DELAY duv_if.cb.rx_i <= 0;
+    repeat(8) `BUS_BIT_DELAY duv_if.cb.rx_i <= 1;
+    $write("[INFO] Waiting for posedge on strobe... ");
+    `BUS_HALF_BIT_DELAY @(posedge duv_if.cb.stb_o);
+    $display("DONE");
+    `SCORE_ASSERT_STR(duv_if.cb.opc_o == 'hFF, "t1, opc");
+    `SCORE_ASSERT_STR(duv_if.cb.cmd_o == 'hFFFFFFFF, "t1, cmd");
+    `BUS_HALF_BIT_DELAY duv_if.cb.rx_i <= 1; 
 
     // ##### Test concurrent short commands #####
     
@@ -59,23 +61,21 @@ program uart_rx_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     `BUS_BIT_DELAY duv_if.cb.rx_i <= 0;             // Start bit
     repeat(7) `BUS_BIT_DELAY duv_if.cb.rx_i <= 1;
     `BUS_BIT_DELAY duv_if.cb.rx_i <= 0;
-    `BUS_BIT_DELAY duv_if.cb.rx_i <= 1;             // Stop bit
-
     $write("[INFO] Waiting for posedge on strobe... ");
-    @(posedge duv_if.cb.stb_o);
+    `BUS_HALF_BIT_DELAY @(posedge duv_if.cb.stb_o);
     $display("DONE");
-    `SCORE_ASSERT(duv_if.cb.data_o == 'h7F000000_00);
+    `SCORE_ASSERT_STR(duv_if.cb.opc_o == 'h7F, "t2, opc");
+    `BUS_HALF_BIT_DELAY duv_if.cb.rx_i <= 1;        // Stop bit
 
     // Second short command
     `BUS_BIT_DELAY duv_if.cb.rx_i <= 0;             // Start bit
     `BUS_BIT_DELAY duv_if.cb.rx_i <= 1;
     repeat(7) `BUS_BIT_DELAY duv_if.cb.rx_i <= 0;
-    `BUS_BIT_DELAY duv_if.cb.rx_i <= 1;             // Stop bit
-
     $write("[INFO] Waiting for posedge on strobe... ");
-    @(posedge duv_if.cb.stb_o);
+    `BUS_HALF_BIT_DELAY @(posedge duv_if.cb.stb_o);
     $display("DONE");
-    `SCORE_ASSERT(duv_if.cb.data_o == 'h01000000_00);
+    `SCORE_ASSERT_STR(duv_if.cb.opc_o == 'h01, "t2, opc2");
+    `BUS_HALF_BIT_DELAY duv_if.cb.rx_i <= 1;        // Stop bit
 
     `SCORE_DONE
 

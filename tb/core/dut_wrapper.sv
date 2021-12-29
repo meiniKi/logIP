@@ -12,6 +12,7 @@ module dut_wrapper(dut_if.duv ifc);
               .rst_in         (ifc.rst_in),
               .input_i        (ifc.input_i),
               .cmd_i          (ifc.cmd_i),
+              .opc_i          (ifc.opc_i),
               .exec_i         (ifc.exec_i),
               .we_o           (ifc.we_o),
               .addr_o         (ifc.addr_o),

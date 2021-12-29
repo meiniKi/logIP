@@ -16,7 +16,8 @@ module core #(
   input  logic                  rst_in,     //! system reset, low active
   input  logic [WIDTH-1:0]      input_i,    //! input to sample
   // Receive
-  input  logic [39:0]           cmd_i,      //! command data
+  input  logic [ 7:0]           opc_i,      //! opcpde 
+  input  logic [31:0]           cmd_i,      //! command data
   input  logic                  exec_i,     //! execute command
   // Memory interface
   output logic                  we_o,       //! write enable
@@ -31,8 +32,9 @@ module core #(
   output logic                  tx_xoff_o   //! transmitter flow control on
 );
 
-  logic               rst;
+  logic               rst_n;
   logic               sft_rst;
+  logic               r_sft_rst;
 
   logic               arm;
   logic               id;
@@ -74,13 +76,13 @@ module core #(
   assign mem_o        = smpls;
   assign tx_from_ram  = mem_i;
 
-  assign rst          = ~sft_rst && rst_in;
+  assign rst_n        = ~r_sft_rst && rst_in;
 
   indec i_indec (
     .clk_i            (clk_i),          
-    .rst_in           (rst),         
+    .rst_in           (rst_n),         
     .stb_i            (exec_i),          
-    .opc_i            (cmd_i[39:32]),          
+    .opc_i            (opc_i),          
     .sft_rst_o        (sft_rst),      
     .arm_o            (arm),          
     .id_o             (id),
@@ -103,8 +105,8 @@ module core #(
 
   sampler i_sampler (
     .clk_i      (clk_i),
-    .rst_in     (rst),
-    .fdiv_i     (cmd_i[31:8]),
+    .rst_in     (rst_n),
+    .fdiv_i     (cmd_i),
     .set_div_i  (set_div),
     .data_i     (input_i),
     .smpls_o    (smpls),
@@ -113,8 +115,8 @@ module core #(
 
   trigger i_trigger (
     .clk_i      (clk_i),     
-    .rst_in     (rst),    
-    .cmd_i      (cmd_i[31:0]),     
+    .rst_in     (rst_n),    
+    .cmd_i      (cmd_i),     
     .stg_i      (stg),     
     .set_mask_i (set_mask),
     .set_val_i  (set_val), 
@@ -127,9 +129,9 @@ module core #(
 
   ctrl i_ctrl (
     .clk_i      (clk_i),     
-    .rst_in     (rst),    
+    .rst_in     (rst_n),    
     .set_cnt_i  (set_cnt), 
-    .cmd_i      (cmd_i[31:0]),
+    .cmd_i      (cmd_i),
     .run_i      (run),     
     .stb_i      (smpls_stb),            
     .we_o       (we_o),      
@@ -141,7 +143,7 @@ module core #(
 
   rdback i_rdback (           
     .clk_i      (clk_i),       
-    .rst_in     (rst),
+    .rst_in     (rst_n),
     .exec_i     (exec_i),
     .tx_rdy_i   (tx_rdy_i),
     .id_i       (id),
@@ -149,5 +151,11 @@ module core #(
     .tx_o       (tx_from_rdback),       
     .stb_o      (tx_stb_from_rdback)
   );
+
+  always_ff @(posedge exec_i) begin
+    // De-glitch soft reset as indec is just combinatorial logic
+    //
+    r_sft_rst <= sft_rst;
+  end
 
 endmodule
