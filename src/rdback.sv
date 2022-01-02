@@ -26,7 +26,7 @@ module rdback (
 
 // Most of the control signals can be ignored until OLS
 // instructions are supported.
-assign tx_o   = "1ALS";
+assign tx_o   = "SLA1";
 assign stb_o  = exec_i & id_i;
 
 endmodule

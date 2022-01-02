@@ -54,7 +54,7 @@ module logIP #( parameter CHLS = 32,
   // might need to be disabled.
   //
   assign chls_padded      = CORE_WIDTH'(chls_i);
-  assign mem_din          = mem_din_padded[MEM_DEPTH-1:0];
+  assign mem_din          = mem_din_padded[CHLS-1:0];
   assign mem_dout_padded  = CORE_WIDTH'(mem_dout);
 
   tuart_tx #( .WORD_BITS      (UART_WORD_BITS),
