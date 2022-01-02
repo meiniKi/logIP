@@ -2,6 +2,7 @@
 set path_origin ../../..
 
 set path_ip_rtl $path_origin/src
+set path_utils  $path_origin/utils
 set path_output ../out
 
 
@@ -16,6 +17,7 @@ synth_ip [get_files *.xci]
 
 # Read sources
 #
+read_verilog        $path_utils/tpg/tpg.sv
 read_verilog        ../src/top.sv
 read_verilog [ glob $path_ip_rtl/*.sv ]
 read_xdc ../constr/main.xdc

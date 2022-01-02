@@ -33,6 +33,7 @@ class Uart8;
   endtask
 
   task transmit(input uart_item_t b);
+    //$display("---> %h", b);
     this.mbx_tx.put(b);
   endtask
 
