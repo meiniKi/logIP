@@ -17,7 +17,6 @@ module trigger #( parameter STAGES = 4) (
   input  logic              set_mask_i, //! flag, set trigger mask
   input  logic              set_val_i,  //! flag, set trigger value
   input  logic              set_cfg_i,  //! flag, set trigger configuration
-  input  logic              exec_i,     //! execute command
   // Flow 
   input  logic              arm_i,      //! flag, arm trigger
   // Data
@@ -51,7 +50,6 @@ import logIP_pkg::*;
       .set_mask_i (set_mask[i]),
       .set_val_i  (set_val[i]),
       .set_cfg_i  (set_cfg[i]),
-      .exec_i     (exec_i),
       .arm_i      (arm_i),
       .stb_i      (stb_i),
       .smpls_i    (smpls_i),

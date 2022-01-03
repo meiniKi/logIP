@@ -21,21 +21,16 @@ program stage_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
     duv_if.cb.set_cfg_i   <= 'b0;
     duv_if.cb.stb_i       <= 'b0;
     duv_if.cb.lvl_i       <= 'b0;
-    duv_if.cb.exec_i      <= 'b0;
 
     `WAIT_CYCLES(10, clk_i)
 
     // ##### Test arm and trigger #####
     // Configuration
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.set_mask_i  <= 'b1;
-                            duv_if.cb.exec_i      <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.set_mask_i  <= 'b0;
-                            duv_if.cb.exec_i      <= 'b0;
                             duv_if.cb.cmd_i       <= 'hFFFFFFFF;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.set_val_i   <= 'b1;
-                            duv_if.cb.exec_i      <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.set_val_i   <= 'b0;
-                            duv_if.cb.exec_i      <= 'b0;
                             duv_if.cb.cmd_i       <= 'h00000000;
 
     // Match when not armed and not active
@@ -45,45 +40,37 @@ program stage_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
                             `ASSERT_EQ('b0, duv_if.cb.match_o);
                             duv_if.cb.stb_i       <= 'b0;
 
+    
     // Match when armed but not active
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i       <= 'b1;
-                            duv_if.cb.exec_i      <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i       <= 'b0;
-                            duv_if.cb.exec_i      <= 'b0;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i       <= 'b1;
     `WAIT_CYCLES(1, clk_i)  `ASSERT_EQ('b0, duv_if.cb.run_o);
                             `ASSERT_EQ('b1, duv_if.cb.match_o);
                             duv_if.cb.stb_i       <= 'b0;
 
+
     // Activate stage
-    `WAIT_CYCLES(1, clk_i)  duv_if.cb.cmd_i       <= 'h00000008;
+    `WAIT_CYCLES(1, clk_i)  duv_if.cb.cmd_i       <= 'h08000000;
                             duv_if.cb.set_cfg_i   <= 'b1;
-                            duv_if.cb.exec_i      <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.set_cfg_i   <= 'b0;
-                            duv_if.cb.exec_i      <= 'b0;
 
     // Match when armed and active
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i       <= 'b1;
-                            duv_if.cb.exec_i      <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i       <= 'b0;
-                            duv_if.cb.exec_i      <= 'b0;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i       <= 'b1;
     `WAIT_CYCLES(1, clk_i)  `ASSERT_EQ('b1, duv_if.cb.run_o);
                             `ASSERT_EQ('b1, duv_if.cb.match_o);
                             duv_if.cb.stb_i <= 'b0;
-
+    
     // Configure level
-    `WAIT_CYCLES(1, clk_i)  duv_if.cb.cmd_i       <= 'h00000100;
+    `WAIT_CYCLES(1, clk_i)  duv_if.cb.cmd_i       <= 'h00010000;
                             duv_if.cb.set_cfg_i   <= 'b1;
-                            duv_if.cb.exec_i      <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.set_cfg_i   <= 'b0;
-                            duv_if.cb.exec_i      <= 'b0;
 
     // Match when armed and active but not at level
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i       <= 'b1;
-                            duv_if.cb.exec_i      <= 'b1;
-    `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i       <= 'b0;
-                            duv_if.cb.exec_i      <= 'b0;
+    `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i       <= 'b0;;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i       <= 'b1;
     `WAIT_CYCLES(1, clk_i)  `ASSERT_EQ('b0, duv_if.cb.match_o);
                             duv_if.cb.stb_i       <= 'b0;
@@ -93,24 +80,19 @@ program stage_tester ( dut_if.tb duv_if, input clk_i, input score_mbox_t mbx);
                             duv_if.cb.stb_i       <= 'b0;
 
     // Configure delay
-    `WAIT_CYCLES(1, clk_i)  duv_if.cb.cmd_i       <= 'h02000000;
+    `WAIT_CYCLES(1, clk_i)  duv_if.cb.cmd_i       <= 'h00000002;
                             duv_if.cb.set_cfg_i   <= 'b1;
-                            duv_if.cb.exec_i      <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.set_cfg_i   <= 'b0;
-                            duv_if.cb.exec_i      <= 'b0;
-    
+
     // Match to check delay
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i       <= 'b1;
-                            duv_if.cb.exec_i      <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.arm_i       <= 'b0;
-                            duv_if.cb.exec_i      <= 'b0;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i       <= 'b1;
     `WAIT_CYCLES(1, clk_i)  `ASSERT_EQ('b0, duv_if.cb.match_o);
                             duv_if.cb.stb_i       <= 'b0;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i       <= 'b1;
     `WAIT_CYCLES(1, clk_i)  duv_if.cb.stb_i       <= 'b0;
-    @(posedge duv_if.cb.match_o) `ASSERT_EQ('b1, duv_if.cb.match_o);                    
-                            
+    @(posedge duv_if.cb.match_o) `ASSERT_EQ('b1, duv_if.cb.match_o);                           
 
     `SCORE_DONE
       

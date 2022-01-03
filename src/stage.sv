@@ -32,7 +32,6 @@ module stage (
   input  logic              set_mask_i, //! flag, set trigger mask
   input  logic              set_val_i,  //! flag, set trigger value
   input  logic              set_cfg_i,  //! flag, set trigger configuration
-  input  logic              exec_i,     //! execute command
   // Flow 
   input  logic              arm_i,      //! flag, arm trigger
   // Data
@@ -152,7 +151,7 @@ module stage (
       r_chl     <= 'b0;
       r_dly     <= 'b0;
       r_lvl     <= 'b0;
-    end else if (exec_i) begin
+    end else begin
       if (set_mask_i) r_mask  <= cmd_i[31:0];
       if (set_val_i)  r_val   <= cmd_i[31:0];
       if (set_cfg_i)  begin

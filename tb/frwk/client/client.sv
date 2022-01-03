@@ -23,6 +23,12 @@ class Client;
     i_uart8.transmit_cmd(opc, val);
   endtask
 
+  task set_flags(int value);
+    logic [31:0]  val = value;
+    logic [7:0]   opc = CMD_L_MSK_SET_FLAGS;
+    i_uart8.transmit_cmd(opc, val);
+  endtask
+
   task set_trigger_value(int stage, int value);
     logic [31:0]  val = value;
     logic [7:0]   opc = CMD_L_MSK_SET_TRG_VAL;

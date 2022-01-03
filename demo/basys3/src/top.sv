@@ -9,10 +9,13 @@ module top (
   input  logic        btnC,
   // Uart Communication
   input  logic        uart_rx_i,
-  output logic        uart_tx_o
+  output logic        uart_tx_o,
+  // Debug
+  output logic        dbg_uart_from_client,
+  output logic        dbg_uart_to_client
 );
 
-  localparam CLK_PER_BIT = 100_000_000 / 115_200;
+  localparam CLK_PER_BIT = 100_000_000 / 9_600;
 
   //logic         sys_clk;
   logic         rst;
@@ -20,6 +23,9 @@ module top (
   logic [31:0]  chls;
 
   assign rst = ~btnC; // acive low? todo
+
+  assign dbg_uart_from_client = uart_rx_i;
+  assign dbg_uart_to_client = uart_tx_o;
 
   /*
   sys_clk_gen i_sys_clk_gen

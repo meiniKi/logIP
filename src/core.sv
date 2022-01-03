@@ -122,7 +122,6 @@ module core #(
     .set_mask_i (set_mask),
     .set_val_i  (set_val), 
     .set_cfg_i  (set_cfg), 
-    .exec_i     (exec_i),
     .arm_i      (arm),     
     .stb_i      (smpls_stb),     
     .smpls_i    (smpls),   

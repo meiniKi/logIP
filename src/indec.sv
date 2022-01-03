@@ -65,27 +65,27 @@ module indec (
     set_adv_dat_o = 'b0;
 
     casex (opc) 
-      CMD_S_SOFT_RESET:         sft_rst_o     = 'b1;
-      CMD_S_RUN:                arm_o         = 'b1;
-      CMD_S_ID:                 id_o          = 'b1;
-      CMD_S_XON:                xon_o         = 'b1;
-      CMD_S_XOFF:               xoff_o        = 'b1;
-      CMD_L_MSK_SET_TRG_MSK:    set_mask_o    = 'b1;
-      CMD_L_MSK_SET_TRG_VAL:    set_val_o     = 'b1;
-      CMD_L_MSK_SET_TRG_CONF:   set_cfg_o     = 'b1;
-      CMD_L_MSK_SET_DIV:        set_div_o     = 'b1;
-      CMD_L_MSK_SET_RD_DLY_CNT: set_cnt_o     = 'b1;
-      CMD_L_MSK_SET_FLAGS:      set_flgs_o    = 'b1;
+      CMD_S_SOFT_RESET:         sft_rst_o     = stb_i;
+      CMD_S_RUN:                arm_o         = stb_i;
+      CMD_S_ID:                 id_o          = stb_i;
+      CMD_S_XON:                xon_o         = stb_i;
+      CMD_S_XOFF:               xoff_o        = stb_i;
+      CMD_L_MSK_SET_TRG_MSK:    set_mask_o    = stb_i;
+      CMD_L_MSK_SET_TRG_VAL:    set_val_o     = stb_i;
+      CMD_L_MSK_SET_TRG_CONF:   set_cfg_o     = stb_i;
+      CMD_L_MSK_SET_DIV:        set_div_o     = stb_i;
+      CMD_L_MSK_SET_RD_DLY_CNT: set_cnt_o     = stb_i;
+      CMD_L_MSK_SET_FLAGS:      set_flgs_o    = stb_i;
 
       // only consider OLS commands if enabled
       //
 `ifdef P_OLS_EXTENSION_ENABLED
-      CMD_OLS_QUERY_META_DATA:  rd_meta_o     = 'b1;
-      CMD_OLS_FINISH_NOW:       fin_now_o     = 'b1;
-      CMD_OLS_QUERY_INPUT_DATA: rd_inp_o      = 'b1;
-      CMD_OLS_ARM_ADV_TRG:      arm_adv_o     = 'b1;
-      CMD_OLS_ADV_TRG_CONG:     set_adv_cfg_o = 'b1;
-      CMD_OLS_ADV_TRG_DATA:     set_adv_dat_o = 'b1;
+      CMD_OLS_QUERY_META_DATA:  rd_meta_o     = stb_i;
+      CMD_OLS_FINISH_NOW:       fin_now_o     = stb_i;
+      CMD_OLS_QUERY_INPUT_DATA: rd_inp_o      = stb_i;
+      CMD_OLS_ARM_ADV_TRG:      arm_adv_o     = stb_i;
+      CMD_OLS_ADV_TRG_CONG:     set_adv_cfg_o = stb_i;
+      CMD_OLS_ADV_TRG_DATA:     set_adv_dat_o = stb_i;
 `endif
     endcase
   end
