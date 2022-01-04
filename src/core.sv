@@ -37,6 +37,7 @@ module core #(
 
   logic               arm;
   logic               id;
+  logic               rd_meta;
   logic               set_mask;
   logic               set_val;
   logic               set_cfg;
@@ -94,8 +95,8 @@ module core #(
     .set_flgs_o       (set_flgs),     
     .stg_o            (stg),       
     .xon_o            (tx_xon_o),          
-    .xoff_o           (tx_xoff_o)        
-    //.rd_meta_o        (),         // Not yet used    
+    .xoff_o           (tx_xoff_o),        
+    .rd_meta_o        (rd_meta)  
     //.fin_now_o        (),         // Not yet used    
     //.rd_inp_o         (),         // Not yet used    
     //.arm_adv_o        (),         // Not yet used    
@@ -148,7 +149,7 @@ module core #(
     .exec_i     (exec_i),
     .tx_rdy_i   (tx_rdy_i),
     .id_i       (id),
-    //.rd_meta_i  (),               // Not yet used 
+    .rd_meta_i  (rd_meta), 
     .tx_o       (tx_from_rdback),       
     .stb_o      (tx_stb_from_rdback)
   );

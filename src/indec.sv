@@ -79,8 +79,8 @@ module indec (
 
       // only consider OLS commands if enabled
       //
+      CMD_OLS_QUERY_META_DATA:  rd_meta_o     = stb_i; // for now: only support this one
 `ifdef P_OLS_EXTENSION_ENABLED
-      CMD_OLS_QUERY_META_DATA:  rd_meta_o     = stb_i;
       CMD_OLS_FINISH_NOW:       fin_now_o     = stb_i;
       CMD_OLS_QUERY_INPUT_DATA: rd_inp_o      = stb_i;
       CMD_OLS_ARM_ADV_TRG:      arm_adv_o     = stb_i;

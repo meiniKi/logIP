@@ -16,6 +16,10 @@ class Client;
     i_uart8.transmit(byte'(CMD_S_ID));
   endtask
 
+  task query_ols_meta();
+    i_uart8.transmit(byte'(CMD_OLS_QUERY_META_DATA));
+  endtask
+
   task set_trigger_mask(int stage, int value);
     logic [31:0]  val = value;
     logic [7:0]   opc = CMD_L_MSK_SET_TRG_MSK;

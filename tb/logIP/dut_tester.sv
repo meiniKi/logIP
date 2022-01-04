@@ -43,6 +43,16 @@ program logIP_tester ( dut_if.tb duv_if,
       $display("test received: %c", rx_byte);
     end
 
+    `WAIT_CYCLES(100, clk_i);
+
+    // Query Meta Data
+    //
+    `SCORE_ASSERT_STR(i_client.i_uart8.is_receive_empty(), "meta, rx empty");
+    i_client.query_ols_meta();
+    i_client.i_uart8.wait_transmit_done();
+    i_client.run();
+    `WAIT_CYCLES(200, clk_i);
+
     // Trigger mask channel 0 and fire.
     //
     `SCORE_ASSERT_STR(i_client.i_uart8.is_receive_empty(), "trg_ch0, rx empty");
