@@ -15,7 +15,7 @@ module top (
   output logic        dbg_uart_to_client
 );
 
-  localparam CLK_PER_BIT = 100_000_000 / 9_600;
+  localparam CLK_PER_BIT = 100_000_000 / 115_200;
 
   //logic         sys_clk;
   logic         rst;
