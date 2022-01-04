@@ -57,15 +57,14 @@ program logIP_tester ( dut_if.tb duv_if,
 
     duv_if.cb.chls_i <= 'hFFFFFFFF;
     
-
     // Sigrok simple start
     //
     `WAIT_CYCLES(5000, clk_i);
     i_client.set_trigger_mask(0, 'h00);
     i_client.set_trigger_value(0, 'h00);
     i_client.set_stage_config(0, 'b1);
-    i_client.set_sampling_rate(SYS_F, SYS_F);
-    i_client.set_count_samples(32, 16); // 16 samples before, 16 after trigger
+    i_client.set_sampling_rate(SYS_F, SYS_F/4);
+    i_client.set_count_samples(12, 4);
     i_client.set_flags('h02);
     i_client.i_uart8.wait_transmit_done();
     i_client.run();

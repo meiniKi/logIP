@@ -127,8 +127,8 @@ module ctrl #(
 
   always_ff @(posedge clk_i) begin : set_cnt
     if (~rst_in) begin
-      rd_cnt    <= 'b1;
-      dly_cnt   <= 'b1;
+      rd_cnt    <= 'b0;
+      dly_cnt   <= 'b0;
     end else if (set_cnt_i) begin
       rd_cnt    <= cmd_i[15:0];
       dly_cnt   <= cmd_i[31:16];

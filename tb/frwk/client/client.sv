@@ -42,8 +42,9 @@ class Client;
   endtask
 
   task set_count_samples(int read_count_nr, int delay_count_nr);
-    logic [15:0]  r_cnt = read_count_nr >> 2;
+    logic [15:0]  r_cnt = (read_count_nr >> 2) - 1;
     logic [15:0]  d_cnt = delay_count_nr >> 2;
+
     if ((read_count_nr % 4) || (delay_count_nr % 4))
       $warning("Read-Count and Delay-Count must be a multiple of 4.\n");
       
