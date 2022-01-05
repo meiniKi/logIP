@@ -32,14 +32,14 @@ interface dut_if ( input logic clk_i,
 
   default clocking cb @(posedge clk_i);
     default input #1step output #(CLK_PERIOD_HALF-1);
-    input  clk_i;
-    input  rst_in;
-    input  cfg_stb_i;
-    input  cfg_i;
-    input  stb_i;
-    input  d_i;
-    output stb_o;
-    output q_o;
+    output clk_i;
+    output rst_in;
+    output cfg_stb_i;
+    output cfg_i;
+    output stb_i;
+    output d_i;
+    input  stb_o;
+    input  q_o;
   endclocking
 
   modport tb (clocking cb);

@@ -29,18 +29,18 @@ module cache #(
   logic [(INPUT+OUTPUT-1)*8-1:0]  cache;
   logic [(INPUT+OUTPUT-1)*8-1:0]  cache_next;
   logic [INPUT-1:0]               cfg;
-  logic [$clog2(INPUT)-1:0]       cnt;
-  logic [$clog2(INPUT)-1:0]       cnt_next;
+  logic [$clog2(INPUT+OUTPUT):0]  cnt;
+  logic [$clog2(INPUT+OUTPUT):0]  cnt_next;
 
   always_comb begin : caching
     cache_next      = cache;
     state_next      = state;
     cnt_next        = cnt;
     
+    if (cnt_next >= OUTPUT) begin
+      cnt_next    = cnt - OUTPUT;
+    end
     if (stb_i) begin
-      if (cnt_next >= OUTPUT) begin
-        cnt_next    = cnt - OUTPUT;
-      end      
       for (integer i = 0; i < INPUT; i=i+1) begin
         if (~cfg[i]) begin
           cnt_next    = cnt_next + 1;
