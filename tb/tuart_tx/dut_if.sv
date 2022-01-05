@@ -19,6 +19,7 @@ interface dut_if ( input logic clk_i,
   logic         xstb_i;
   logic         xon_i;
   logic         xoff_i;
+  logic [2:0]   sel_i;
 
   modport duv (input  clk_i,
                       rst_in,
@@ -27,6 +28,7 @@ interface dut_if ( input logic clk_i,
                       xstb_i,
                       xon_i,
                       xoff_i,
+                      sel_i,
                output rdy_o,
                       tx_o);
 
@@ -37,6 +39,7 @@ interface dut_if ( input logic clk_i,
     output  xstb_i;
     output  xon_i;
     output  xoff_i;
+    output  sel_i;
     input   rdy_o;
     input   tx_o;
   endclocking

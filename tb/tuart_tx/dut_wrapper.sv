@@ -17,5 +17,6 @@ tuart_tx #( .WORD_BITS (8),
                                         .xstb_i   (ifc.xstb_i),
                                         .xoff_i   (ifc.xoff_i),
                                         .xon_i    (ifc.xon_i),
-                                        .data_i   (ifc.data_i));
+                                        .data_i   (ifc.data_i),
+                                        .sel_i    (ifc.sel_i));
 endmodule
