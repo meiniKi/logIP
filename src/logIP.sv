@@ -68,7 +68,8 @@ module logIP #( parameter CHLS = 32,
     .xstb_i     (exec_cmd),
     .xoff_i     (tx_xoff),
     .xon_i      (tx_xon),
-    .data_i     (tx_data)
+    .data_i     (tx_data),
+    .sel_i      ('d4)
   );
 
   tuart_rx #( .WORD_BITS      (UART_WORD_BITS),

@@ -22,7 +22,8 @@ module tuart_tx #(  parameter WORD_BITS = 8,
   input  logic                                xstb_i, //! flag, update x{on,off}
   input  logic                                xoff_i, //! flag, xoff
   input  logic                                xon_i,  //! flag, xon
-  // Data               
+  // Data
+  input  logic [$clog2(CMD_WORDS):0]          sel_i,  //! select how many bytes to transmit from the input data
   input  logic [(WORD_BITS)*(CMD_WORDS)-1:0]  data_i  //! data to transmit
 );
 
@@ -70,10 +71,10 @@ module tuart_tx #(  parameter WORD_BITS = 8,
       // a command is not supported.
       //
       IDLE: begin
-        if (stb_i && r_xctrl == XON) begin
+        if (stb_i && r_xctrl == XON && sel_i > 0) begin
           state_next    = TX_START;
           bit_cnt_next  = START_BIT_NR;
-          word_cnt_next = CMD_WORDS - 'b1;
+          word_cnt_next = sel_i - 'b1;
           time_cnt_next = TIME_CNT_START;
           shft_reg_next = data_i;
         end
