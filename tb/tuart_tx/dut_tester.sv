@@ -19,6 +19,12 @@ program uart_tx_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
   logic [31:0] data_1 = 'hFFFF0000;
   logic [31:0] data_2 = 'hAAAAAAAA;
 
+  task waitTx();
+    $write("[INFO] Waiting for negedge on tx signal... ");
+    @(negedge duv_if.cb.tx_o);
+    $display("DONE");
+  endtask
+
   initial begin
     $display("----- Started ------");
     $display("-- %d cycles per bit", DS);
@@ -38,9 +44,7 @@ program uart_tx_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     duv_if.stb_i    <= 'b1;
 
     repeat(2) begin
-      $write("[INFO] Waiting for negedge on tx signal... ");
-      @(negedge duv_if.cb.tx_o);
-      $display("DONE");
+      waitTx();
       `BUS_BIT_DELAY_HALF `SCORE_ASSERT(duv_if.cb.tx_o == 'b0);         // Start bit
       repeat(8) begin
         `BUS_BIT_DELAY `SCORE_ASSERT(duv_if.cb.tx_o == 'b0);
@@ -51,9 +55,7 @@ program uart_tx_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     duv_if.stb_i    <= 'b0;
 
     repeat(2) begin
-      $write("[INFO] Waiting for negedge on tx signal... ");
-      @(negedge duv_if.cb.tx_o);
-      $display("DONE");
+      waitTx();
       `BUS_BIT_DELAY_HALF `SCORE_ASSERT(duv_if.cb.tx_o == 'b0);         // Start bit
       repeat(8) begin 
         `BUS_BIT_DELAY `SCORE_ASSERT(duv_if.cb.tx_o == 'b1);
@@ -69,9 +71,7 @@ program uart_tx_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     duv_if.stb_i    <= 'b1;
 
     repeat(4) begin
-      $write("[INFO] Waiting for negedge on tx signal... ");
-      @(negedge duv_if.cb.tx_o);
-      $display("DONE");
+      waitTx();
       `BUS_BIT_DELAY_HALF `SCORE_ASSERT(duv_if.cb.tx_o == 'b0);         // Start bit
       repeat(4) begin
         `BUS_BIT_DELAY `SCORE_ASSERT(duv_if.cb.tx_o == 'b0);
@@ -81,6 +81,25 @@ program uart_tx_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     end
 
     duv_if.stb_i    <= 'b0;
+
+    // ##### Test selection of only first byte #####
+    `BUS_BIT_DELAY
+    duv_if.data_i     <= 'hDDCCBBAA;
+    duv_if.sel_i      <= 'b1;
+    duv_if.stb_i      <= 'b1;
+    waitTx();
+    `BUS_BIT_DELAY_HALF `SCORE_ASSERT(duv_if.cb.tx_o == 'b0);         // Start bit
+    repeat(4) begin
+      `BUS_BIT_DELAY `SCORE_ASSERT(duv_if.cb.tx_o == 'b0);
+      `BUS_BIT_DELAY `SCORE_ASSERT(duv_if.cb.tx_o == 'b1);
+    end
+    `BUS_BIT_DELAY `SCORE_ASSERT(duv_if.cb.tx_o == 'b1);
+    // No more bytes should be transmitted
+    repeat(20) begin
+      `SCORE_ASSERT_STR(duv_if.cb.tx_o == 'b1, "Transmitting to many bytes.");
+    end
+    duv_if.stb_i     <= 'b0;
+
     `SCORE_DONE
 
     $display("----- Done ------");
