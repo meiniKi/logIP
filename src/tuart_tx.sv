@@ -68,7 +68,8 @@ module tuart_tx #(  parameter WORD_BITS = 8,
     case (state)
       // Wait for strobe to start a transfer. XOFF will
       // prevent a new (full) transmission. Pause between
-      // a command is not supported.
+      // a command is not supported. If message length 
+      // (sel_i) is zero, no transmission is started.
       //
       IDLE: begin
         if (stb_i && r_xctrl == XON && sel_i > 0) begin
