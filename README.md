@@ -96,7 +96,7 @@ In this demo, logIP is instantiated and connected to the test-pattern generator.
 The following script can start synthesis and implementation. After the script has successfully finished, the bitstream and reports are copied to `<repo>/demo/basys3/out`.
 ```
 cd <repo>/demo/basys3/scripts
-./run_simpl.sh
+./run_impl.sh
 ```
 
 Another script can be run to program the bitstream into volatile configuration memory.
