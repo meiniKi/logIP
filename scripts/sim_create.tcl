@@ -29,6 +29,7 @@ add_files -fileset sim_1        $path_rtl/ramif.sv
 add_files -fileset sim_1        $path_rtl/lutram.sv
 add_files -fileset sim_1        $path_rtl/trigger.sv
 add_files -fileset sim_1        $path_rtl/core.sv
+add_files -fileset sim_1        $path_rtl/cache.sv
 
 # Read testbench framework
 add_files -fileset sim_1 [ glob $path_tb_dir/frwk/*.svh ]
