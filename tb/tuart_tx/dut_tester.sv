@@ -100,6 +100,16 @@ program uart_tx_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     end
     duv_if.stb_i     <= 'b0;
 
+    // ##### Test selection of only first byte #####
+    `BUS_BIT_DELAY
+    duv_if.data_i     <= 'hFFFFFFFF;
+    duv_if.sel_i      <= 'b0;
+    duv_if.stb_i      <= 'b1;
+    repeat(20) begin
+      `SCORE_ASSERT_STR(duv_if.cb.tx_o == 'b1, "No data should be transmitted.");
+    end
+    duv_if.stb_i     <= 'b0;
+
     `SCORE_DONE
 
     $display("----- Done ------");
