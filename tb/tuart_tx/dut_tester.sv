@@ -28,6 +28,7 @@ program uart_tx_tester (dut_if duv_if, input clk_i, input score_mbox_t mbx);
     duv_if.xstb_i   <= 'b0;
     duv_if.xoff_i   <= 'b0;
     duv_if.xon_i    <= 'b0;
+    duv_if.sel_i    <= 'd4;
 
     #(10 * CLK_PERIOD_HALF*DS)
 
