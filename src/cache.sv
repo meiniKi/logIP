@@ -26,48 +26,48 @@ module cache #(
   states_t state;
   states_t state_next;
 
-  logic [(2*INPUT-1)*8-1:0] cache;
-  logic [(2*INPUT-1)*8-1:0] cache_next;
-  logic [INPUT-1:0]         cfg;
-  logic [$clog2(INPUT)-1:0] cnt;
-  logic [$clog2(INPUT)-1:0] cnt_next;
+  logic [(INPUT+OUTPUT-1)*8-1:0]  cache;
+  logic [(INPUT+OUTPUT-1)*8-1:0]  cache_next;
+  logic [INPUT-1:0]               cfg;
+  logic [$clog2(INPUT)-1:0]       cnt;
+  logic [$clog2(INPUT)-1:0]       cnt_next;
 
   always_comb begin : caching
     cache_next      = cache;
     state_next      = state;
     cnt_next        = cnt;
-
+    
     if (stb_i) begin
       if (cnt_next >= OUTPUT) begin
         cnt_next    = cnt - OUTPUT;
-      end
-      generate
-        for (i = 0; i < INPUT; i++) begin
-          if (~cfg[i]) begin
-            cache_next  = cache_next << 8 & d_i[(i+1)*8:i*8];
-            cnt_next    = cnt_next + 1;
+      end      
+      for (integer i = 0; i < INPUT; i=i+1) begin
+        if (~cfg[i]) begin
+          cnt_next    = cnt_next + 1;
+          cache_next  = cache_next << 8;
+          for (integer j = 0; j < 8; j++) begin
+            cache_next[j]  = d_i[i*8+j];
           end
         end
-      endgenerate
+      end
     end
 
-      default: state_next = IDLE; 
-    endcase
   end // always_comb
 
-  always_comb begin : output
+  always_comb begin : assign_output
     q_o   = 'b0;
     stb_o = 'b0;
 
     if (cnt >= OUTPUT) begin
       stb_o = 'b1;
-      generate
-        for (i = INPUT; i < 2*INPUT; i++) begin
-          if (i - cnt == 'b0) begin
-            q_o = cache[i*8-1:(i-INPUT)*8]
+      
+      for (integer i = OUTPUT; i < INPUT+OUTPUT; i=i+1) begin
+        if (i - cnt == 'b0) begin
+          for (integer j = 0; j < (OUTPUT*8-1); j++) begin
+            q_o[j] = cache[(i-OUTPUT)*8+j];
           end
         end
-      endgenerate
+      end
     end
   end // always_comb
 
