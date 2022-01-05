@@ -1,85 +1,108 @@
 /*
  * file: cache.sv
- * usage: 
+ * usage: Keep memory interface at constant width even when
+ *        some of the channels are disabled.
  *
  */
 
 `default_nettype wire
 `timescale 1ns/1ps
 
-module cache #(
-  parameter INPUT=4,                        //! number of input bytes
-  parameter OUTPUT=4                        //! number of output bytes
-) (                  
-  input  logic                  clk_i,      //! system clock 
-  input  logic                  rst_in,     //! system reset, low active
-  input  logic                  cfg_stb_i,  //! configure flag, configuration at cfg_i is valid
-  input  logic [INPUT-1:0]      cfg_i,      //! configure active input bytes
-  input  logic                  stb_i,      //! indicates that input is ready
-  input  logic [(INPUT*8)-1:0]  d_i,        //! input data
-  output logic                  stb_o,      //! output is ready
-  output logic [(OUTPUT*8)-1:0] q_o         //! output data
+module cache (                  
+  input  logic              clk_i,      //! system clock 
+  input  logic              rst_in,     //! system reset, low active
+  input  logic              cfg_stb_i,  //! configure flag, configuration at cfg_i is valid
+  input  logic [3:0]        cfg_i,      //! configure active input bytes
+  input  logic              stb_i,      //! indicates that input is ready
+  input  logic [3:0][7:0]   d_i,        //! input data
+  output logic              stb_o,      //! output is ready
+  output logic [3:0][7:0]   q_o         //! output data
 );
-
-  typedef enum bit [1:0] { IDLE, TRG, TX, TX_WAIT } states_t;
 
   states_t state;
   states_t state_next;
 
-  logic [(INPUT+OUTPUT-1)*8-1:0]  cache;
-  logic [(INPUT+OUTPUT-1)*8-1:0]  cache_next;
-  logic [INPUT-1:0]               cfg;
-  logic [$clog2(INPUT+OUTPUT):0]  cnt;
-  logic [$clog2(INPUT+OUTPUT):0]  cnt_next;
+  // Register to build 
+  // 
+
+  logic [7:0] [7:0]                 cache;
+  logic [7:0] [7:0]                 cache_next;
+
+  logic [3:0]                       cfg;
+
+  logic [$clog2($bits(cfg)+1)-1:0]  cfg_ones;
+
+  logic                             store_bytes;
+  logic [$clog2(8):0]               cnt;
+  logic [$clog2(8):0]               cnt_new;
+
+  logic A;
+  logic B;
+  logic C;
+  logic D;
+
+  assign A = cfg[3];
+  assign B = cfg[3];
+  assign C = cfg[3];
+  assign D = cfg[3];
+
+  assign cnt_new      = cnt + cfg;
+  assign store_bytes  = cnt_new >= 'd4;
+  assign stb_o        = store_bytes;
+  assign q_o          = 'b0; // Todo: continue
+
+
+  always_comb begin : number_bytes_to_add
+    cfg_ones = '0;  
+    foreach(cfg[idx]) begin
+      cfg_ones += cfg[idx];
+    end
+  end // always_comb
+
 
   always_comb begin : caching
-    cache_next      = cache;
-    state_next      = state;
-    cnt_next        = cnt;
+    // This is not beautiful but might be the best solution
+    // without a huge increase in area
+    //
+    // A B C D || MUX3 | MUX2 | MUX1 | MUX0 |
+    // 0 0 0 0 || x x  | x x  | x x  | x x  |
+    // 0 0 0 1 || x x  | x x  | x x  | 0 0  |
+    // 0 0 1 0 || x x  | x x  | x x  | 0 1  |
+    // 0 0 1 1 || x x  | x x  | 0 1  | 0 0  |
+    // 0 1 0 0 || x x  | x x  | x x  | 1 0  |
+    // 0 1 0 1 || x x  | x x  | 1 0  | 0 0  |
+    // 0 1 1 0 || x x  | x x  | 1 0  | 0 1  |
+    // 0 1 1 1 || x x  | 1 0  | 0 1  | 0 0  | 
+    // 1 0 0 0 || x x  | x x  | x x  | 1 1  |
+    // 1 0 0 1 || x x  | x x  | 1 1  | 0 0  |
+    // 1 0 1 0 || x x  | x x  | 1 1  | 0 1  |
+    // 1 0 1 1 || x x  | 1 1  | 0 1  | 0 0  | 
+    // 1 1 0 0 || x x  | x x  | 1 1  | 1 0  |
+    // 1 1 0 1 || x x  | 1 1  | 1 0  | 0 0  |
+    // 1 1 1 0 || x x  | 1 1  | 1 0  | 0 1  |
+    // 1 1 1 1 || 1 1  | 1 0  | 0 1  | 0 0  |
+    //
+    //
+    // MUX3 = {1, 1}
+    // MUX2 = {1 ,~B|~C|~D}
+    // MUX1 = {~C|~D, ~B|CD|~C~D}
+    // MUX0 = {~C~D)|~ABCD, C~D|~B~D}
+    //
+    cache_next      <<= cfg_ones;
+    cache_next[0]   = stb_i[{(~C&~D)|(~A&B&C&D), (C&~D)|(~B&~D)}];
+    cache_next[1]   = stb_i[~C|~D, ~B|(C&D)|(~C&~D)];
+    cache_next[2]   = stb_i[{'b1', ~B|~C|~D}];
+    cache_next[3]   = stb_i[2'b11];
     
-    if (cnt_next >= OUTPUT) begin
-      cnt_next    = cnt - OUTPUT;
-    end
-    if (stb_i) begin
-      for (integer i = 0; i < INPUT; i=i+1) begin
-        if (~cfg[i]) begin
-          cnt_next    = cnt_next + 1;
-          cache_next  = cache_next << 8;
-          for (integer j = 0; j < 8; j++) begin
-            cache_next[j]  = d_i[i*8+j];
-          end
-        end
-      end
-    end
 
   end // always_comb
 
-  always_comb begin : assign_output
-    q_o   = 'b0;
-    stb_o = 'b0;
-
-    if (cnt >= OUTPUT) begin
-      stb_o = 'b1;
-      
-      for (integer i = OUTPUT; i < INPUT+OUTPUT; i=i+1) begin
-        if (i - cnt == 'b0) begin
-          for (integer j = 0; j < (OUTPUT*8-1); j++) begin
-            q_o[j] = cache[(i-OUTPUT)*8+j];
-          end
-        end
-      end
-    end
-  end // always_comb
 
   always_ff @(posedge clk_i ) begin : fsm
     if (~rst_in) begin
-      state     <= IDLE;
-      cache     <= 'b0;
       cnt       <= 'b0;
-    end else begin
-      state     <= state_next;
-      cache     <= cache_next;
-      cnt       <= cnt_next;
+    end else if (stb_i) begin
+      cnt       <= store_bytes ? cnt_new - 'd4 : cnt_new;
     end
   end // always_ff
 
