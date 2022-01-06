@@ -48,6 +48,7 @@ The following table provides a link to the documentation of each module. Note: T
 | trigger     | Trigger: 4 Stages         | [trigger ](./doc/doc_internal/trigger.md)     |
 | tuart_rx    | (Tiny) UART receiver      | [tuart_rx ](./doc/doc_internal/tuart_rx.md)   |
 | tuart_tx    | (Tiny) UART transmitter   | [tuart_tx ](./doc/doc_internal/tuart_tx.md)   |
+| cache       | Write cache               | [cache](./doc/doc_internal/cache.md)   |
 | syncro      | Synchronizer, legacy      | [syncro ](./doc/doc_internal/syncro.md)       |
 
 
