@@ -75,7 +75,7 @@ module ctrl #(
       // the caputured values to the client.
       //
       TRG: begin
-        if (cnt == (dly_cnt<<2)) begin
+        if (cnt == (dly_cnt+'d2<<2)) begin
           state_next      = TX;
           cnt_next        = 'b0;
           ptr_next        = ptr - 1;
