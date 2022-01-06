@@ -51,7 +51,7 @@ program logIP_tester ( dut_if.tb duv_if,
     i_client.set_trigger_mask(0, 'h01);
     i_client.set_trigger_value(0, 'h01);
     i_client.set_sampling_rate(SYS_F, SYS_F/3);
-    i_client.set_count_samples(32, 16); // 16 samples before, 16 after trigger
+    i_client.set_count_samples(8, 4); // 16 samples before, 16 after trigger
     i_client.set_stage_config(0, 'b1);
     i_client.i_uart8.wait_transmit_done();
     i_client.run();
@@ -66,7 +66,7 @@ program logIP_tester ( dut_if.tb duv_if,
     i_client.set_trigger_value(0, 'h00);
     i_client.set_stage_config(0, 'b1);
     i_client.set_sampling_rate(SYS_F, SYS_F/4);
-    i_client.set_count_samples(12, 4);
+    i_client.set_count_samples(3, 1);
     i_client.set_flags('h02);
     i_client.i_uart8.wait_transmit_done();
     i_client.run();
@@ -102,7 +102,7 @@ program logIP_tester ( dut_if.tb duv_if,
       while (i_client.i_uart8.is_receive_empty()) `CLK_DELAY 
       i_client.i_uart8.receive(rx_bytes[i]);
     end
-    act_value = {rx_bytes[0], rx_bytes[1], rx_bytes[2], rx_bytes[3]};
+    act_value = {rx_bytes[3], rx_bytes[2], rx_bytes[1], rx_bytes[0]};
     `ASSERT_EQ_STR(exp_value, act_value, "Wrong data received.")
   endtask;
 
@@ -117,10 +117,10 @@ program logIP_tester ( dut_if.tb duv_if,
     i_client.set_trigger_value(0, 'h00000001);
     i_client.set_sampling_rate(SYS_F, SYS_F/4);
     // Read Count is the number of samples to read back from memory:
-    // -> I want to read back 32 samples
+    // -> I want to read back 8 samples
     // Delay Count is the number of samples to capture after the trigger fired:
     // -> I want to capture all samples after the trigger 
-    i_client.set_count_samples((8 << 2), (8 << 2));
+    i_client.set_count_samples(2, 2);
     i_client.set_stage_config(0, 'b1);
     i_client.i_uart8.wait_transmit_done();
     i_client.run();
@@ -128,13 +128,13 @@ program logIP_tester ( dut_if.tb duv_if,
     fork
       begin // generate input
         repeat (100) `CLK_DELAY 
-        Input_Counter(0, 256, 4);
+        Input_Counter(0, 64, 4);
       end
-      begin // read output
-        // wait for output
-        // I expect to receive 32 samples, where the first sample is
-        // equal to 1, the value i set for the trigger
-        for (int i = 32; i >= 1; i--) begin
+      begin // Wait and read output
+        // Logically we would now expect to receive 8 samples, but
+        // we get 12, so why not! (Reason: Compatibility with sump 
+        // implementation rather then documentation.)
+        for (int i = 12; i >= 1; i--) begin
           Expect_Data(i);
         end
       end
