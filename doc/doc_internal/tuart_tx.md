@@ -13,17 +13,18 @@
 | CLK_PER_SAMPLE |      | 10    |             |
 ## Ports
 
-| Port name | Direction | Type                          | Description              |
-| --------- | --------- | ----------------------------- | ------------------------ |
-| clk_i     | input     |                               | system clock             |
-| rst_in    | input     |                               | system reset, low active |
-| stb_i     | input     |                               | flag, start tx           |
-| rdy_o     | output    |                               | flag, ready for next tx  |
-| tx_o      | output    |                               | uart tx output           |
-| xstb_i    | input     |                               | flag, update x{on,off}   |
-| xoff_i    | input     |                               | flag, xoff               |
-| xon_i     | input     |                               | flag, xon                |
-| data_i    | input     | [(WORD_BITS)*(CMD_WORDS)-1:0] | data to transmit         |
+| Port name | Direction | Type                          | Description                                           |
+| --------- | --------- | ----------------------------- | ----------------------------------------------------- |
+| clk_i     | input     |                               | system clock                                          |
+| rst_in    | input     |                               | system reset, low active                              |
+| stb_i     | input     |                               | flag, start tx                                        |
+| rdy_o     | output    |                               | flag, ready for next tx                               |
+| tx_o      | output    |                               | uart tx output                                        |
+| xstb_i    | input     |                               | flag, update x{on,off}                                |
+| xoff_i    | input     |                               | flag, xoff                                            |
+| xon_i     | input     |                               | flag, xon                                             |
+| sel_i     | input     | [$clog2(CMD_WORDS):0]         | select how many bytes to transmit from the input data |
+| data_i    | input     | [(WORD_BITS)*(CMD_WORDS)-1:0] | data to transmit                                      |
 ## Signals
 
 | Name          | Type                                | Description |

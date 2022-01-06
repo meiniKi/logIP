@@ -33,8 +33,8 @@
 | state_next | states_t              |             |
 | rd_cnt     | logic [CNT_WIDTH-1:0] |             |
 | dly_cnt    | logic [CNT_WIDTH-1:0] |             |
-| cnt        | logic [CNT_WIDTH+2:0] |             |
-| cnt_next   | logic [CNT_WIDTH+2:0] |             |
+| cnt        | logic [CNT_WIDTH+3:0] |             |
+| cnt_next   | logic [CNT_WIDTH+3:0] |             |
 | ptr        | logic [DEPTH-1:0]     |             |
 | ptr_next   | logic [DEPTH-1:0]     |             |
 ## Constants
