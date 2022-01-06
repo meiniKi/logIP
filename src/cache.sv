@@ -41,7 +41,7 @@ module cache #(
       cnt_next    = cnt - OUTPUT;
     end
     if (stb_i) begin
-      for (integer i = 0; i < INPUT; i=i+1) begin
+      for (integer i = INPUT; i >= 0; i=i-1) begin
         if (~cfg[i]) begin
           cnt_next    = cnt_next + 1;
           cache_next  = cache_next << 8;
