@@ -61,7 +61,7 @@ module ctrl #(
       IDLE: begin
         if (run_i == 'b1) begin
           state_next      = TRG;
-          cnt_next        = 'b0;
+          cnt_next        = 'b1;
         end
         if (stb_i == 'b1) begin
           we_o            = 'b1;
@@ -73,7 +73,7 @@ module ctrl #(
       // the caputured values to the client.
       //
       TRG: begin
-        if (cnt == ((dly_cnt+'d1)<<2)) begin
+        if (cnt == (dly_cnt<<2)) begin
           state_next      = TX;
           cnt_next        = 'b0;
           ptr_next        = ptr - 1;
