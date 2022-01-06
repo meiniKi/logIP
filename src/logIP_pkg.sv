@@ -122,7 +122,7 @@ package logIP_pkg;
     // x    Demux Mode: 1=Enabled, double-data-rate capturing, shall only
     //                  be used at maximum sampling frequency.
     // x    Noise Filter Mode: 1=Enabled, reduces glitches on inputs.
-    // x    Disable Channel Groups: 1=Disable group, Dont capture specific
+    //      Disable Channel Groups: 1=Disable group, Dont capture specific
     //                              groups of input data.
     // x    External Clock Source: 1=Enabled, uses an external sampling clock
     // x    Inverted External Capture Clock: 1=Enabled, sampled at falling edge
