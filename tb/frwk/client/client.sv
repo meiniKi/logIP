@@ -58,6 +58,14 @@ class Client;
     i_uart8.transmit_cmd(opc, {4'b0, start, 27'b0});
   endtask
 
+  task reset();
+    i_uart8.transmit('b0);
+    i_uart8.transmit('b0);
+    i_uart8.transmit('b0);
+    i_uart8.transmit('b0);
+    i_uart8.transmit('b0);
+  endtask
+
   task run();
     i_uart8.transmit(byte'(CMD_S_RUN));
   endtask

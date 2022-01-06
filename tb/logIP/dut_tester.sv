@@ -74,7 +74,7 @@ program logIP_tester ( dut_if.tb duv_if,
 
     duv_if.cb.chls_i <= 'hFFFFFFFF;
 
-    // ##### Test cases #####
+     // ##### Test cases #####
     TC_Test_Sampling_On_Counter();
 
 
@@ -102,11 +102,16 @@ program logIP_tester ( dut_if.tb duv_if,
       while (i_client.i_uart8.is_receive_empty()) `CLK_DELAY 
       i_client.i_uart8.receive(rx_bytes[i]);
     end
-    act_value = {rx_bytes[3], rx_bytes[2], rx_bytes[1], rx_bytes[0]};
+    act_value = {rx_bytes[0], rx_bytes[1], rx_bytes[2], rx_bytes[3]};
     `ASSERT_EQ_STR(exp_value, act_value, "Wrong data received.")
   endtask;
 
   task TC_Test_Sampling_On_Counter();
+    duv_if.cb.chls_i  <= 'h00000000;
+    i_client.reset();
+    repeat (50) `CLK_DELAY;
+    i_client.i_uart8.clear_mbx();
+
     // configure client
     i_client.set_trigger_mask(0, 'h00000001);
     i_client.set_trigger_value(0, 'h00000001);
