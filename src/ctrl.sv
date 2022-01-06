@@ -69,11 +69,11 @@ module ctrl #(
         end        
       end
 
-      // Sample another 4*dly_cnt+4 samples, before transmitting
+      // Sample another 4*dly_cnt + 4 samples, before transmitting
       // the caputured values to the client.
       //
       TRG: begin
-        if (cnt == ((dly_cnt+'d1)<<2)) begin
+        if (cnt == {dly_cnt, 2'b11}) begin
           state_next      = TX;
           cnt_next        = 'b0;
           ptr_next        = ptr - 1;
@@ -85,18 +85,18 @@ module ctrl #(
         end
       end
 
-      // Read 4*rd_cnt+4 samples from the ram and transmit
-      // those to the client.
+      // Read 4*rd_cnt + 4 samples from the ram and transmit
+      // those to the client. 
       //
       TX: begin
-        if (cnt == ((rd_cnt+'d1)<<2)) begin
+        if (cnt == {rd_cnt, 2'b11}) begin
           state_next      = IDLE;
         end else begin
           state_next      = TX_WAIT;
-          cnt_next        = cnt + 1;
-          ptr_next        = ptr - 1;
-          tx_stb_o        = 'b1;
         end
+        cnt_next        = cnt + 1;
+        ptr_next        = ptr - 1;
+        tx_stb_o        = 'b1;
       end
 
       // Wait for the transmitter to become ready for

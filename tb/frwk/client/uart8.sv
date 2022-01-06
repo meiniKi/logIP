@@ -51,6 +51,11 @@ class Uart8;
     return this.mbx_rx.num() == 0;
   endfunction
 
+  function clear_mbx();
+    uart_item_t rx;
+    while (this.mbx_rx.try_get(rx)) ;
+  endfunction
+
   task receive(output uart_item_t r);
     this.mbx_rx.get(r);
   endtask

@@ -42,12 +42,8 @@ class Client;
   endtask
 
   task set_count_samples(int read_count_nr, int delay_count_nr);
-    logic [15:0]  r_cnt = (read_count_nr >> 2) - 1;
-    logic [15:0]  d_cnt = delay_count_nr >> 2;
-
-    if ((read_count_nr % 4) || (delay_count_nr % 4))
-      $warning("Read-Count and Delay-Count must be a multiple of 4.\n");
-      
+    logic [15:0]  r_cnt = read_count_nr;
+    logic [15:0]  d_cnt = delay_count_nr;
     i_uart8.transmit_cmd(CMD_L_MSK_SET_RD_DLY_CNT, {d_cnt, r_cnt});
   endtask
 
@@ -56,6 +52,14 @@ class Client;
     logic [7:0]   opc = CMD_L_MSK_SET_TRG_CONF;
                   opc[3:2] = stage;
     i_uart8.transmit_cmd(opc, {4'b0, start, 27'b0});
+  endtask
+
+  task reset();
+    i_uart8.transmit('b0);
+    i_uart8.transmit('b0);
+    i_uart8.transmit('b0);
+    i_uart8.transmit('b0);
+    i_uart8.transmit('b0);
   endtask
 
   task run();
