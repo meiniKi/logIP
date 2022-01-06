@@ -44,8 +44,6 @@ module core #(
   logic               set_cnt;
   logic               set_flgs;
   logic [1:0]         stg;
-  logic [WIDTH-1:0]   smpls;
-  logic               smpls_stb;
   logic               run;
 
   logic               tx_stb_from_rdback;
@@ -53,6 +51,11 @@ module core #(
   logic               tx_sel_ram;
   logic [WIDTH-1:0]   tx_from_ram;
   logic [WIDTH-1:0]   tx_from_rdback;
+
+  logic               cache_stb_i;
+  logic               cache_stb_o;
+  logic [WIDTH-1:0]   cache_i;
+  logic [WIDTH-1:0]   cache_o;
 
   // Connect data from the ram to the output when the
   // controller wants to report samples back to the client
@@ -71,7 +74,7 @@ module core #(
   // Assignments kept to consider 'fake-RLE' here: Load/Store like
   // RLE, but sent to the client as without RLE
   //
-  assign mem_o        = smpls;
+  assign mem_o        = cache_o;
   assign tx_from_ram  = mem_i;
 
   // Be careful of glitches here
@@ -110,8 +113,8 @@ module core #(
     .set_div_i  (set_div),
     .exec_i     (exec_i),
     .data_i     (input_i),
-    .smpls_o    (smpls),
-    .stb_o      (smpls_stb)
+    .smpls_o    (cache_i),
+    .stb_o      (cache_stb_i)
   );
 
   trigger i_trigger (
@@ -123,8 +126,8 @@ module core #(
     .set_val_i  (set_val), 
     .set_cfg_i  (set_cfg), 
     .arm_i      (arm),     
-    .stb_i      (smpls_stb),     
-    .smpls_i    (smpls),   
+    .stb_i      (cache_stb_o),     
+    .smpls_i    (cache_o),   
     .run_o      (run)  
   );
 
@@ -134,7 +137,7 @@ module core #(
     .set_cnt_i  (set_cnt), 
     .cmd_i      (cmd_i),
     .run_i      (run),     
-    .stb_i      (smpls_stb),            
+    .stb_i      (cache_stb_o),            
     .we_o       (we_o),      
     .addr_o     (addr_o),       
     .tx_rdy_i   (tx_rdy_i),   
@@ -151,6 +154,20 @@ module core #(
     //.rd_meta_i  (),               // Not yet used 
     .tx_o       (tx_from_rdback),       
     .stb_o      (tx_stb_from_rdback)
+  );
+
+  cache #(
+    .INPUT(4), 
+    .OUTPUT(4)
+  ) i_cache (
+    .clk_i(clk_i),
+    .rst_in(rst_n),
+    .cfg_stb_i(set_flgs),
+    .cfg_i(cmd_i[29:26]),
+    .stb_i(cache_stb_i),
+    .d_i(cache_i),
+    .stb_o(cache_stb_o),
+    .q_o(cache_o)
   );
 
 endmodule
