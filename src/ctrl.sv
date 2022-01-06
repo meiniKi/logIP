@@ -61,6 +61,8 @@ module ctrl #(
       IDLE: begin
         if (run_i == 'b1) begin
           state_next      = TRG;
+          // Initialize counter with 1, because the first sample
+          // is already stored in this state -> we_o = 1
           cnt_next        = 'b1;
         end
         if (stb_i == 'b1) begin
@@ -69,7 +71,7 @@ module ctrl #(
         end        
       end
 
-      // Sample another 4*dly_cnt+4 samples, before transmitting
+      // Sample another 4*dly_cnt samples, before transmitting
       // the caputured values to the client.
       //
       TRG: begin
