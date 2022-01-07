@@ -76,6 +76,7 @@ program logIP_tester ( dut_if.tb duv_if,
 
      // ##### Test cases #####
     TC_Test_Sampling_On_Counter();
+    TC_Reconfiguring_Trigger();
 
 
     //
@@ -104,6 +105,16 @@ program logIP_tester ( dut_if.tb duv_if,
     end
     act_value = {rx_bytes[3], rx_bytes[2], rx_bytes[1], rx_bytes[0]};
     `ASSERT_EQ_STR(exp_value, act_value, "Wrong data received.")
+  endtask;
+
+  task Expect_Words(int exp_nr_words);
+    byte rx_byte;
+    repeat (exp_nr_words * 4) begin
+      while (i_client.i_uart8.is_receive_empty()) `CLK_DELAY;
+      i_client.i_uart8.receive(rx_byte);
+    end
+    repeat (32) `CLK_DELAY;
+    `ASSERT_EQ_STR(1, i_client.i_uart8.is_receive_empty(), "No more bytes expected.");
   endtask;
 
   task TC_Test_Sampling_On_Counter();
@@ -140,6 +151,50 @@ program logIP_tester ( dut_if.tb duv_if,
       end
     join
 
+  endtask;
+
+  task TC_Reconfiguring_Trigger();
+    int run = 1;
+
+    duv_if.cb.chls_i  <= 'h00000000;
+    i_client.reset();
+    repeat (50) `CLK_DELAY;
+    i_client.i_uart8.clear_mbx();
+
+    // configure client
+    i_client.set_trigger_mask(0, 'h000000FF);
+    i_client.set_trigger_value(0, 'h000000FF);
+    i_client.set_sampling_rate(SYS_F, SYS_F/4);
+    i_client.set_count_samples(4, 0);
+    i_client.set_stage_config(0, 'b1);
+    i_client.i_uart8.wait_transmit_done();
+    i_client.run();
+
+    fork
+      begin // Input
+        while (run) begin
+          repeat (8) `CLK_DELAY;
+          duv_if.cb.chls_i <= 'hFFFFFFFF;
+          repeat (8) `CLK_DELAY;
+          duv_if.cb.chls_i <= 'h00000000;
+        end
+      end
+
+      begin 
+        Expect_Words(20);        
+        i_client.set_count_samples(4, 1);
+        i_client.i_uart8.wait_transmit_done();
+        i_client.run();
+        Expect_Words(20);      
+        i_client.set_count_samples(4, 2);
+        i_client.set_trigger_mask(0, 'h0000FF00);
+        i_client.set_trigger_value(0, 'h0000FF00);
+        i_client.i_uart8.wait_transmit_done();
+        i_client.run();
+        Expect_Words(20);
+        run = 0;
+      end
+    join
   endtask;
 
 endprogram
