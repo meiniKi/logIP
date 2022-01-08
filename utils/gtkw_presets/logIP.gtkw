@@ -1,0 +1,51 @@
+[*]
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Sat Dec 18 17:54:11 2021
+[*]
+[dumpfile] "/home/user/Documents/repos/logIP/sim/sim.sim/sim_1/behav/xsim/logIP_tb.vcd"
+[dumpfile_mtime] "Sat Dec 18 17:49:10 2021"
+[dumpfile_size] 3801215
+[savefile] "/home/user/Documents/repos/logIP/tb/gtkw_presets/logIP.gtkw"
+[timestart] 0
+[size] 1874 1043
+[pos] -1 -1
+*-20.000000 2350000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] logIP_tb.
+[treeopen] logIP_tb.duv_wrapper.
+[treeopen] logIP_tb.duv_wrapper.dut.
+[treeopen] logIP_tb.duv_wrapper.dut.i_core.
+[sst_width] 233
+[signals_width] 199
+[sst_expanded] 1
+[sst_vpaned_height] 298
+@28
+logIP_tb.duv_wrapper.dut.rst_in
+logIP_tb.duv_wrapper.dut.clk_i
+logIP_tb.duv_wrapper.dut.rx_i
+logIP_tb.duv_wrapper.dut.tx_o
+@200
+--- TX --
+@28
+logIP_tb.duv_wrapper.dut.i_tuart_tx.tx_o
+logIP_tb.duv_wrapper.dut.i_tuart_tx.stb_i
+@25
+logIP_tb.duv_wrapper.dut.i_tuart_tx.state[1:0]
+@200
+--- indec --
+@28
+logIP_tb.duv_wrapper.dut.i_core.i_indec.stb_i
+@200
+--- RX --
+@28
+logIP_tb.duv_wrapper.dut.i_tuart_rx.long_cmd_ready
+logIP_tb.duv_wrapper.dut.i_tuart_rx.short_cmd_ready
+@24
+logIP_tb.duv_wrapper.dut.i_tuart_rx.bit_cnt[2:0]
+@200
+--- Core --
+@28
+logIP_tb.duv_wrapper.dut.i_core.tx_sel_ram
+logIP_tb.duv_wrapper.dut.i_core.tx_stb_from_ctrl
+logIP_tb.duv_wrapper.dut.i_core.tx_stb_from_rdback
+[pattern_trace] 1
+[pattern_trace] 0
