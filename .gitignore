@@ -12,4 +12,6 @@ demo/basys3/scripts/viv*
 demo/basys3/scripts/.Xil
 # Push reports for comparison, exlude bitfile due to size
 demo/basys3/out/design.bit
+demo/basys3/out/design.mcs
+demo/basys3/out/design.prm
 demo.gen/

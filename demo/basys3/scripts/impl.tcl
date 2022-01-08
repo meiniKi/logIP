@@ -36,9 +36,14 @@ route_design
 report_timing_summary -file $path_output/post_route_timing_summary.rpt
 report_utilization -file $path_output/post_route_util.rpt
 
+# Config
+#
+set_property config_mode SPIx4 [current_design]
+
 # Write Bitfile
 #
 write_bitstream -force $path_output/design.bit
+write_cfgmem -format mcs -size 64 -interface SPIx4 -loadbit "up 0x0 $path_output/design.bit" -checksum -force -file $path_output/design.mcs
 
 # Append here configuration memory
 #
