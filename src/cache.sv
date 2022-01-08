@@ -16,9 +16,11 @@ module cache #(
   input  logic                    cfg_stb_i,  //! configure flag, configuration at cfg_i is valid
   input  logic [INPUT-1:0]        cfg_i,      //! configure active input bytes
   input  logic                    stb_i,      //! indicates that input is ready
+  input  logic                    en_i,       //! enabe cache and writing to memory
   input  logic [INPUT-1:0][7:0]   d_i,        //! input data
   output logic                    stb_o,      //! output is ready
-  output logic [OUTPUT-1:0][7:0]  q_o         //! output data
+  output logic [OUTPUT-1:0][7:0]  q_o,        //! output data
+  output logic [INPUT-1:0][7:0]   c_o         //! cached input
 );
 
   logic [INPUT+OUTPUT-2:0][7:0]     cache;
@@ -27,6 +29,8 @@ module cache #(
   logic [$clog2(INPUT+OUTPUT)-1:0]  cnt;
   logic [$clog2(INPUT+OUTPUT)-1:0]  cnt_next;
 
+  assign c_o = cache[INPUT-1:0];
+
   always_comb begin : caching
     cache_next      = cache;
     cnt_next        = cnt;
@@ -34,7 +38,7 @@ module cache #(
     if (cnt_next >= OUTPUT) begin
       cnt_next    = cnt - OUTPUT;
     end
-    if (stb_i) begin
+    if (stb_i & en_i) begin
       for (integer i = INPUT-1; i >= 0; i--) begin
         if (~cfg[i]) begin
           cnt_next      = cnt_next + 1;

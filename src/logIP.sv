@@ -26,24 +26,25 @@ module logIP #( parameter CHLS = 32,
   localparam CMD_WIDTH      = UART_WORD_BITS * CMD_WORDS;
   localparam OPC_WIDTH      = UART_WORD_BITS * OPC_WORDS;
 
-  logic [CORE_WIDTH-1:0] chls_padded;
+  logic [CORE_WIDTH-1:0]      chls_padded;
 
-  logic [CMD_WIDTH-1:0]   rx_cmd;
-  logic [OPC_WIDTH-1:0]   rx_opc;
-  logic                   exec_cmd;
+  logic [CMD_WIDTH-1:0]       rx_cmd;
+  logic [OPC_WIDTH-1:0]       rx_opc;
+  logic                       exec_cmd;
 
-  logic [CMD_WIDTH-1:0]   tx_data;
-  logic                   tx_stb;
-  logic                   tx_rdy;
-  logic                   tx_xon;
-  logic                   tx_xoff;
+  logic [CMD_WIDTH-1:0]       tx_data;
+  logic                       tx_stb;
+  logic                       tx_rdy;
+  logic                       tx_xon;
+  logic                       tx_xoff;
+  logic [$clog2(CMD_WORDS):0] tx_width;
 
-  logic                   mem_we;
-  logic [MEM_DEPTH-1:0]   mem_addr;
-  logic [CHLS-1:0]        mem_din;
-  logic [CORE_WIDTH-1:0]  mem_din_padded;
-  logic [CHLS-1:0]        mem_dout;
-  logic [CORE_WIDTH-1:0]  mem_dout_padded;
+  logic                       mem_we;
+  logic [MEM_DEPTH-1:0]       mem_addr;
+  logic [CHLS-1:0]            mem_din;
+  logic [CORE_WIDTH-1:0]      mem_din_padded;
+  logic [CHLS-1:0]            mem_dout;
+  logic [CORE_WIDTH-1:0]      mem_dout_padded;
 
   // The core always takes a fixed-length vector of the input channels 
   // (currently 32 channels according to the sump protocol). This is a
@@ -69,7 +70,7 @@ module logIP #( parameter CHLS = 32,
     .xoff_i     (tx_xoff),
     .xon_i      (tx_xon),
     .data_i     (tx_data),
-    .sel_i      ('d4)
+    .sel_i      (tx_width)
   );
 
   tuart_rx #( .WORD_BITS      (UART_WORD_BITS),
@@ -98,7 +99,8 @@ module logIP #( parameter CHLS = 32,
     .tx_stb_o   (tx_stb),
     .tx_o       (tx_data),
     .tx_xon_o   (tx_xon),
-    .tx_xoff_o  (tx_xoff)
+    .tx_xoff_o  (tx_xoff),
+    .tx_width_o (tx_width)
   );
 
   ramif #(  .WIDTH(CHLS),
