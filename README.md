@@ -5,7 +5,7 @@
 logIP is a utilization-aware logic analyzer IP core the can be synthesized along the actual design to trace signals in operation. E.g., internal signals of an FPGA design can be observed in regular operation without modifying the design files. logIP is based on the SUMP protocol and already prepares all required interfaces to implement the fully-featured OLS extensions. While implementations of the SUMP protocol already exist, the main focus is to adapt the logic analyzer core to specific needs.
 
 ## Input Channels
-Up to 32 input channels are available that can be connected to design signals. The number of channels can be decreased in multiples of eight to save sampling memory.
+Up to 32 input channels are available that can be connected to design signals. The number of channels can be decreased in multiples of eight to save sampling memory. IMPORTANT: De-activation of channel groups are not yet suported. Even when not all channels are synthesized, all channel groups must be activated in the client.
 
 ## Sampling Memory
 Samples are stored in a sampling memory (RAM) accessed by an interface layer. The handshaking is kept simple to ease modification and extensions. Currently, the RAM can be synthesized of LUT's or (Xilinx) block ram (BRAM). However, changes to use external RAM are also possible. Memory size (in the number of samples) can be set by module parameters.
