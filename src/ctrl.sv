@@ -29,12 +29,12 @@ module ctrl #(
   output logic                  tx_stb_o,       //! starts transmitter
   output logic                  tx_sel_mem_o,   //! select ram data to write back
   output logic                  tx_sel_cache_o, //! select ram data to write back
-  output logic                  tx_width_o      //! number of bytes to transmit
+  output logic [2:0]            tx_width_o      //! number of bytes to transmit
 );
 
   localparam CNT_WIDTH = WIDTH / 2;
 
-  typedef enum bit [1:0] { IDLE, TRG, TX, TX_CACHE, TX_WAIT } states_t;
+  typedef enum bit [2:0] { IDLE, TRG, TX, TX_CACHE, TX_WAIT } states_t;
 
   states_t state;
   states_t state_next;
@@ -76,8 +76,8 @@ module ctrl #(
 
   always_comb begin : active_channel_groups
     cfg_ones    = 'b0;
-    foreach(cfg[idx]) begin
-      cfg_ones    += cfg[idx];
+    foreach(cfg_i[idx]) begin
+      cfg_ones    += cfg_i[idx];
     end
   end // always_comb
 
@@ -90,7 +90,7 @@ module ctrl #(
     ptr_next        = ptr;
     c_cnt_next      = c_cnt;
     cen_o           = 'b0;
-    tx_width_o      = WIDTH >> 2;
+    tx_width_o      = WIDTH >> 3;
 
     case (state)
       // Keep sampling in IDLE to have samples before the trigger
@@ -135,8 +135,9 @@ module ctrl #(
         tx_stb_o        = 'b1;
       end
 
-      // Read 4*rd_cnt + 4 samples from the ram and transmit
-      // those to the client. 
+      // Read >4*rd_cnt + 4 samples from the ram and transmit
+      // those to the client. There might be more samples transmitted
+      // to the client. It works but does _not_ conform to the spec.
       //
       TX: begin
         if (cnt == rd_mem_cnt) begin

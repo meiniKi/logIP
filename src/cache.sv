@@ -54,9 +54,9 @@ module cache #(
     q_o   = 'b0;
     stb_o = 'b0;
 
-    if (cnt >= OUTPUT) begin
+    if (cnt_next >= OUTPUT) begin
       stb_o = 'b1;
-      q_o = cache[(cnt-1)-:OUTPUT];
+      q_o = cache_next[(cnt_next-1)-:OUTPUT];
     end
   end // always_comb
 

@@ -80,7 +80,7 @@ module core #(
   // is given to writing back samples if a client requests 
   // data while writing back samples.
   //
-  assign tx_stb_o = tx_sel_ram | tx_sel_cache ? tx_stb_from_ctrl : tx_stb_from_rdback;
+  assign tx_stb_o = tx_sel_mem | tx_sel_cache ? tx_stb_from_ctrl : tx_stb_from_rdback;
 
   // Assignments kept to consider 'fake-RLE' here: Load/Store like
   // RLE, but sent to the client as without RLE
