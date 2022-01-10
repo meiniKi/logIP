@@ -69,10 +69,10 @@ module ctrl #(
   // The number of stages is low, successive addition seems to
   // be the most efficient way
   //
-  assign rd_mem_cnt  =  (cfg_ones == 1) ? (rd_cnt + 'd1)      :
-                        (cfg_ones == 2) ? (rd_cnt + 'd1) << 1 :
-                        (cfg_ones == 3) ? (rd_cnt + rd_cnt + rd_cnt + 'd3) :
-                                          (rd_cnt + 'd1) << 2;
+  assign rd_mem_cnt  =  (cfg_ones == 1) ? (rd_cnt + 'd2)      :
+                        (cfg_ones == 2) ? (rd_cnt + 'd2) << 1 :
+                        (cfg_ones == 3) ? (rd_cnt + rd_cnt + rd_cnt + 'd6) :
+                                          (rd_cnt + 'd2) << 2;
 
   always_comb begin : active_channel_groups
     cfg_ones    = 'b0;
@@ -115,7 +115,7 @@ module ctrl #(
         cen_o       = 'b1;
         c_cnt_next  = c_cnt + cfg_ones;
         if (cnt == {dly_cnt, 2'b11}) begin
-          state_next      = TX;
+          state_next      = TX_CACHE;
           cnt_next        = 'b0;
           ptr_next        = ptr - 1;
         end
