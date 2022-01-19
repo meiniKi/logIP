@@ -124,6 +124,10 @@ module tuart_tx #(  parameter WORD_BITS = 8,
   always_ff @(posedge clk_i) begin : fsm
     if (!rst_in) begin
       state    <= IDLE;
+      shft_reg <= 'b0;
+      bit_cnt  <= 'b0;
+      time_cnt <= 'b0;
+      word_cnt <= 'b0;
     end else begin
       state    <= state_next;
       shft_reg <= shft_reg_next;

@@ -1,8 +1,26 @@
 # logIP
 
-![logIP](doc/doc_internal/logIP.svg "logIP")
+<p align="center">
+  <img src="doc/doc_internal/logIP.svg" />
+</p>
 
 logIP is a utilization-aware logic analyzer IP core the can be synthesized along the actual design to trace signals in operation. E.g., internal signals of an FPGA design can be observed in regular operation without modifying the design files. logIP is based on the SUMP protocol and already prepares all required interfaces to implement the fully-featured OLS extensions. While implementations of the SUMP protocol already exist, the main focus is to adapt the logic analyzer core to specific needs.
+
+## Block Diagram 
+This section aims to illustrate the architecture of the logIP implementation. The block diagrams depict the main interactions between the modules. Please note that many signals are not explicitly drawn due to clarity.
+### Top Level View
+The top-level instantiates the receiver, transmitter, the RAM, and the logIP core. The core implements the architecture independent logic.
+
+<p align="center">
+  <img src="doc/block_top.svg" />
+</p>
+
+### Core Level View
+In the following diagram, the instantiations within the core are depicted.
+
+<p align="center">
+  <img src="doc/block_core.svg" />
+</p>
 
 ## Input Channels
 Up to 32 input channels are available that can be connected to design signals. The number of channels can be decreased in multiples of eight to save sampling memory. IMPORTANT: De-activation of channel groups are not yet suported. Even when not all channels are synthesized, all channel groups must be activated in the client.
