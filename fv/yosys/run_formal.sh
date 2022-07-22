@@ -45,5 +45,5 @@ prep -top top_$parameterDut
 EOT
 
 rm -f ./artifacts/$parameterDut.v
-sv2v --define=FORMAL -E assert --write=./artifacts/$parameterDut.v ./wrapper/wrap_$parameterDut.sv ../src/$parameterDut.sv ../src/logIP_pkg.sv ../src/logIP_ifs.sv
+sv2v --define=FORMAL -E assert --write=./artifacts/$parameterDut.v ./wrapper/wrap_$parameterDut.sv ../src/$parameterDut.sv ../src/logIP_pkg.sv
 sby -f ./artifacts/check.sby 
