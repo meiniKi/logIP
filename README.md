@@ -153,8 +153,8 @@ TODO
 
 
 # Authors
-+ Meinhard Kissich
-+ Klaus Weinbauer
++ [Meinhard Kissich](https://github.com/meiniKi)
++ [Klaus Weinbauer](https://github.com/klausweinbauer)
 
 # Issues
 The [Original SUMP Client](https://sump.org/projects/analyzer/) depends on the RXTX library that can be found [here](http://rxtx.qbang.org/wiki/index.php/Download). Please make sure to use version [rxtx-2.2pre2.zip](http://rxtx.qbang.org/pub/rxtx/rxtx-2.2pre2.zip) and `openjdk-8-jre`. The default java version can be changed by `sudo update-alternatives --config java`.
