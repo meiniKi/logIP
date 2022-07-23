@@ -4,7 +4,7 @@
   <img src="doc/doc_internal/logIP.svg" />
 </p>
 
-logIP is a utilization-aware logic analyzer IP core the can be synthesized along the actual design to trace signals in operation. E.g., internal signals of an FPGA design can be observed in regular operation without modifying the design files. logIP is based on the SUMP protocol and already prepares all required interfaces to implement the fully-featured OLS extensions. While implementations of the SUMP protocol already exist, the main focus is to adapt the logic analyzer core to specific needs.
+logIP is a utilization-aware logic analyzer IP core the can be synthesized along the actual design to trace signals in operation. E.g., internal signals of an FPGA design can be observed in regular operation without modifying the design files. logIP is based on the [SUMP](https://sump.org/projects/analyzer/protocol/) protocol and already prepares all required interfaces to implement the fully-featured [OLS extensions](http://dangerousprototypes.com/docs/Logic_Analyzer_core:_Background). While implementations of the [SUMP](https://sump.org/projects/analyzer/protocol/) protocol already exist, the main focus is to adapt the logic analyzer core to specific needs. This project was originally developed as part of the Design of Real-Time Systems Laboratory at the Institute of Technical Informatics at Graz University of Technology. 
 
 ## Block Diagram 
 This section aims to illustrate the architecture of the logIP implementation. The block diagrams depict the main interactions between the modules. Please note that many signals are not explicitly drawn due to clarity.
@@ -23,7 +23,7 @@ In the following diagram, the instantiations within the core are depicted.
 </p>
 
 ## Input Channels
-Up to 32 input channels are available that can be connected to design signals. The number of channels can be decreased in multiples of eight to save sampling memory.
+Up to 32 input channels are available that can be connected to design signals. The number of channels can be decreased in multiples of eight to save sampling memory. IMPORTANT: De-activation of channel groups are not yet suported. Even when not all channels are synthesized, all channel groups must be activated in the client.
 
 ## Sampling Memory
 Samples are stored in a sampling memory (RAM) accessed by an interface layer. The handshaking is kept simple to ease modification and extensions. Currently, the RAM can be synthesized of LUT's or (Xilinx) block ram (BRAM). However, changes to use external RAM are also possible. Memory size (in the number of samples) can be set by module parameters.
@@ -151,6 +151,10 @@ logIP #(.CHLS(32),
 
 TODO
 
+
+# Authors
++ [Meinhard Kissich](https://github.com/meiniKi)
++ [Klaus Weinbauer](https://github.com/klausweinbauer)
 
 # Issues
 The [Original SUMP Client](https://sump.org/projects/analyzer/) depends on the RXTX library that can be found [here](http://rxtx.qbang.org/wiki/index.php/Download). Please make sure to use version [rxtx-2.2pre2.zip](http://rxtx.qbang.org/pub/rxtx/rxtx-2.2pre2.zip) and `openjdk-8-jre`. The default java version can be changed by `sudo update-alternatives --config java`.
