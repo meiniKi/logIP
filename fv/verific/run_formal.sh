@@ -23,6 +23,7 @@ then
   helpFunction
 fi
 
+mkdir artifacts
 rm -f ./artifacts/check.sby
 cat <<EOT >> ./artifacts/check.sby
 # Simple SymbiYosys example job utilizing Verific
