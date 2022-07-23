@@ -11,7 +11,7 @@ This project was originally developed as part of the Design of Real-Time Systems
 
 # Usage
 ## Instantiation
-The following snippet shows an instantiation template of the logIP logic analyzer IP. `CHLS` sets the number of input channels to be synthesized. `MEM_DEPTH` adjusts the size of the sampling memory in bits (`10 = 2^10` samples per channel) and `UART_CLK_PER_BIT` sets the Uart baud -rate relative to the system clock.
+The following snippet shows an instantiation template of the logIP logic analyzer IP. `CHLS` sets the number of input channels to be synthesized. `MEM_DEPTH` adjusts the size of the sampling memory in bits (`10 = 2^10` samples per channel) and `UART_CLK_PER_BIT` sets the UART baud-rate relative to the system clock.
 
 ```
 logIP #(.CHLS(32),
@@ -41,7 +41,7 @@ In the following diagram, the instantiations within the core are depicted.
 </p>
 
 ## Input Channels
-Up to 32 input channels are available that can be connected to design signals. The number of channels can be decreased in multiples of eight to save sampling memory. IMPORTANT: De-activation of channel groups are not yet suported. Even when not all channels are synthesized, all channel groups must be activated in the client.
+Up to 32 input channels are available that can be connected to design signals. The number of channels can be decreased in multiples of eight to save sampling memory. _Important_: De-activation of channel groups are not yet suported. Even when not all channels are synthesized, all channel groups must be activated in the client.
 
 ## Sampling Memory
 Samples are stored in a sampling memory (RAM) accessed by an interface layer. The handshaking is kept simple to ease modification and extensions. Currently, the RAM can be synthesized of LUT's or (Xilinx) block ram (BRAM). However, changes to use external RAM are also possible. Memory size (in the number of samples) can be set by module parameters.
